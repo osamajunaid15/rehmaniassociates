@@ -611,8 +611,9 @@
     <div class="scan-sub">Ittila-e-Aam wale box ki photo lein ya gallery se ek saath kai photos select karein — plot, sector, agent aur owners khud nikal aayenge.</div>
     <div class="scan-btns">
       <button class="scan-btn" onclick="document.getElementById('scanCamera').click()">📷 Photo Lein</button>
-      <button class="scan-btn ghost" onclick="document.getElementById('scanGallery').click()">🖼️ Gallery (Multiple)</button>
+      <button class="scan-btn ghost" onclick="document.getElementById('scanGallery').click()">🖼️ Gallery</button>
     </div>
+    <button class="scan-btn ghost" style="width:100%;margin-top:8px" onclick="openVoiceModal()">🎤 Bol Kar / Likh Kar Entry</button>
     <input type="file" id="scanCamera" accept="image/*" capture="environment" class="hidden" onchange="onScanFile(this)">
     <input type="file" id="scanGallery" accept="image/*" multiple class="hidden" onchange="onScanFile(this)">
   </div>
@@ -673,10 +674,10 @@
 
   <!-- Search Mode Toggle -->
   <div style="display:flex;gap:8px;margin-bottom:12px">
-    <button class="search-mode-btn active" id="btn-local" onclick="setSearchMode('local')">
+    <button class="search-mode-btn" id="btn-local" onclick="setSearchMode('local')">
       📱 Is Device Ki Entries
     </button>
-    <button class="search-mode-btn" id="btn-sheet" onclick="setSearchMode('sheet')">
+    <button class="search-mode-btn active" id="btn-sheet" onclick="setSearchMode('sheet')">
       ☁️ Sheet Mein Dhundho
     </button>
   </div>
@@ -794,6 +795,33 @@
   </div>
 </div>
 
+<!-- Voice / Text Entry Modal -->
+<div class="modal-wrap hidden" id="voiceModal">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div class="modal-head-title">🎤 Bol Kar Entry</div>
+      <button class="modal-close" onclick="closeVoiceModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="font-size:11.5px;color:var(--gray-500);margin-bottom:10px;line-height:1.6">
+        Mic dabayein aur bol dein, ya WhatsApp se aaya hua text neeche paste kar dein.<br>
+        Misal: "Plot A-093 sector R sub sector three, 290 gaz, Gulshan-e-Maymar, agent Asad Enterprises 0334-2053146, demand ek crore bees lakh"
+      </div>
+      <div style="display:flex;gap:8px;margin-bottom:10px">
+        <button id="micBtn" onclick="toggleMic()" style="flex:1;padding:14px;border-radius:var(--radius-sm);border:none;background:#5c3d1e;color:#fdf0d8;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit">🎤 Bolna Shuru</button>
+        <select id="micLang" class="field-input" style="width:auto;padding:0 10px">
+          <option value="ur-PK">اردو</option>
+          <option value="en-US">English</option>
+        </select>
+      </div>
+      <textarea id="voiceText" class="field-input" rows="7" placeholder="Yahan bola hua text aayega — theek bhi kar sakte hain..." style="resize:vertical"></textarea>
+    </div>
+    <div class="modal-foot">
+      <button class="btn-save" style="width:100%" onclick="parseVoiceText()"><span>✨</span> Detail Nikalein</button>
+    </div>
+  </div>
+</div>
+
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
@@ -826,6 +854,7 @@ document.addEventListener('DOMContentLoaded', () => {
   renderFormFields();
   updateSyncBanner();
   loadGsUrl();
+  setSearchMode(getGsUrl() ? 'sheet' : 'local');
   setInterval(updateSyncBanner, 10000);
   setInterval(autoSync, 30000);
   window.addEventListener('online', () => { updateSyncBanner(); autoSync(); });
@@ -1481,7 +1510,7 @@ function showToast(msg, type = '') {
 }
 
 // ============ SEARCH MODE ============
-let searchMode = 'local';
+let searchMode = 'sheet';
 
 function setSearchMode(mode) {
   searchMode = mode;
@@ -1712,6 +1741,83 @@ function shareWhatsAppFromSheet(r) {
   window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
 }
 
+// ============ VOICE / TEXT ENTRY ============
+let recog = null, recogOn = false, recogBase = '';
+
+function openVoiceModal() {
+  document.getElementById('voiceText').value = '';
+  document.getElementById('voiceModal').classList.remove('hidden');
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) {
+    document.getElementById('micBtn').style.display = 'none';
+    document.getElementById('micLang').style.display = 'none';
+  }
+}
+
+function closeVoiceModal() {
+  stopMic();
+  document.getElementById('voiceModal').classList.add('hidden');
+}
+
+function toggleMic() {
+  if (recogOn) { stopMic(); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { showToast('⚠️ Is browser mein mic nahi chalta — text likh dein', 'error'); return; }
+  recog = new SR();
+  recog.lang = document.getElementById('micLang').value;
+  recog.continuous = true;
+  recog.interimResults = true;
+  recogBase = document.getElementById('voiceText').value;
+  recog.onresult = ev => {
+    let txt = '';
+    for (let i = 0; i < ev.results.length; i++) txt += ev.results[i][0].transcript + ' ';
+    document.getElementById('voiceText').value = (recogBase ? recogBase + ' ' : '') + txt.trim();
+  };
+  recog.onerror = ev => {
+    stopMic();
+    showToast(ev.error === 'not-allowed' ? '⚠️ Mic ki ijazat dein' : '⚠️ Mic error — text likh dein', 'error');
+  };
+  recog.onend = () => { if (recogOn) { try { recog.start(); } catch (e) {} } };
+  try { recog.start(); } catch (e) {}
+  recogOn = true;
+  const b = document.getElementById('micBtn');
+  b.textContent = '⏹️ Rokein (sun raha hoon...)';
+  b.style.background = '#991b1b';
+}
+
+function stopMic() {
+  recogOn = false;
+  if (recog) { try { recog.stop(); } catch (e) {} }
+  const b = document.getElementById('micBtn');
+  if (b) { b.textContent = '🎤 Bolna Shuru'; b.style.background = '#5c3d1e'; }
+}
+
+async function parseVoiceText() {
+  stopMic();
+  const text = document.getElementById('voiceText').value.trim();
+  if (!text) { showToast('⚠️ Pehle bol dein ya likh dein', 'error'); return; }
+  if (!navigator.onLine) { showToast('❌ Internet chahiye', 'error'); return; }
+  const overlay = document.getElementById('loadingOverlay');
+  const lt = document.getElementById('loadingText');
+  overlay.classList.remove('hidden');
+  lt.textContent = 'Detail nikal raha hoon...';
+  try {
+    const res = await postJson({ action: 'text', text });
+    if (res.status !== 'ok') throw new Error(res.message || 'Fail');
+    if (!res.notices.length) throw new Error('Koi property detail nahi mili');
+    const firstNew = scanState.notices.length;
+    res.notices.forEach(n => scanState.notices.push({ ...n, include: true, matches: null, preview: '', imageUrl: '' }));
+    overlay.classList.add('hidden');
+    document.getElementById('voiceModal').classList.add('hidden');
+    renderScanModal();
+    document.getElementById('scanModal').classList.remove('hidden');
+    checkSheetMatches(firstNew);
+  } catch (err) {
+    overlay.classList.add('hidden');
+    showToast('❌ ' + err.message, 'error');
+  }
+}
+
 // ============ NEWSPAPER SCAN ============
 let scanState = { notices: [], failed: [] };
 
@@ -1815,7 +1921,9 @@ async function processFiles(files) {
   results.forEach((res, k) => {
     if (!res.ok) { scanState.failed.push({ file: files[k], reason: res.reason }); return; }
     if (!res.r.notices.length) { scanState.failed.push({ file: files[k], reason: 'Is photo mein notice nahi mila' }); return; }
+    const marked = res.r.notices.some(n => n.highlighted);
     res.r.notices.forEach(n => {
+      if (marked && !n.highlighted) return;   // photo mein round kiya hua hai to sirf wahi
       scanState.notices.push({ ...n, include: true, matches: null, preview: res.r.dataUrl, imageUrl: res.r.imageUrl });
       found++;
     });
@@ -1864,13 +1972,14 @@ function renderScanModal() {
 
   html += scanState.notices.map((n, i) => `<div class="notice-card ${n.include ? '' : 'off'}" id="notice-${i}">
       <div class="notice-head">
-        <label><input type="checkbox" ${n.include ? 'checked' : ''} onchange="toggleNotice(${i}, this.checked)"> Notice ${i + 1}${n.corner ? ' • Corner' : ''}</label>
+        <label><input type="checkbox" ${n.include ? 'checked' : ''} onchange="toggleNotice(${i}, this.checked)"> Notice ${i + 1}${n.highlighted ? ' ✏️' : ''}${n.corner ? ' • Corner' : ''}</label>
         <span style="font-size:11px;color:var(--gray-500)">${esc(n.propertyKind || 'Plot')}</span>
       </div>
-      <img src="${n.preview}" class="notice-photo" onclick="this.classList.toggle('big')" alt="Notice photo">
+      ${n.preview ? `<img src="${n.preview}" class="notice-photo" onclick="this.classList.toggle('big')" alt="Notice photo">` : ''}
       <div class="field-row">${f(i, 'plotNo', '📌 Plot / House No')}${f(i, 'size', '📐 Size (Sqyds)')}</div>
       <div class="field-row">${f(i, 'sector', '📍 Sector')}${f(i, 'subSector', '🔢 Sub Sector')}</div>
       ${f(i, 'area', '🏙️ Area / Scheme')}
+      ${f(i, 'price', '💰 Price (PKR) — khaali chor sakte hain')}
       <div style="background:#fdf0d8;border:1.5px solid var(--gold);border-radius:10px;padding:10px 10px 1px;margin-bottom:9px">
         <div style="font-size:11px;font-weight:800;color:#5c3d1e;margin-bottom:6px">📣 AD AGENT (is se owner tak pohanchna hai)</div>
         ${f(i, 'agentName', '👤 Agent / Agency Naam')}
@@ -1946,15 +2055,15 @@ function saveScannedNotices() {
     return {
       id: (now + k).toString(),
       date: n.date || getTodayDate(),
-      purpose: 'sell',
+      purpose: n.purpose === 'rent' ? 'rent' : 'sell',
       category: isHouse ? 'home' : 'plots',
       propertyType: isHouse ? 'House' : 'Residential Plot',
       houseNo: isHouse ? n.plotNo : '', plotNo: isHouse ? '' : n.plotNo,
       floor: '', sector: n.sector || '', subSector: n.subSector || '',
       sqyds: n.size || '', sqUnit: 'Sqyds',
-      area: n.area || '', price: '', priceType: '',
+      area: n.area || '', price: (n.price || '').toString().replace(/[^\d]/g, ''), priceType: '',
       marketedBy: n.agentName || '', poc: Array.isArray(n.agentPhones) ? n.agentPhones : [],
-      source: 'Newspaper', notes: notesParts.join(' | '),
+      source: n.preview ? 'Newspaper' : 'Voice Entry', notes: notesParts.join(' | '),
       rentPeriod: '', advance: '', security: '',
       prevOwner: n.prevOwner || '', newOwner: n.newOwner || '',
       newsRef: n.refNo || '', imageUrl: n.imageUrl || '',
