@@ -566,6 +566,51 @@
   .notice-photo.big { max-height: none; object-fit: contain; }
   .fail-box { background: #fee2e2; border: 1.5px solid #fca5a5; color: #991b1b; border-radius: 10px; padding: 10px 12px; font-size: 12px; margin-bottom: 12px; }
   .fail-box button { margin-top: 8px; padding: 8px 12px; background: #991b1b; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; font-family: inherit; }
+  /* ===== LOCK SCREEN ===== */
+  #lockScreen {
+    position: fixed; inset: 0; z-index: 900;
+    background: linear-gradient(160deg, #2d2015 0%, #5c3d1e 60%, #7a5228 100%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 28px; text-align: center; color: #fdf0d8;
+  }
+  #lockScreen .lock-logo { font-size: 44px; margin-bottom: 14px; }
+  #lockScreen h1 { font-size: 21px; font-weight: 800; letter-spacing: .5px; margin-bottom: 4px; }
+  #lockScreen .lock-sub { font-size: 12.5px; color: #e8d9c4; margin-bottom: 26px; }
+  #lockScreen input {
+    width: 100%; max-width: 300px; padding: 14px 16px; border-radius: 12px;
+    border: 1.5px solid rgba(253,240,216,.35); background: rgba(0,0,0,.25);
+    color: #fdf0d8; font-size: 16px; text-align: center; letter-spacing: 3px;
+    font-family: inherit; outline: none;
+  }
+  #lockScreen input:focus { border-color: var(--gold); }
+  #lockScreen button {
+    width: 100%; max-width: 300px; margin-top: 12px; padding: 14px;
+    border: none; border-radius: 12px; background: var(--gold); color: #2d2015;
+    font-size: 15px; font-weight: 800; cursor: pointer; font-family: inherit;
+  }
+  #lockMsg { font-size: 12.5px; color: #fca5a5; height: 18px; margin-top: 10px; }
+  #lockScreen .lock-foot { position: absolute; bottom: 24px; font-size: 11px; color: #c9b8a3; }
+
+  /* ===== SETTINGS ===== */
+  .stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .stat-tile {
+    background: #fdf8f2; border: 1px solid var(--gray-200); border-radius: 12px;
+    padding: 13px 14px;
+  }
+  .stat-tile .n { font-size: 24px; font-weight: 800; color: #5c3d1e; line-height: 1.1; }
+  .stat-tile .l { font-size: 11.5px; color: var(--gray-500); margin-top: 3px; font-weight: 600; }
+  .stat-tile.warn { background: #fffbeb; border-color: #fcd34d; }
+  .stat-tile.warn .n { color: #b45309; }
+  .stat-tile.bad { background: #fef2f2; border-color: #fca5a5; }
+  .stat-tile.bad .n { color: #991b1b; }
+  .danger-card { border: 1px solid #fecaca; }
+  .danger-card .section-header { background: #fef2f2; }
+  .danger-note { font-size: 11.5px; color: var(--gray-500); line-height: 1.6; margin-bottom: 11px; }
+  .btn-danger {
+    width: 100%; padding: 12px; background: white; color: #991b1b;
+    border: 1.5px solid #fca5a5; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
+  }
   .owner-line { font-size: 12px; color: var(--gray-700); margin-top: 3px; }
 </style>
 </head>
@@ -725,6 +770,7 @@
     </div>
     <div class="section-body">
       <div id="sheetStatusBox" style="border-radius:8px;padding:11px;font-size:12.5px;line-height:1.6"></div>
+      <div id="usageBox" style="margin-top:12px"></div>
       <a href="https://docs.google.com/spreadsheets/d/1PqM3Zd4uqMbkYRCF8yj_hS_1Eyx3cPIpkQDcSAsdfwg" target="_blank"
          style="display:block;text-align:center;margin-top:10px;padding:11px;background:#5c3d1e;color:#fdf0d8;border-radius:var(--radius-sm);font-size:13px;font-weight:700;text-decoration:none">
         📄 Google Sheet Kholein
@@ -734,50 +780,60 @@
 
   <div class="section-card">
     <div class="section-header">
-      <div class="section-icon">📊</div>
+      <div class="section-icon">📈</div>
       <div class="section-title">Sync Status</div>
     </div>
-    <div class="section-body settings-section">
-      <div class="settings-item">
-        <div>
-          <div class="settings-label">Total Entries</div>
-        </div>
-        <div class="settings-value" id="stat-total">0</div>
-      </div>
-      <div class="settings-item">
-        <div>
-          <div class="settings-label">Synced</div>
-        </div>
-        <div class="settings-value" id="stat-synced">0</div>
-      </div>
-      <div class="settings-item">
-        <div>
-          <div class="settings-label">Pending Sync</div>
-        </div>
-        <div class="settings-value" id="stat-pending">0</div>
-      </div>
-      <div class="settings-item">
-        <div>
-          <div class="settings-label">Duplicate Flags</div>
-        </div>
-        <div class="settings-value" id="stat-dupes">0</div>
+    <div class="section-body">
+      <div class="stat-grid">
+        <div class="stat-tile"><div class="n" id="stat-total">0</div><div class="l">Total Entries</div></div>
+        <div class="stat-tile"><div class="n" id="stat-synced">0</div><div class="l">Sheet Mein Gayi</div></div>
+        <div class="stat-tile" id="tile-pending"><div class="n" id="stat-pending">0</div><div class="l">Pending Sync</div></div>
+        <div class="stat-tile" id="tile-dupes"><div class="n" id="stat-dupes">0</div><div class="l">Duplicate Flags</div></div>
       </div>
     </div>
   </div>
 
   <div class="section-card">
     <div class="section-header">
-      <div class="section-icon">🗑️</div>
-      <div class="section-title">Data Management</div>
+      <div class="section-icon">🔒</div>
+      <div class="section-title">App Lock</div>
     </div>
     <div class="section-body">
-      <button onclick="clearAllData()" style="width:100%;padding:12px;background:var(--red-light);color:var(--red);border:1.5px solid #fca5a5;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer">
-        🗑️ Sab Data Clear Karein
+      <div class="danger-note" style="margin-bottom:0">
+        Har naye phone ya browser par app khulte waqt password maangti hai. Ek dafa daalne ke baad wo device yaad rakhi jati hai.
+      </div>
+      <button class="btn-danger" style="margin-top:11px;color:#5c3d1e;border-color:var(--gold)" onclick="lockThisDevice()">
+        🔒 Is Device Ko Lock Karein
       </button>
     </div>
   </div>
 
+  <div class="section-card danger-card">
+    <div class="section-header">
+      <div class="section-icon">🗑️</div>
+      <div class="section-title">Data Management</div>
+    </div>
+    <div class="section-body">
+      <div class="danger-note">
+        Is phone ki saari local entries mit jayengi. Google Sheet ka data mehfooz rahega. Password zaroori hai.
+      </div>
+      <button class="btn-danger" onclick="clearAllData()">🗑️ Sab Data Clear Karein</button>
+    </div>
+  </div>
+
   <div style="height:24px"></div>
+</div>
+
+<!-- Lock Screen -->
+<div id="lockScreen" class="hidden">
+  <div class="lock-logo">🏢</div>
+  <h1>REHMANI ASSOCIATES</h1>
+  <div class="lock-sub">Property Data App</div>
+  <input type="password" id="lockInput" inputmode="numeric" placeholder="Password"
+         onkeydown="if(event.key==='Enter')tryUnlock()">
+  <button onclick="tryUnlock()">🔓 Kholein</button>
+  <div id="lockMsg"></div>
+  <div class="lock-foot">Ye device yaad rakhi jayegi</div>
 </div>
 
 <!-- Newspaper Review Modal -->
@@ -849,7 +905,45 @@ const TYPES = {
 };
 
 // ============ INIT ============
+// ============ APP LOCK ============
+// 👇 Password yahan badal sakte hain
+const osama1598 = 'rehmani786';
+
+function isUnlocked() { return localStorage.getItem('ra_unlocked') === APP_PASSWORD; }
+
+function showLock() {
+  document.getElementById('lockScreen').classList.remove('hidden');
+  setTimeout(() => document.getElementById('lockInput').focus(), 200);
+}
+
+function tryUnlock() {
+  const el = document.getElementById('lockInput');
+  if (el.value === APP_PASSWORD) {
+    localStorage.setItem('ra_unlocked', APP_PASSWORD);
+    document.getElementById('lockScreen').classList.add('hidden');
+    document.getElementById('lockMsg').textContent = '';
+    el.value = '';
+  } else {
+    document.getElementById('lockMsg').textContent = '❌ Password ghalat hai';
+    el.value = '';
+    el.focus();
+  }
+}
+
+function lockThisDevice() {
+  localStorage.removeItem('ra_unlocked');
+  showLock();
+}
+
+function askPassword(reason) {
+  const p = prompt(reason + '\n\nPassword daalein:');
+  if (p === null) return false;
+  if (p !== APP_PASSWORD) { showToast('❌ Password ghalat hai', 'error'); return false; }
+  return true;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  if (!isUnlocked()) showLock();
   renderTypeChips();
   renderFormFields();
   updateSyncBanner();
@@ -869,7 +963,7 @@ function switchTab(tab) {
   });
   state.currentTab = tab;
   if (tab === 'records') renderRecords();
-  if (tab === 'settings') updateStats();
+  if (tab === 'settings') { updateStats(); loadUsage(); }
 }
 
 // ============ PURPOSE ============
@@ -1376,6 +1470,45 @@ const GS_URL = 'https://script.google.com/macros/s/AKfycby_ndes8tHYk3NE93gGDJPrr
 function getGsUrl() {
   return (GS_URL && GS_URL.startsWith('https://script.google.com')) ? GS_URL : '';
 }
+const DAILY_LIMIT = 200;   // free tier ka andaza — apni marzi se badal sakte hain
+
+async function loadUsage() {
+  const box = document.getElementById('usageBox');
+  if (!box || !getGsUrl()) return;
+  box.innerHTML = '<div style="font-size:12px;color:#6b7280">⏳ AI usage load ho raha hai...</div>';
+  try {
+    const resp = await fetch(getGsUrl() + '?usage=1');
+    const d = JSON.parse(await resp.text());
+    const t = d.today || {};
+    const used = t.calls || 0;
+    const pct = Math.min(100, Math.round(used / DAILY_LIMIT * 100));
+    const color = pct > 85 ? '#991b1b' : pct > 60 ? '#b45309' : '#166534';
+    const week = (d.days || []).map(x =>
+      `<div style="display:flex;justify-content:space-between;font-size:11.5px;color:#6b7280;padding:2px 0">
+         <span>${x.date}</span><span>${x.data.scans || 0} scan • ${x.data.voice || 0} voice • ${x.data.calls || 0} AI calls</span>
+       </div>`).join('');
+    box.innerHTML = `
+      <div style="border:1px solid var(--gray-200);border-radius:10px;padding:12px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <div style="font-size:12.5px;font-weight:800;color:#5c3d1e">🤖 AI Usage — Aaj</div>
+          <button onclick="loadUsage()" style="background:none;border:none;color:#5c3d1e;font-size:12px;cursor:pointer">🔄</button>
+        </div>
+        <div style="height:9px;background:#eee;border-radius:99px;overflow:hidden">
+          <div style="height:100%;width:${pct}%;background:${color}"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#6b7280;margin-top:6px">
+          <span>${used} / ~${DAILY_LIMIT} AI calls</span>
+          <span>${t.scans || 0} photo • ${t.voice || 0} voice</span>
+        </div>
+        ${t.limitHits ? `<div style="font-size:11.5px;color:#991b1b;margin-top:6px">⚠️ ${t.limitHits} dafa Google ki limit lagi</div>` : ''}
+        ${(d.blocked || []).length ? `<div style="font-size:11px;color:#b45309;margin-top:4px">Aaj band: ${d.blocked.join(', ')}</div>` : ''}
+        <details style="margin-top:8px"><summary style="font-size:11.5px;color:#5c3d1e;cursor:pointer">Pichlay 7 din</summary>${week || '<div style="font-size:11.5px;color:#6b7280">Koi record nahi</div>'}</details>
+      </div>`;
+  } catch (e) {
+    box.innerHTML = '<div style="font-size:12px;color:#991b1b">Usage load nahi hua</div>';
+  }
+}
+
 function loadGsUrl() {
   const box = document.getElementById('sheetStatusBox');
   if (!box) return;
@@ -1484,6 +1617,12 @@ function updateSyncBanner() {
 }
 
 // ============ STATS ============
+function paintTiles(pending, dupes) {
+  const pt = document.getElementById('tile-pending'), dt = document.getElementById('tile-dupes');
+  if (pt) pt.className = 'stat-tile' + (pending > 0 ? ' warn' : '');
+  if (dt) dt.className = 'stat-tile' + (dupes > 0 ? ' bad' : '');
+}
+
 function updateStats() {
   const entries = getEntries();
   const synced = entries.filter(e => e.synced).length;
@@ -1495,6 +1634,7 @@ function updateStats() {
   document.getElementById('stat-synced').textContent = synced;
   document.getElementById('stat-pending').textContent = entries.length - synced;
   document.getElementById('stat-dupes').textContent = dupes;
+  paintTiles(entries.length - synced, dupes);
 }
 
 // ============ HELPERS ============
@@ -2085,11 +2225,11 @@ function saveScannedNotices() {
 }
 
 function clearAllData() {
-  if (!confirm('Sab data clear karna chahte hain? Yeh wapis nahi aaega!')) return;
+  if (!askPassword('⚠️ Is phone ka saara local data mit jayega. Google Sheet mehfooz rahegi.')) return;
+  if (!confirm('Pakka? Sab local entries delete ho jayengi.')) return;
   localStorage.removeItem('ra_entries');
-  renderRecords();
-  updateStats();
-  showToast('🗑️ Sab data clear ho gaya');
+  showToast('🗑️ Local data clear ho gaya', 'success');
+  renderRecords(); updateStats(); updateSyncBanner();
 }
 </script>
 </body>
