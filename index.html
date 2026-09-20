@@ -1872,6 +1872,7 @@ async function scanOne(file, onStatus) {
       const res = await postJson({ action: 'scan', image: dataUrl.split(',')[1], mimeType: 'image/jpeg' });
       if (res.status === 'ok') return { dataUrl, imageUrl: res.imageUrl || '', notices: res.notices || [] };
       lastErr = res.message || 'Scan fail';
+      if (/limit|quota/i.test(lastErr)) break;   // limit lagi hai to dobara try bekaar hai
     } catch (e) { lastErr = e.message || 'Network error'; }
   }
   throw new Error(lastErr);
@@ -1909,12 +1910,13 @@ async function processFiles(files) {
   async function worker() {
     while (next < files.length) {
       const k = next++;
+      if (k > 1) await sleep(1200);   // Google ki per-minute limit se bachne ke liye
       try { results[k] = { ok: true, r: await scanOne(files[k]) }; }
       catch (err) { results[k] = { ok: false, reason: err.message }; }
       done++; tick();
     }
   }
-  await Promise.all(Array.from({ length: Math.min(3, files.length) }, worker));
+  await Promise.all(Array.from({ length: Math.min(2, files.length) }, worker));
   clearInterval(timer);
 
   // Photos ki asal tarteeb mein notices add karo
