@@ -562,6 +562,10 @@
   .notice-match { font-size: 11.5px; margin-top: 6px; padding: 7px 10px; border-radius: 8px; }
   .notice-match.hit { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
   .notice-match.none { background: #ecfdf5; color: #166534; border: 1px solid #86efac; }
+  .notice-photo { width: 100%; max-height: 130px; object-fit: cover; object-position: top; border-radius: 8px; border: 1px solid var(--gray-200); margin-bottom: 10px; cursor: pointer; background: #fff; }
+  .notice-photo.big { max-height: none; object-fit: contain; }
+  .fail-box { background: #fee2e2; border: 1.5px solid #fca5a5; color: #991b1b; border-radius: 10px; padding: 10px 12px; font-size: 12px; margin-bottom: 12px; }
+  .fail-box button { margin-top: 8px; padding: 8px 12px; background: #991b1b; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; font-family: inherit; }
   .owner-line { font-size: 12px; color: var(--gray-700); margin-top: 3px; }
 </style>
 </head>
@@ -604,13 +608,13 @@
   <!-- Newspaper Scan -->
   <div class="scan-card">
     <div class="scan-title">📰 Newspaper Notice Scan</div>
-    <div class="scan-sub">Ittila-e-Aam wale box ki photo lein — plot, sector, size aur owners ke naam khud nikal aayenge.</div>
+    <div class="scan-sub">Ittila-e-Aam wale box ki photo lein ya gallery se ek saath kai photos select karein — plot, sector, agent aur owners khud nikal aayenge.</div>
     <div class="scan-btns">
       <button class="scan-btn" onclick="document.getElementById('scanCamera').click()">📷 Photo Lein</button>
-      <button class="scan-btn ghost" onclick="document.getElementById('scanGallery').click()">🖼️ Gallery</button>
+      <button class="scan-btn ghost" onclick="document.getElementById('scanGallery').click()">🖼️ Gallery (Multiple)</button>
     </div>
     <input type="file" id="scanCamera" accept="image/*" capture="environment" class="hidden" onchange="onScanFile(this)">
-    <input type="file" id="scanGallery" accept="image/*" class="hidden" onchange="onScanFile(this)">
+    <input type="file" id="scanGallery" accept="image/*" multiple class="hidden" onchange="onScanFile(this)">
   </div>
 
   <!-- Purpose -->
@@ -783,8 +787,9 @@
       <button class="modal-close" onclick="closeScanModal()">✕</button>
     </div>
     <div class="modal-body" id="scanModalBody"></div>
-    <div class="modal-foot">
-      <button class="btn-save" style="width:100%" onclick="saveScannedNotices()"><span>💾</span> Save Selected</button>
+    <div class="modal-foot" style="display:flex;gap:8px">
+      <button onclick="document.getElementById('scanGallery').click()" style="padding:0 14px;background:white;color:#5c3d1e;border:1.5px solid var(--gold);border-radius:var(--radius);font-weight:800;font-size:13px;cursor:pointer;font-family:inherit">➕ Photos</button>
+      <button class="btn-save" style="flex:1" onclick="saveScannedNotices()"><span>💾</span> Save Selected</button>
     </div>
   </div>
 </div>
@@ -1363,7 +1368,7 @@ async function syncEntry(entry) {
     const payload = {
       date: entry.date, purpose: entry.purpose,
       category: entry.category, propertyType: entry.propertyType,
-      houseNo: entry.houseNo || entry.plotNo || '',
+      houseNo: entry.houseNo || '',
       plotNo: entry.plotNo || '', floor: entry.floor || '',
       sector: entry.sector || '', subSector: entry.subSector || '',
       sqyds: entry.sqyds || '', area: entry.area || '',
@@ -1715,7 +1720,7 @@ function shareWhatsAppFromSheet(r) {
 }
 
 // ============ NEWSPAPER SCAN ============
-let scanState = { notices: [], imageUrl: '', preview: '' };
+let scanState = { notices: [], failed: [] };
 
 function esc(v) {
   return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
@@ -1737,7 +1742,7 @@ function compressImage(file, maxSide = 2000, quality = 0.85) {
       URL.revokeObjectURL(url);
       resolve(c.toDataURL('image/jpeg', quality));
     };
-    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image load fail')); };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Photo khul nahi saki')); };
     img.src = url;
   });
 }
@@ -1756,40 +1761,76 @@ function makeTracing(n) {
   return parts.length ? '-' + parts.join('/') : '-';
 }
 
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// Aik photo scan — fail ho to app khud 2 dafa aur try karti hai
+async function scanOne(file, onStatus) {
+  const dataUrl = await compressImage(file);
+  let lastErr = '';
+  for (let attempt = 1; attempt <= 3; attempt++) {
+    try {
+      if (attempt > 1) { onStatus && onStatus(attempt); await sleep(3000 * (attempt - 1)); }
+      const res = await postJson({ action: 'scan', image: dataUrl.split(',')[1], mimeType: 'image/jpeg' });
+      if (res.status === 'ok') return { dataUrl, imageUrl: res.imageUrl || '', notices: res.notices || [] };
+      lastErr = res.message || 'Scan fail';
+    } catch (e) { lastErr = e.message || 'Network error'; }
+  }
+  throw new Error(lastErr);
+}
+
 async function onScanFile(input) {
-  const file = input.files && input.files[0];
+  const files = Array.from(input.files || []);
   input.value = '';
-  if (!file) return;
+  if (!files.length) return;
   if (!navigator.onLine) { showToast('❌ Scan ke liye internet chahiye', 'error'); return; }
   if (!getGsUrl()) { showToast('⚠️ Sheet connected nahi (GS_URL)', 'error'); return; }
+  await processFiles(files);
+}
 
+async function processFiles(files) {
   const overlay = document.getElementById('loadingOverlay');
   const lt = document.getElementById('loadingText');
   overlay.classList.remove('hidden');
-  try {
-    lt.textContent = 'Photo tayyar ho rahi hai...';
-    const dataUrl = await compressImage(file);
-    lt.textContent = 'Notice parh raha hoon... (10-20 sec)';
-    const res = await postJson({ action: 'scan', image: dataUrl.split(',')[1], mimeType: 'image/jpeg' });
-    if (res.status !== 'ok') throw new Error(res.message || 'Scan fail');
-    if (!res.notices || !res.notices.length) {
-      overlay.classList.add('hidden');
-      showToast('⚠️ Photo mein koi notice nahi mila — saaf photo dobara lein', 'error');
-      return;
+
+  const firstNew = scanState.notices.length;
+  let found = 0;
+  for (let k = 0; k < files.length; k++) {
+    const label = files.length > 1 ? `Photo ${k + 1}/${files.length}` : 'Photo';
+    lt.textContent = `${label} parh raha hoon... (10-20 sec)`;
+    try {
+      const r = await scanOne(files[k], att => { lt.textContent = `${label} — dobara koshish (${att}/3)...`; });
+      if (!r.notices.length) {
+        scanState.failed.push({ file: files[k], reason: 'Is photo mein notice nahi mila' });
+        continue;
+      }
+      r.notices.forEach(n => {
+        scanState.notices.push({ ...n, include: true, matches: null, preview: r.dataUrl, imageUrl: r.imageUrl });
+        found++;
+      });
+    } catch (err) {
+      scanState.failed.push({ file: files[k], reason: err.message });
     }
-    scanState = {
-      imageUrl: res.imageUrl || '',
-      preview: dataUrl,
-      notices: res.notices.map(n => ({ ...n, include: true, matches: null }))
-    };
-    overlay.classList.add('hidden');
-    renderScanModal();
-    document.getElementById('scanModal').classList.remove('hidden');
-    checkSheetMatches();
-  } catch (err) {
-    overlay.classList.add('hidden');
-    showToast('❌ ' + (err.message || 'Scan fail'), 'error');
   }
+
+  overlay.classList.add('hidden');
+  if (!scanState.notices.length && !scanState.failed.length) return;
+  renderScanModal();
+  document.getElementById('scanModal').classList.remove('hidden');
+  if (found) showToast(`✅ ${found} notice mil gaye`, 'success');
+  checkSheetMatches(firstNew);
+}
+
+async function retryFailed() {
+  const files = scanState.failed.map(f => f.file);
+  scanState.failed = [];
+  await processFiles(files);
+}
+
+function matchHtml(m) {
+  if (m === null) return `<div class="notice-match none" style="background:#f5ece0;color:var(--gray-500);border-color:var(--gray-200)">⏳ Sheet mein check ho raha hai...</div>`;
+  if (m > 0) return `<div class="notice-match hit">🔔 Ye property sheet mein pehle se <strong>${m}</strong> dafa hai</div>`;
+  if (m === 0) return `<div class="notice-match none">✓ Sheet mein pehli dafa aa rahi hai</div>`;
+  return '';
 }
 
 function renderScanModal() {
@@ -1800,43 +1841,48 @@ function renderScanModal() {
         oninput="onNoticeEdit(${i}, '${key}', this.value)">
     </div>`;
 
-  body.innerHTML = `<img src="${scanState.preview}" class="scan-preview" alt="Newspaper notice">
-    <div style="font-size:11.5px;color:var(--gray-500);margin-bottom:10px">
-      ⚠️ Plot number aur sector photo se zaroor mila lein — AI se galti ho sakti hai.
-    </div>` +
-    scanState.notices.map((n, i) => {
-      let match = '';
-      if (n.matches === null) match = `<div class="notice-match none" style="background:#f5ece0;color:var(--gray-500);border-color:var(--gray-200)">⏳ Sheet mein check ho raha hai...</div>`;
-      else if (n.matches > 0) match = `<div class="notice-match hit">🔔 Ye property sheet mein pehle se <strong>${n.matches}</strong> dafa hai</div>`;
-      else if (n.matches === 0) match = `<div class="notice-match none">✓ Sheet mein pehli dafa aa rahi hai</div>`;
-      return `<div class="notice-card ${n.include ? '' : 'off'}" id="notice-${i}">
-        <div class="notice-head">
-          <label><input type="checkbox" ${n.include ? 'checked' : ''} onchange="toggleNotice(${i}, this.checked)"> Notice ${i + 1}${n.corner ? ' • Corner' : ''}</label>
-          <span style="font-size:11px;color:var(--gray-500)">${esc(n.propertyKind || 'Plot')}</span>
-        </div>
-        <div class="field-row">${f(i, 'plotNo', '📌 Plot / House No')}${f(i, 'size', '📐 Size (Sqyds)')}</div>
-        <div class="field-row">${f(i, 'sector', '📍 Sector')}${f(i, 'subSector', '🔢 Sub Sector')}</div>
-        ${f(i, 'area', '🏙️ Area / Scheme')}
-        <div style="background:#fdf0d8;border:1.5px solid var(--gold);border-radius:10px;padding:10px 10px 1px;margin-bottom:9px">
-          <div style="font-size:11px;font-weight:800;color:#5c3d1e;margin-bottom:6px">📣 AD AGENT (is se owner tak pohanchna hai)</div>
-          ${f(i, 'agentName', '👤 Agent / Agency Naam')}
-          <div class="field-group">
-            <div class="field-label">📞 Agent Numbers (comma se alag)</div>
-            <input class="field-input" type="text" inputmode="tel" value="${esc((n.agentPhones || []).join(', '))}" placeholder="0334-2053146, 0322-2238479"
-              oninput="onNoticeEdit(${i}, 'agentPhones', this.value.split(',').map(x => x.trim()).filter(Boolean))">
-          </div>
-        </div>
-        ${f(i, 'newOwner', '🆕 Naya Owner (Khareedar)')}
-        ${f(i, 'prevOwner', '↩️ Purana Owner (Farokht Kunindah)')}
-        <div class="field-row">${f(i, 'newspaper', '📰 Akhbar', 'e.g. Jang')}${f(i, 'refNo', '🔖 Ref No')}</div>
+  let html = '';
+  if (scanState.failed.length) {
+    html += `<div class="fail-box">❌ <strong>${scanState.failed.length} photo scan nahi hui</strong><br>
+      ${scanState.failed.map(x => '• ' + esc(x.file.name || 'Photo') + ' — ' + esc(x.reason).slice(0, 90)).join('<br>')}
+      <br><button onclick="retryFailed()">🔄 Dobara Try Karein</button></div>`;
+  }
+  if (scanState.notices.length) {
+    html += `<div style="font-size:11.5px;color:var(--gray-500);margin-bottom:10px">
+      ⚠️ Plot number aur sector photo se zaroor mila lein — AI se galti ho sakti hai. Photo par tap karein to bari ho jayegi.
+    </div>`;
+  }
+
+  html += scanState.notices.map((n, i) => `<div class="notice-card ${n.include ? '' : 'off'}" id="notice-${i}">
+      <div class="notice-head">
+        <label><input type="checkbox" ${n.include ? 'checked' : ''} onchange="toggleNotice(${i}, this.checked)"> Notice ${i + 1}${n.corner ? ' • Corner' : ''}</label>
+        <span style="font-size:11px;color:var(--gray-500)">${esc(n.propertyKind || 'Plot')}</span>
+      </div>
+      <img src="${n.preview}" class="notice-photo" onclick="this.classList.toggle('big')" alt="Notice photo">
+      <div class="field-row">${f(i, 'plotNo', '📌 Plot / House No')}${f(i, 'size', '📐 Size (Sqyds)')}</div>
+      <div class="field-row">${f(i, 'sector', '📍 Sector')}${f(i, 'subSector', '🔢 Sub Sector')}</div>
+      ${f(i, 'area', '🏙️ Area / Scheme')}
+      <div style="background:#fdf0d8;border:1.5px solid var(--gold);border-radius:10px;padding:10px 10px 1px;margin-bottom:9px">
+        <div style="font-size:11px;font-weight:800;color:#5c3d1e;margin-bottom:6px">📣 AD AGENT (is se owner tak pohanchna hai)</div>
+        ${f(i, 'agentName', '👤 Agent / Agency Naam')}
         <div class="field-group">
-          <div class="field-label">📅 Akhbar ki Date</div>
-          <input type="date" class="field-input" value="${esc(n.date || getTodayDate())}" oninput="onNoticeEdit(${i}, 'date', this.value)">
+          <div class="field-label">📞 Agent Numbers (comma se alag)</div>
+          <input class="field-input" type="text" inputmode="tel" value="${esc((n.agentPhones || []).join(', '))}" placeholder="0334-2053146, 0322-2238479"
+            oninput="onNoticeEdit(${i}, 'agentPhones', this.value.split(',').map(x => x.trim()).filter(Boolean))">
         </div>
-        <div class="notice-trace" id="trace-${i}">${esc(makeTracing(n))}</div>
-        <div id="match-${i}">${match}</div>
-      </div>`;
-    }).join('');
+      </div>
+      ${f(i, 'newOwner', '🆕 Naya Owner (Khareedar)')}
+      ${f(i, 'prevOwner', '↩️ Purana Owner (Farokht Kunindah)')}
+      <div class="field-row">${f(i, 'newspaper', '📰 Akhbar', 'e.g. Jang')}${f(i, 'refNo', '🔖 Ref No')}</div>
+      <div class="field-group">
+        <div class="field-label">📅 Akhbar ki Date</div>
+        <input type="date" class="field-input" value="${esc(n.date || getTodayDate())}" oninput="onNoticeEdit(${i}, 'date', this.value)">
+      </div>
+      <div class="notice-trace" id="trace-${i}">${esc(makeTracing(n))}</div>
+      <div id="match-${i}">${matchHtml(n.matches)}</div>
+    </div>`).join('');
+
+  body.innerHTML = html;
 }
 
 function onNoticeEdit(i, key, value) {
@@ -1851,11 +1897,14 @@ function toggleNotice(i, on) {
 }
 
 function closeScanModal() {
+  const pending = scanState.notices.filter(n => n.include).length;
+  if (pending && !confirm(`${pending} notice abhi save nahi hue. Band kar dein?`)) return;
   document.getElementById('scanModal').classList.add('hidden');
+  scanState = { notices: [], failed: [] };
 }
 
-async function checkSheetMatches() {
-  for (let i = 0; i < scanState.notices.length; i++) {
+async function checkSheetMatches(from = 0) {
+  for (let i = from; i < scanState.notices.length; i++) {
     const code = makeTracing(scanState.notices[i]);
     let count = 0;
     if (code !== '-') {
@@ -1865,12 +1914,10 @@ async function checkSheetMatches() {
         count = (data.results || []).filter(r => String(r['Tracing'] || '').toLowerCase() === code.toLowerCase()).length;
       } catch { count = undefined; }
     }
+    if (!scanState.notices[i]) return;
     scanState.notices[i].matches = count;
     const el = document.getElementById('match-' + i);
-    if (!el) continue;
-    if (count > 0) el.innerHTML = `<div class="notice-match hit">🔔 Ye property sheet mein pehle se <strong>${count}</strong> dafa hai</div>`;
-    else if (count === 0) el.innerHTML = `<div class="notice-match none">✓ Sheet mein pehli dafa aa rahi hai</div>`;
-    else el.innerHTML = '';
+    if (el) el.innerHTML = matchHtml(count);
   }
 }
 
@@ -1901,15 +1948,19 @@ function saveScannedNotices() {
       source: 'Newspaper', notes: notesParts.join(' | '),
       rentPeriod: '', advance: '', security: '',
       prevOwner: n.prevOwner || '', newOwner: n.newOwner || '',
-      newsRef: n.refNo || '', imageUrl: scanState.imageUrl || '',
+      newsRef: n.refNo || '', imageUrl: n.imageUrl || '',
       tracing: makeTracing(n), synced: false,
       savedAt: new Date().toISOString()
     };
   });
   saveEntries([...newOnes, ...entries]);
-  closeScanModal();
+  document.getElementById('scanModal').classList.add('hidden');
+  scanState = { notices: [], failed: [] };
   showToast(`✅ ${newOnes.length} notice save ho gaye`, 'success');
-  if (navigator.onLine) newOnes.forEach(e => syncEntry(e).then(() => { updateStats(); updateSyncBanner(); }));
+  (async () => {
+    if (navigator.onLine) for (const e of newOnes) await syncEntry(e);
+    updateStats(); updateSyncBanner();
+  })();
   updateStats(); updateSyncBanner();
 }
 
