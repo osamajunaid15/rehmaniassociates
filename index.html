@@ -829,8 +829,12 @@
   <div class="lock-logo">🏢</div>
   <h1>REHMANI ASSOCIATES</h1>
   <div class="lock-sub">Property Data App</div>
-  <input type="password" id="lockInput" inputmode="numeric" placeholder="Password"
+  <input type="password" id="lockInput" placeholder="Password"
+         autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false"
          onkeydown="if(event.key==='Enter')tryUnlock()">
+  <label style="font-size:11.5px;color:#e8d9c4;margin-top:8px;display:flex;align-items:center;gap:6px;cursor:pointer">
+    <input type="checkbox" onchange="document.getElementById('lockInput').type=this.checked?'text':'password'"> Password dikhayein
+  </label>
   <button onclick="tryUnlock()">🔓 Kholein</button>
   <div id="lockMsg"></div>
   <div class="lock-foot">Ye device yaad rakhi jayegi</div>
@@ -871,6 +875,10 @@
         </select>
       </div>
       <textarea id="voiceText" class="field-input" rows="7" placeholder="Yahan bola hua text aayega — theek bhi kar sakte hain..." style="resize:vertical"></textarea>
+      <div style="display:flex;gap:8px;margin-top:8px">
+        <button onclick="romanize()" style="flex:1;padding:10px;border-radius:var(--radius-sm);border:1.5px solid var(--gold);background:white;color:#5c3d1e;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit">🔤 Roman Urdu Karein</button>
+        <button onclick="document.getElementById('voiceText').value=''" style="padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--gray-200);background:white;color:var(--gray-500);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">Saaf</button>
+      </div>
     </div>
     <div class="modal-foot">
       <button class="btn-save" style="width:100%" onclick="parseVoiceText()"><span>✨</span> Detail Nikalein</button>
@@ -907,9 +915,23 @@ const TYPES = {
 // ============ INIT ============
 // ============ APP LOCK ============
 // 👇 Password yahan badal sakte hain
-const osama1598 = 'rehmani786';
+const APP_PASSWORD = 'rehmani786';
 
-function isUnlocked() { return localStorage.getItem('ra_unlocked') === APP_PASSWORD; }
+function rememberUnlock() {
+  try { localStorage.setItem('ra_unlocked', APP_PASSWORD); } catch (e) {}
+  try { document.cookie = 'ra_unlocked=' + encodeURIComponent(APP_PASSWORD) + ';max-age=31536000;path=/'; } catch (e) {}
+}
+
+function forgetUnlock() {
+  try { localStorage.removeItem('ra_unlocked'); } catch (e) {}
+  try { document.cookie = 'ra_unlocked=;max-age=0;path=/'; } catch (e) {}
+}
+
+function isUnlocked() {
+  try { if (localStorage.getItem('ra_unlocked') === APP_PASSWORD) return true; } catch (e) {}
+  try { if (document.cookie.indexOf('ra_unlocked=' + encodeURIComponent(APP_PASSWORD)) !== -1) return true; } catch (e) {}
+  return false;
+}
 
 function showLock() {
   document.getElementById('lockScreen').classList.remove('hidden');
@@ -918,8 +940,8 @@ function showLock() {
 
 function tryUnlock() {
   const el = document.getElementById('lockInput');
-  if (el.value === APP_PASSWORD) {
-    localStorage.setItem('ra_unlocked', APP_PASSWORD);
+  if (el.value.trim() === APP_PASSWORD) {
+    rememberUnlock();
     document.getElementById('lockScreen').classList.add('hidden');
     document.getElementById('lockMsg').textContent = '';
     el.value = '';
@@ -931,7 +953,7 @@ function tryUnlock() {
 }
 
 function lockThisDevice() {
-  localStorage.removeItem('ra_unlocked');
+  forgetUnlock();
   showLock();
 }
 
@@ -1882,7 +1904,7 @@ function shareWhatsAppFromSheet(r) {
 }
 
 // ============ VOICE / TEXT ENTRY ============
-let recog = null, recogOn = false, recogBase = '';
+let recog = null, recogOn = false, recogBase = '', recogFinal = '';
 
 function openVoiceModal() {
   document.getElementById('voiceText').value = '';
@@ -1907,17 +1929,27 @@ function toggleMic() {
   recog.lang = document.getElementById('micLang').value;
   recog.continuous = true;
   recog.interimResults = true;
-  recogBase = document.getElementById('voiceText').value;
+  recogBase = document.getElementById('voiceText').value.trim();
+  recogFinal = '';
   recog.onresult = ev => {
-    let txt = '';
-    for (let i = 0; i < ev.results.length; i++) txt += ev.results[i][0].transcript + ' ';
-    document.getElementById('voiceText').value = (recogBase ? recogBase + ' ' : '') + txt.trim();
+    let interim = '';
+    for (let i = ev.resultIndex; i < ev.results.length; i++) {
+      const t = ev.results[i][0].transcript;
+      if (ev.results[i].isFinal) recogFinal += t.trim() + ' '; else interim += t;
+    }
+    document.getElementById('voiceText').value =
+      ((recogBase ? recogBase + ' ' : '') + recogFinal + interim).replace(/\s+/g, ' ').trim();
   };
   recog.onerror = ev => {
     stopMic();
     showToast(ev.error === 'not-allowed' ? '⚠️ Mic ki ijazat dein' : '⚠️ Mic error — text likh dein', 'error');
   };
-  recog.onend = () => { if (recogOn) { try { recog.start(); } catch (e) {} } };
+  recog.onend = () => {
+    // jo abhi tak pakka ho chuka hai use mehfooz kar lo, warna dobara shuru hone par repeat hota hai
+    recogBase = ((recogBase ? recogBase + ' ' : '') + recogFinal).replace(/\s+/g, ' ').trim();
+    recogFinal = '';
+    if (recogOn) { try { recog.start(); } catch (e) {} }
+  };
   try { recog.start(); } catch (e) {}
   recogOn = true;
   const b = document.getElementById('micBtn');
@@ -1928,8 +1960,27 @@ function toggleMic() {
 function stopMic() {
   recogOn = false;
   if (recog) { try { recog.stop(); } catch (e) {} }
+  recogBase = ''; recogFinal = '';
   const b = document.getElementById('micBtn');
   if (b) { b.textContent = '🎤 Bolna Shuru'; b.style.background = '#5c3d1e'; }
+}
+
+async function romanize() {
+  stopMic();
+  const ta = document.getElementById('voiceText');
+  const text = ta.value.trim();
+  if (!text) { showToast('⚠️ Pehle bol dein ya likh dein', 'error'); return; }
+  const overlay = document.getElementById('loadingOverlay');
+  overlay.classList.remove('hidden');
+  document.getElementById('loadingText').textContent = 'Roman mein badal raha hoon...';
+  try {
+    const res = await postJson({ action: 'romanize', text });
+    if (res.status !== 'ok') throw new Error(res.message || 'Fail');
+    ta.value = res.text || text;
+  } catch (e) {
+    showToast('❌ ' + e.message, 'error');
+  }
+  overlay.classList.add('hidden');
 }
 
 async function parseVoiceText() {
