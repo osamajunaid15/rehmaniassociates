@@ -1,0 +1,1925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#1a472a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Rehmani Associates</title>
+<link rel="manifest" href="manifest.json">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green-dark: #5c3d1e;
+    --green-mid: #7a5230;
+    --green-light: #a07040;
+    --green-pale: #f5e6d0;
+    --gold: #c9a84c;
+    --gold-light: #faf0dc;
+    --white: #ffffff;
+    --gray-50: #fdf8f2;
+    --gray-100: #f5ece0;
+    --gray-200: #e8d9c4;
+    --gray-300: #d4bc9a;
+    --gray-400: #b89a78;
+    --gray-500: #8c7355;
+    --gray-600: #6b5540;
+    --gray-700: #4a3828;
+    --gray-800: #2d2015;
+    --red: #dc2626;
+    --red-light: #fee2e2;
+    --orange: #c97820;
+    --shadow-sm: 0 1px 3px rgba(92,61,30,0.10);
+    --shadow-md: 0 4px 16px rgba(92,61,30,0.13);
+    --shadow-lg: 0 8px 32px rgba(92,61,30,0.18);
+    --radius: 14px;
+    --radius-sm: 8px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  body {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background: #fdf8f2;
+    color: var(--gray-800);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ===== HEADER ===== */
+  .app-header {
+    background: linear-gradient(135deg, #2d2015 0%, #5c3d1e 60%, #8b6330 100%);
+    padding: 16px 20px 14px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(45,32,21,0.4);
+  }
+  .header-logo {
+    width: 44px; height: 44px;
+    background: rgba(201,168,76,0.25);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    border: 1px solid rgba(255,255,255,0.2);
+    flex-shrink: 0;
+  }
+  .header-text { flex: 1; }
+  .header-title {
+    font-size: 16px; font-weight: 800;
+    color: white; letter-spacing: -0.3px;
+  }
+  .header-sub {
+    font-size: 11px; color: rgba(255,255,255,0.7);
+    margin-top: 1px;
+  }
+  .header-actions { display: flex; gap: 8px; }
+  .header-btn {
+    width: 36px; height: 36px;
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.18);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 16px; color: white;
+    transition: background 0.2s;
+  }
+  .header-btn:active { background: rgba(255,255,255,0.22); }
+
+  /* ===== SYNC BANNER ===== */
+  .sync-banner {
+    background: var(--gold-light);
+    border-bottom: 1px solid var(--gold);
+    padding: 8px 20px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: #7c5c1e;
+    font-weight: 500;
+  }
+  .sync-banner.online { background: #fdf0d8; border-color: var(--gold); color: #5c3d1e; }
+  .sync-dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--gold); flex-shrink: 0;
+  }
+  .sync-banner.online .sync-dot { background: var(--gold); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
+  /* ===== TABS ===== */
+  .tabs {
+    display: flex;
+    background: white;
+    border-bottom: 1px solid var(--gray-200);
+    position: sticky; top: 74px; z-index: 90;
+  }
+  .tab {
+    flex: 1; padding: 12px 8px;
+    text-align: center; font-size: 12px; font-weight: 600;
+    color: var(--gray-400); cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s; user-select: none;
+  }
+  .tab.active { color: #5c3d1e; border-color: #c9a84c; }
+  .tab-icon { font-size: 18px; display: block; margin-bottom: 2px; }
+
+  /* ===== MAIN CONTENT ===== */
+  .main { padding: 16px; max-width: 480px; margin: 0 auto; }
+
+  /* ===== SECTION CARD ===== */
+  .section-card {
+    background: white;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 12px;
+    overflow: hidden;
+    border: 1px solid var(--gray-100);
+  }
+  .section-header {
+    padding: 14px 16px 12px;
+    border-bottom: 1px solid var(--gray-100);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .section-icon {
+    width: 34px; height: 34px;
+    background: #f5e6d0;
+    border-radius: 9px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 17px; flex-shrink: 0;
+  }
+  .section-title { font-size: 13px; font-weight: 700; color: var(--gray-700); }
+  .section-body { padding: 14px 16px; }
+
+  /* ===== PURPOSE TOGGLE ===== */
+  .purpose-toggle {
+    display: flex; gap: 8px;
+  }
+  .purpose-btn {
+    flex: 1; padding: 10px;
+    border: 2px solid var(--gray-200);
+    border-radius: 10px; background: white;
+    font-size: 13px; font-weight: 600;
+    color: var(--gray-500); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 6px;
+    transition: all 0.2s;
+  }
+  .purpose-btn.sell.active { background: #fdf0d8; border-color: var(--gold); color: #5c3d1e; }
+  .purpose-btn.rent.active { background: #eff6ff; border-color: #3b82f6; color: #1d4ed8; }
+
+  /* ===== CATEGORY TABS ===== */
+  .cat-tabs { display: flex; gap: 6px; margin-bottom: 12px; }
+  .cat-tab {
+    flex: 1; padding: 8px 4px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 9px; background: white;
+    font-size: 11px; font-weight: 600;
+    color: var(--gray-500); cursor: pointer;
+    text-align: center; transition: all 0.2s;
+  }
+  .cat-tab.active { background: #fdf0d8; border-color: var(--gold); color: #5c3d1e; }
+
+  /* ===== TYPE CHIPS ===== */
+  .type-chips { display: flex; flex-wrap: wrap; gap: 7px; }
+  .type-chip {
+    padding: 7px 13px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 20px; background: white;
+    font-size: 11.5px; font-weight: 500;
+    color: var(--gray-600); cursor: pointer;
+    transition: all 0.18s;
+  }
+  .type-chip.active {
+    background: #5c3d1e; border-color: #c9a84c;
+    color: #fdf0d8; font-weight: 600;
+  }
+
+  /* ===== FORM FIELDS ===== */
+  .field-group { margin-bottom: 13px; }
+  .field-label {
+    font-size: 11.5px; font-weight: 600;
+    color: var(--gray-500); margin-bottom: 5px;
+    display: flex; align-items: center; gap: 5px;
+    text-transform: uppercase; letter-spacing: 0.4px;
+  }
+  .field-label .req { color: var(--red); }
+  .field-input, .field-select, .field-textarea {
+    width: 100%; padding: 10px 12px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-size: 14px; font-family: 'Plus Jakarta Sans', sans-serif;
+    color: var(--gray-800); background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none; -webkit-appearance: none;
+  }
+  .field-input:focus, .field-select:focus, .field-textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.18);
+  }
+  .field-textarea { resize: none; height: 72px; }
+  .field-select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2394a3b8' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer; }
+
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  /* Price + negotiable row */
+  .price-row { display: flex; gap: 8px; align-items: flex-end; }
+  .price-row .field-group { flex: 1; margin-bottom: 0; }
+  .price-badge-group { display: flex; gap: 6px; padding-bottom: 2px; }
+  .price-badge {
+    padding: 9px 11px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-size: 12px; font-weight: 600;
+    color: var(--gray-500); cursor: pointer;
+    white-space: nowrap; transition: all 0.18s;
+  }
+  .price-badge.active.fixed { background: #f5e6d0; border-color: var(--gold); color: #5c3d1e; }
+  .price-badge.active.negotiable { background: #fff7ed; border-color: var(--orange); color: var(--orange); }
+
+  /* ===== POC / MULTIPLE NUMBERS ===== */
+  .poc-list { display: flex; flex-direction: column; gap: 7px; }
+  .poc-item { display: flex; gap: 7px; align-items: center; }
+  .poc-item .field-input { flex: 1; margin: 0; }
+  .poc-remove {
+    width: 34px; height: 34px; border-radius: 8px;
+    background: var(--red-light); border: none;
+    color: var(--red); font-size: 17px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; font-weight: 700;
+  }
+  .add-poc-btn {
+    margin-top: 8px; padding: 8px 14px;
+    background: #f5e6d0; border: 1.5px dashed var(--gold);
+    border-radius: var(--radius-sm); color: #5c3d1e;
+    font-size: 12px; font-weight: 600; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; width: 100%;
+    justify-content: center; transition: background 0.18s;
+  }
+  .add-poc-btn:active { background: #b7e4c7; }
+
+  /* ===== RENT FIELDS ===== */
+  .rent-fields {
+    background: #eff6ff;
+    border: 1.5px solid #bfdbfe;
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    margin-top: 8px;
+  }
+  .rent-label {
+    font-size: 11px; font-weight: 700; color: #1d4ed8;
+    text-transform: uppercase; letter-spacing: 0.5px;
+    margin-bottom: 10px;
+  }
+
+  /* ===== TRACING CODE ===== */
+  .tracing-box {
+    background: var(--gray-100);
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    padding: 10px 13px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .tracing-code {
+    font-family: 'Courier New', monospace;
+    font-size: 14px; font-weight: 700;
+    color: var(--green-dark); letter-spacing: 0.5px;
+  }
+  .tracing-badge {
+    font-size: 10px; font-weight: 700;
+    padding: 3px 8px; border-radius: 10px;
+    background: #f5e6d0; color: #5c3d1e;
+  }
+  .tracing-badge.duplicate {
+    background: #fee2e2; color: var(--red);
+    animation: shake 0.4s ease;
+  }
+  @keyframes shake {
+    0%,100%{transform:translateX(0)} 25%{transform:translateX(-4px)} 75%{transform:translateX(4px)}
+  }
+
+  /* ===== SUBMIT BUTTONS ===== */
+  .action-btns { display: flex; gap: 10px; margin-top: 4px; }
+  .btn-save {
+    flex: 1; padding: 14px;
+    background: linear-gradient(135deg, #2d2015, #7a5230);
+    color: white; border: none; border-radius: var(--radius);
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    box-shadow: 0 4px 14px rgba(92,61,30,0.35);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-save:active { transform: scale(0.97); box-shadow: none; }
+  .btn-whatsapp {
+    padding: 14px 18px;
+    background: #25d366; border: none;
+    border-radius: var(--radius); color: white;
+    font-size: 20px; cursor: pointer;
+    box-shadow: 0 4px 14px rgba(37,211,102,0.3);
+    transition: transform 0.15s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .btn-whatsapp:active { transform: scale(0.95); }
+
+  /* ===== RECORDS LIST ===== */
+  .records-header {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px;
+  }
+  .records-title { font-size: 15px; font-weight: 800; color: var(--gray-700); }
+  .records-count {
+    background: #f5e6d0;
+    color: #5c3d1e;
+    font-size: 11px; font-weight: 700;
+    padding: 3px 9px; border-radius: 10px;
+  }
+  .search-box {
+    position: relative; margin-bottom: 12px;
+  }
+  .search-box input {
+    width: 100%; padding: 10px 12px 10px 36px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: var(--radius-sm);
+    font-size: 13px; font-family: 'Plus Jakarta Sans', sans-serif;
+    background: white; outline: none;
+  }
+  .search-box input:focus { border-color: var(--gold); }
+  .search-icon {
+    position: absolute; left: 11px; top: 50%;
+    transform: translateY(-50%); font-size: 15px;
+    color: var(--gray-400);
+  }
+
+  .record-card {
+    background: white;
+    border: 1.5px solid var(--gray-100);
+    border-radius: var(--radius);
+    padding: 13px 14px;
+    margin-bottom: 9px;
+    box-shadow: var(--shadow-sm);
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .record-card.duplicate-flag { border-color: #fca5a5; }
+  .record-card.duplicate-flag::before {
+    content: '⚠️ Duplicate';
+    position: absolute; top: 0; right: 0;
+    background: var(--red); color: white;
+    font-size: 9px; font-weight: 700;
+    padding: 3px 8px; border-radius: 0 0 0 8px;
+  }
+  .record-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+  .record-type-badge {
+    font-size: 10px; font-weight: 700;
+    padding: 3px 9px; border-radius: 8px;
+    background: #f5e6d0; color: #5c3d1e;
+    white-space: nowrap;
+  }
+  .record-type-badge.rent { background: #dbeafe; color: #1d4ed8; }
+  .record-area { font-size: 15px; font-weight: 700; color: var(--gray-800); flex: 1; }
+  .record-tracing {
+    font-family: monospace; font-size: 11px;
+    color: var(--gray-400); margin-top: 3px;
+  }
+  .record-details {
+    display: flex; flex-wrap: wrap; gap: 6px;
+    margin-top: 8px;
+  }
+  .record-detail {
+    font-size: 11.5px; color: var(--gray-500);
+    display: flex; align-items: center; gap: 4px;
+  }
+  .record-detail strong { color: var(--gray-700); }
+  .record-price {
+    font-size: 14px; font-weight: 800;
+    color: #5c3d1e; margin-top: 6px;
+  }
+  .record-actions { display: flex; gap: 7px; margin-top: 10px; }
+  .rec-btn {
+    padding: 7px 12px;
+    border-radius: 8px; border: none;
+    font-size: 11.5px; font-weight: 600;
+    cursor: pointer; display: flex; align-items: center; gap: 5px;
+    transition: opacity 0.15s;
+  }
+  .rec-btn:active { opacity: 0.7; }
+  .rec-btn.wa { background: #dcfce7; color: #15803d; }
+  .rec-btn.del { background: var(--red-light); color: var(--red); margin-left: auto; }
+  .rec-btn.sync { background: #f5e6d0; color: #5c3d1e; }
+
+  .record-sync-status {
+    position: absolute; bottom: 10px; right: 12px;
+    font-size: 10px; font-weight: 600;
+    display: flex; align-items: center; gap: 3px;
+  }
+  .synced { color: var(--green-light); }
+  .not-synced { color: var(--gold); }
+
+  /* ===== EMPTY STATE ===== */
+  .empty-state {
+    text-align: center; padding: 48px 20px;
+    color: var(--gray-400);
+  }
+  .empty-state .empty-icon { font-size: 48px; margin-bottom: 12px; }
+  .empty-state p { font-size: 14px; }
+
+  /* ===== TOAST ===== */
+  .toast {
+    position: fixed; bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--gray-800); color: white;
+    padding: 11px 20px; border-radius: 24px;
+    font-size: 13px; font-weight: 500;
+    z-index: 999; white-space: nowrap;
+    transition: transform 0.3s ease;
+    display: flex; align-items: center; gap: 8px;
+    box-shadow: var(--shadow-lg);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+  .toast.success { background: #5c3d1e; }
+  .toast.error { background: var(--red); }
+
+  /* ===== SETTINGS ===== */
+  .settings-section { padding: 4px 0; }
+  .settings-item {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 13px 0;
+    border-bottom: 1px solid var(--gray-100);
+  }
+  .settings-item:last-child { border-bottom: none; }
+  .settings-label { font-size: 13px; font-weight: 600; color: var(--gray-700); }
+  .settings-sub { font-size: 11px; color: var(--gray-400); margin-top: 2px; }
+  .settings-value { font-size: 12px; color: var(--gray-500); }
+  .gs-setup-btn {
+    width: 100%; padding: 13px;
+    background: linear-gradient(135deg, #5c3d1e, #c9a84c);
+    color: white; border: none; border-radius: var(--radius);
+    font-size: 14px; font-weight: 700; cursor: pointer;
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin-top: 4px;
+  }
+  .gs-input-row { display: flex; gap: 8px; align-items: flex-end; }
+  .gs-input-row .field-group { flex: 1; margin-bottom: 0; }
+  .gs-save-btn {
+    padding: 10px 16px;
+    background: #5c3d1e; color: #fdf0d8;
+    border: none; border-radius: var(--radius-sm);
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    white-space: nowrap;
+  }
+
+  /* ===== SEARCH MODE BTNS ===== */
+  .search-mode-btn {
+    flex: 1; padding: 10px 8px;
+    border: 1.5px solid var(--gray-200);
+    border-radius: 10px; background: white;
+    font-size: 12px; font-weight: 600;
+    color: var(--gray-500); cursor: pointer;
+    transition: all 0.2s;
+  }
+  .search-mode-btn.active {
+    background: #5c3d1e; border-color: #c9a84c;
+    color: #fdf0d8;
+  }
+
+  /* ===== SHEET RESULT CARD ===== */
+  .sheet-result-card {
+    background: white;
+    border: 1.5px solid var(--gray-100);
+    border-radius: var(--radius);
+    padding: 13px 14px;
+    margin-bottom: 9px;
+    box-shadow: var(--shadow-sm);
+  }
+  .sheet-result-card .rec-area { font-size:15px;font-weight:700;color:var(--gray-800); }
+  .sheet-result-card .rec-badge {
+    font-size:10px;font-weight:700;padding:3px 9px;
+    border-radius:8px;background:#f5e6d0;color:#5c3d1e;
+  }
+  .sheet-result-card .rec-tracing { font-family:monospace;font-size:11px;color:var(--gray-400);margin-top:2px; }
+  .sheet-result-card .rec-info { font-size:12px;color:var(--gray-500);margin-top:6px;line-height:1.7; }
+  .sheet-result-card .rec-price { font-size:14px;font-weight:800;color:#5c3d1e;margin-top:4px; }
+
+  .hidden { display: none !important; }
+
+  /* Loading overlay */
+  .loading-overlay {
+    position: fixed; inset: 0;
+    background: rgba(255,255,255,0.85);
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    z-index: 200; gap: 14px;
+  }
+  .spinner {
+    width: 40px; height: 40px;
+    border: 3px solid var(--gray-200);
+    border-top-color: #c9a84c;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loading-text { font-size: 14px; font-weight: 600; color: var(--gray-600); }
+
+  /* ===== NEWSPAPER SCAN ===== */
+  .scan-card {
+    background: linear-gradient(135deg, #2d2015 0%, #5c3d1e 100%);
+    border-radius: var(--radius); padding: 16px; margin-bottom: 14px;
+    color: #fdf0d8; box-shadow: var(--shadow-md);
+  }
+  .scan-title { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+  .scan-sub { font-size: 11.5px; color: #e8d9c4; margin-bottom: 12px; line-height: 1.5; }
+  .scan-btns { display: flex; gap: 8px; }
+  .scan-btn {
+    flex: 1; padding: 12px 8px; border-radius: var(--radius-sm); border: 1.5px solid var(--gold);
+    background: var(--gold); color: #2d2015; font-size: 13px; font-weight: 800; cursor: pointer;
+    font-family: inherit;
+  }
+  .scan-btn.ghost { background: transparent; color: #fdf0d8; }
+  .modal-wrap {
+    position: fixed; inset: 0; background: rgba(45,32,21,0.6); z-index: 300;
+    display: flex; align-items: flex-end; justify-content: center;
+  }
+  .modal-sheet {
+    background: #fdf8f2; width: 100%; max-width: 560px; max-height: 92vh;
+    border-radius: 18px 18px 0 0; display: flex; flex-direction: column; overflow: hidden;
+  }
+  .modal-head {
+    padding: 14px 16px; background: #5c3d1e; color: #fdf0d8;
+    display: flex; align-items: center; justify-content: space-between; flex-shrink: 0;
+  }
+  .modal-head-title { font-weight: 800; font-size: 15px; }
+  .modal-close { background: none; border: none; color: #fdf0d8; font-size: 22px; cursor: pointer; }
+  .modal-body { padding: 14px; overflow-y: auto; flex: 1; }
+  .modal-foot { padding: 12px 14px; border-top: 1px solid var(--gray-200); background: white; flex-shrink: 0; }
+  .scan-preview { width: 100%; max-height: 220px; object-fit: contain; border-radius: 10px; background: #fff; border: 1px solid var(--gray-200); margin-bottom: 12px; }
+  .notice-card { background: white; border: 1.5px solid var(--gray-200); border-radius: 12px; padding: 12px; margin-bottom: 12px; }
+  .notice-card.off { opacity: 0.45; }
+  .notice-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; gap: 8px; }
+  .notice-head label { font-weight: 800; font-size: 13.5px; color: #5c3d1e; display: flex; align-items: center; gap: 8px; }
+  .notice-head input[type=checkbox] { width: 18px; height: 18px; accent-color: #5c3d1e; }
+  .notice-card .field-group { margin-bottom: 9px; }
+  .notice-card .field-input { padding: 9px 10px; font-size: 13.5px; }
+  .notice-trace { font-family: monospace; font-size: 12px; background: #f5e6d0; border: 1.5px dashed var(--gold); border-radius: 8px; padding: 7px 10px; color: #5c3d1e; }
+  .notice-match { font-size: 11.5px; margin-top: 6px; padding: 7px 10px; border-radius: 8px; }
+  .notice-match.hit { background: #fef3c7; color: #92400e; border: 1px solid #fcd34d; }
+  .notice-match.none { background: #ecfdf5; color: #166534; border: 1px solid #86efac; }
+  .owner-line { font-size: 12px; color: var(--gray-700); margin-top: 3px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="app-header">
+  <div class="header-logo" style="background:#000;overflow:hidden;padding:2px"><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAABQCAIAAAABc2X6AAABCGlDQ1BJQ0MgUHJvZmlsZQAAeJxjYGA8wQAELAYMDLl5JUVB7k4KEZFRCuwPGBiBEAwSk4sLGHADoKpv1yBqL+viUYcLcKakFicD6Q9ArFIEtBxopAiQLZIOYWuA2EkQtg2IXV5SUAJkB4DYRSFBzkB2CpCtkY7ETkJiJxcUgdT3ANk2uTmlyQh3M/Ck5oUGA2kOIJZhKGYIYnBncAL5H6IkfxEDg8VXBgbmCQixpJkMDNtbGRgkbiHEVBYwMPC3MDBsO48QQ4RJQWJRIliIBYiZ0tIYGD4tZ2DgjWRgEL7AwMAVDQsIHG5TALvNnSEfCNMZchhSgSKeDHkMyQx6QJYRgwGDIYMZAKbWPz9HbOBQAAAHA0lEQVR42u2Ye4xdRR3Hv7+ZOffs3bvvbql92BbaWGwwiCA2pmhJRANI2iilSiQYKQ+xIYFQoyQgaEMNIbG8JERrtVZJ1YppSalpWkkqmJQ0S6VaCzYLJbulj7uP271777lnZr7+ce5227qlhcTYx3xyc3PPuXPmzG9+v/n9vjNAIBAIBAKBQCAQCAQCgUAgEAgEAoFAIBAYEzkrBy0QgAB5HrhIyXGWnxfWdjaqaROMMXKC/ecaWgHAkusLB37/kfLWyZue6exsVQCUOue8qhUiDQB3fbGR2ybzb5O5bRK7prz87LhCXj6QzfoMzKJKIAqSLVEBCRKe+MbV+ZU/7PBCpoDAVnjR7OiyGdG6rdXUQgl4ev2P9Ur9f0vf1p14Z/Z009wgc6ZFy+9sy3XWZwQEI9SG2fOefa3X3vbQYKXqReD82VaWBJgxMY4bpFq14vnAouY5l0dtESZOza9YVb59flToVLQQABqOuOHewz9/oP21f7sFSw9nsS2A50krlvnvWxPbc9dcGbW2ircAqZSICCij00NChPUfIAX0FKYO8FBKlEArihbnCA9kC4yQ7CkBhCRAjFxDQFBsyiunRjfeUGhoUknZ+iqaLzI/fq40IcevzSxs3FlZvCCCSFaAxUMpWrB7v50/P/+rUtvDK4e6e+37T6g5IT14olGpZ+/paLyQGAbMiJXMBgpkMSPMpqCuAAAowAg0kAIWGCQU0STQBAW+Psh6SxB+RED4kc4JKECAxKNmTbOwAS71Sgk1DSTOCVX9dfXp9yKQKCe1A7z6kvhLP83v3JuuemnoxVeSoQpPbTAJEbzTl2zYUl50c75a8sbIyEA5UuYJZkon85HQQzSGK37FmnLvYd67qNDVnd7/ZOnjk6P1j3WYZi8U76hEPL1SAtLECkaQeGvhfH1kSosyAk/ls2mlI4xRynrfQBhqnVVdHo1+UaBHA+SN3cnnvlOcNUV//rL4qSVt999q5y4uVhOKnBjbxxsMCGDB25/ub2qV6+fn0wFvtNRdSSAGUoEHJYssAeABlZPed+wPVh8BMO9T+T29rqfPaoVcAbpJcZCmWSEhRHnnVSR//1et56CbMytuu0BMrOqhVQE96/pJCwDxBOEInyKLffECCIQgSEgOJoLzLKccTtnVbbu67Xs99tmH2iODajJWkTvhmoQAR2q8aVnfxnXDUauyAiqBAgwGe8Q7MCdewQHWwyvAwCvEsXS2iNFY9vzQrzcnSmF/v3vkmSNv76I04Serj3zmtsNr15epxEXyp5cr1y3t+93mijTK6nXlZStKP/vl8IGDTgzIkSCvu5HOe4L1W4b14K9/i44EGraGyEg+JwDePeSGB05aocYo2CSUYDjljcv7XlhXjhqVJb1GzfOpXyR9/RBS50QXxHQo5cQlUA2iYrEe1uEfeyt73616D+v4o7WlNX+sOYuV68vbd9c2vFrTzVq36MmTIqUgYOWwv/OxwQdXle54on/NhjK1ODea5CAAhQQVIEKCdrSwEICSONZU8GRqWalx+jj94K0t7VOUP/0sDcATSlCxuHn5wPqcuebLMSL8s6u6fHNx4VfHb9qRvNWNuZcX3uoZ7tpeW7G0ZdOWyveeKJXKzApDJhVEQQFTJ4huFGNEK2zdVVt4T7GhoLbvSr3HzHFRvkmaCpJaEij2U3ISObgaM3c6ijhAEEHgxHrQAY6jFdUBEGdx6cW5R7/dcsWsaPp482aP+/rDA5UqZaztlDmZ6zObq44LHy0+Pdh61bx48450OOHuQ/qlrvS3Lw7jN0Ogi3Jq7hvNSx/vP9Tns7Xu/WikeOL1t91H/6oODcJ57C/aP/xltGy88qYtNppSmVnLYr/v3WMjxfHTIyiA1A5okWrKcgKfeu8ITWjA193vEzdQShOXHz8juvsrhcfXlhdvHNjX6z688Dia5ZpjKaegZ77R1BJH0nsoDRLeC0ClRk0d6y31bJSJXnocG3LZ37GRgsHUdv3ZT8Y6grXsiHHLgkLvfjexQ1386YZr7zj0/Pfb2iYapoRAPBjjuvuKT36rNe5QV911cN9Bf1R7nExynVppZX57n612XTfwAz9+yp4BNBvMuzSeMyt3xceiKZPUtAujQpOio3jAIPHcsi2ZOdnc9Ej/zr1pZGDdKTo8XWl51NUi/6tzhmzi5JitDznqKA2suq/1lm822z6fNfCgyatiyX3h7uLre1KtTi2kz8TdEgHP+icTQkpBK3jBC68mn2hUl8xpEEC0qEY5WLTXLil27bFGn5a1Z6LBY5ZJTygAgj93JbMv0O0damiI+/bbhd/t27HHag3nzsVDvKOrqb1JQVBNfKVWF2nn7iHr8Q76EIc7Z98R2DHb1PPjmDYQCAQCgUAgEAgEAoFAIBAIBAKBQOCM4T85WWqLYs/F0gAAAABJRU5ErkJggg==" style="width:100%;height:100%;object-fit:contain"></div>
+  <div class="header-text">
+    <div class="header-title">Rehmani Associates</div>
+    <div class="header-sub">Real Estate Data Entry</div>
+  </div>
+  <div class="header-actions">
+    <div class="header-btn" onclick="syncNow()" title="Sync">☁️</div>
+  </div>
+</div>
+
+<!-- Sync Banner -->
+<div class="sync-banner" id="syncBanner">
+  <div class="sync-dot"></div>
+  <span id="syncText">Checking connection...</span>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('entry')" id="tab-entry">
+    <span class="tab-icon">✏️</span>Entry
+  </div>
+  <div class="tab" onclick="switchTab('records')" id="tab-records">
+    <span class="tab-icon">📋</span>Records
+  </div>
+  <div class="tab" onclick="switchTab('settings')" id="tab-settings">
+    <span class="tab-icon">⚙️</span>Settings
+  </div>
+</div>
+
+<!-- ============ ENTRY TAB ============ -->
+<div id="page-entry" class="main">
+
+  <!-- Newspaper Scan -->
+  <div class="scan-card">
+    <div class="scan-title">📰 Newspaper Notice Scan</div>
+    <div class="scan-sub">Ittila-e-Aam wale box ki photo lein — plot, sector, size aur owners ke naam khud nikal aayenge.</div>
+    <div class="scan-btns">
+      <button class="scan-btn" onclick="document.getElementById('scanCamera').click()">📷 Photo Lein</button>
+      <button class="scan-btn ghost" onclick="document.getElementById('scanGallery').click()">🖼️ Gallery</button>
+    </div>
+    <input type="file" id="scanCamera" accept="image/*" capture="environment" class="hidden" onchange="onScanFile(this)">
+    <input type="file" id="scanGallery" accept="image/*" class="hidden" onchange="onScanFile(this)">
+  </div>
+
+  <!-- Purpose -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🎯</div>
+      <div class="section-title">Purpose</div>
+    </div>
+    <div class="section-body">
+      <div class="purpose-toggle">
+        <button class="purpose-btn sell active" onclick="setPurpose('sell')">🏷️ Sell</button>
+        <button class="purpose-btn rent" onclick="setPurpose('rent')">🔑 Rent</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Category + Type -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🏗️</div>
+      <div class="section-title">Property Type</div>
+    </div>
+    <div class="section-body">
+      <div class="cat-tabs">
+        <div class="cat-tab active" onclick="setCategory('home')" id="cat-home">🏠 Home</div>
+        <div class="cat-tab" onclick="setCategory('plots')" id="cat-plots">🌿 Plots</div>
+        <div class="cat-tab" onclick="setCategory('commercial')" id="cat-commercial">🏢 Commercial</div>
+      </div>
+      <div class="type-chips" id="typeChips"></div>
+    </div>
+  </div>
+
+  <!-- Main Form -->
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">📝</div>
+      <div class="section-title">Property Details</div>
+    </div>
+    <div class="section-body" id="formFields"></div>
+  </div>
+
+  <!-- Submit -->
+  <div class="action-btns">
+    <button class="btn-save" onclick="saveEntry()">
+      <span>💾</span> Save Entry
+    </button>
+    <button class="btn-whatsapp" onclick="shareWhatsApp(null)" title="Share on WhatsApp">
+      💬
+    </button>
+  </div>
+  <div style="height:24px"></div>
+</div>
+
+<!-- ============ RECORDS TAB ============ -->
+<div id="page-records" class="main hidden">
+
+  <!-- Search Mode Toggle -->
+  <div style="display:flex;gap:8px;margin-bottom:12px">
+    <button class="search-mode-btn active" id="btn-local" onclick="setSearchMode('local')">
+      📱 Is Device Ki Entries
+    </button>
+    <button class="search-mode-btn" id="btn-sheet" onclick="setSearchMode('sheet')">
+      ☁️ Sheet Mein Dhundho
+    </button>
+  </div>
+
+  <!-- LOCAL SEARCH -->
+  <div id="local-search-section">
+    <div class="records-header">
+      <div class="records-title">All Entries</div>
+      <div class="records-count" id="recordCount">0</div>
+    </div>
+    <div class="search-box">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search by area, tracing, type..." id="searchInput" oninput="renderRecords()">
+    </div>
+    <div id="recordsList"></div>
+  </div>
+
+  <!-- SHEET SEARCH -->
+  <div id="sheet-search-section" class="hidden">
+    <div class="section-card">
+      <div class="section-body">
+        <div class="field-label" style="margin-bottom:8px">🔍 Google Sheet Mein Search Karein</div>
+        <div style="display:flex;gap:8px">
+          <input type="text" class="field-input" id="sheetSearchInput" placeholder="Plot no, area, tracing..." style="flex:1">
+          <button onclick="searchInSheet()" style="padding:10px 16px;background:#5c3d1e;color:#fdf0d8;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">
+            Search
+          </button>
+        </div>
+        <div style="font-size:11px;color:var(--gray-400);margin-top:6px">
+          Sab devices ki entries yahan se dhundh sakte hain
+        </div>
+      </div>
+    </div>
+    <div id="sheetSearchResults"></div>
+  </div>
+
+</div>
+
+<!-- ============ SETTINGS TAB ============ -->
+<div id="page-settings" class="main hidden">
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">📊</div>
+      <div class="section-title">Google Sheet</div>
+    </div>
+    <div class="section-body">
+      <div id="sheetStatusBox" style="border-radius:8px;padding:11px;font-size:12.5px;line-height:1.6"></div>
+      <a href="https://docs.google.com/spreadsheets/d/1PqM3Zd4uqMbkYRCF8yj_hS_1Eyx3cPIpkQDcSAsdfwg" target="_blank"
+         style="display:block;text-align:center;margin-top:10px;padding:11px;background:#5c3d1e;color:#fdf0d8;border-radius:var(--radius-sm);font-size:13px;font-weight:700;text-decoration:none">
+        📄 Google Sheet Kholein
+      </a>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">📊</div>
+      <div class="section-title">Sync Status</div>
+    </div>
+    <div class="section-body settings-section">
+      <div class="settings-item">
+        <div>
+          <div class="settings-label">Total Entries</div>
+        </div>
+        <div class="settings-value" id="stat-total">0</div>
+      </div>
+      <div class="settings-item">
+        <div>
+          <div class="settings-label">Synced</div>
+        </div>
+        <div class="settings-value" id="stat-synced">0</div>
+      </div>
+      <div class="settings-item">
+        <div>
+          <div class="settings-label">Pending Sync</div>
+        </div>
+        <div class="settings-value" id="stat-pending">0</div>
+      </div>
+      <div class="settings-item">
+        <div>
+          <div class="settings-label">Duplicate Flags</div>
+        </div>
+        <div class="settings-value" id="stat-dupes">0</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🗑️</div>
+      <div class="section-title">Data Management</div>
+    </div>
+    <div class="section-body">
+      <button onclick="clearAllData()" style="width:100%;padding:12px;background:var(--red-light);color:var(--red);border:1.5px solid #fca5a5;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer">
+        🗑️ Sab Data Clear Karein
+      </button>
+    </div>
+  </div>
+
+  <div style="height:24px"></div>
+</div>
+
+<!-- Newspaper Review Modal -->
+<div class="modal-wrap hidden" id="scanModal">
+  <div class="modal-sheet">
+    <div class="modal-head">
+      <div class="modal-head-title">📰 Check Karein, Phir Save</div>
+      <button class="modal-close" onclick="closeScanModal()">✕</button>
+    </div>
+    <div class="modal-body" id="scanModalBody"></div>
+    <div class="modal-foot">
+      <button class="btn-save" style="width:100%" onclick="saveScannedNotices()"><span>💾</span> Save Selected</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- Loading -->
+<div class="loading-overlay hidden" id="loadingOverlay">
+  <div class="spinner"></div>
+  <div class="loading-text" id="loadingText">Syncing...</div>
+</div>
+
+<script>
+// ============ STATE ============
+let state = {
+  purpose: 'sell',
+  category: 'home',
+  propertyType: 'House',
+  pocNumbers: [''],
+  currentTab: 'entry',
+  sqUnit: 'Sqyds'
+};
+
+const TYPES = {
+  home: ['House','Flat','Upper Portion','Lower Portion','Penthouse','Farm House'],
+  plots: ['Residential Plot','Commercial Plot','Agricultural Land','Industrial Land','Plot File','Plot Form'],
+  commercial: ['Office','Shop','Warehouse','Factory','Building','Other']
+};
+
+// ============ INIT ============
+document.addEventListener('DOMContentLoaded', () => {
+  renderTypeChips();
+  renderFormFields();
+  updateSyncBanner();
+  loadGsUrl();
+  setInterval(updateSyncBanner, 10000);
+  setInterval(autoSync, 30000);
+  window.addEventListener('online', () => { updateSyncBanner(); autoSync(); });
+  window.addEventListener('offline', updateSyncBanner);
+});
+
+// ============ TABS ============
+function switchTab(tab) {
+  ['entry','records','settings'].forEach(t => {
+    document.getElementById('page-'+t).classList.toggle('hidden', t !== tab);
+    document.getElementById('tab-'+t).classList.toggle('active', t === tab);
+  });
+  state.currentTab = tab;
+  if (tab === 'records') renderRecords();
+  if (tab === 'settings') updateStats();
+}
+
+// ============ PURPOSE ============
+function setPurpose(p) {
+  state.purpose = p;
+  document.querySelectorAll('.purpose-btn').forEach(b => b.classList.remove('active'));
+  document.querySelector('.purpose-btn.'+p).classList.add('active');
+  renderFormFields();
+}
+
+// ============ CATEGORY ============
+function setCategory(cat) {
+  state.category = cat;
+  document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('cat-'+cat).classList.add('active');
+  state.propertyType = TYPES[cat][0];
+  renderTypeChips();
+  renderFormFields();
+}
+
+function renderTypeChips() {
+  const container = document.getElementById('typeChips');
+  container.innerHTML = TYPES[state.category].map(t =>
+    `<div class="type-chip ${t === state.propertyType ? 'active' : ''}" onclick="setType('${t}')">${t}</div>`
+  ).join('');
+}
+
+function setType(t) {
+  state.propertyType = t;
+  renderTypeChips();
+  renderFormFields();
+}
+
+// ============ FORM FIELDS ============
+function renderFormFields() {
+  const container = document.getElementById('formFields');
+  const isRent = state.purpose === 'rent';
+  const cat = state.category;
+  const type = state.propertyType;
+
+  let html = '';
+
+  // Date
+  html += `<div class="field-group">
+    <div class="field-label">📅 Date <span class="req">*</span></div>
+    <input type="date" class="field-input" id="f_date" value="${getTodayDate()}">
+  </div>`;
+
+  // Category-specific fields
+  if (cat === 'home') {
+    html += `<div class="field-row">
+      <div class="field-group">
+        <div class="field-label">🏷️ House / Flat No.</div>
+        <input type="text" class="field-input" id="f_houseNo" placeholder="e.g. 104, A-5">
+      </div>
+      <div class="field-group">
+        <div class="field-label">🏢 Floor</div>
+        <input type="text" class="field-input" id="f_floor" placeholder="e.g. 1st, Ground">
+      </div>
+    </div>`;
+  } else if (cat === 'plots') {
+    html += `<div class="field-group">
+      <div class="field-label">📌 Plot Number</div>
+      <input type="text" class="field-input" id="f_plotNo" placeholder="e.g. L-64">
+    </div>`;
+  } else if (cat === 'commercial') {
+    html += `<div class="field-row">
+      <div class="field-group">
+        <div class="field-label">🏪 ${type === 'Office' ? 'Office' : 'Shop'} No.</div>
+        <input type="text" class="field-input" id="f_houseNo" placeholder="e.g. Shop-5">
+      </div>
+      <div class="field-group">
+        <div class="field-label">🏢 Floor</div>
+        <input type="text" class="field-input" id="f_floor" placeholder="e.g. Ground, 2nd">
+      </div>
+    </div>`;
+  }
+
+  // Sector + SubSector
+  html += `<div class="field-row">
+    <div class="field-group">
+      <div class="field-label">📍 Sector / Block</div>
+      <input type="text" class="field-input" id="f_sector" placeholder="e.g. A, Q, X-4" oninput="updateTracing()">
+    </div>
+    <div class="field-group">
+      <div class="field-label">🔢 Sub Sector</div>
+      <input type="text" class="field-input" id="f_subSector" placeholder="e.g. 2, 1st Floor" oninput="updateTracing()">
+    </div>
+  </div>`;
+
+  // Sqyds + Unit Toggle
+  html += `<div class="field-group">
+    <div class="field-label">📐 Size</div>
+    <div style="display:flex;gap:8px;align-items:center">
+      <input type="number" class="field-input" id="f_sqyds" placeholder="e.g. 80, 2200" oninput="updateTracing()" style="flex:1">
+      <div style="display:flex;gap:0;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);overflow:hidden;flex-shrink:0">
+        <button type="button" id="unit_sqyds" onclick="setUnit('Sqyds')" style="padding:10px 12px;border:none;background:#5c3d1e;color:#fdf0d8;font-size:12px;font-weight:700;cursor:pointer">Sqyds</button>
+        <button type="button" id="unit_sqft" onclick="setUnit('Sqft')" style="padding:10px 12px;border:none;background:white;color:var(--gray-500);font-size:12px;font-weight:600;cursor:pointer">Sqft</button>
+      </div>
+    </div>
+  </div>`;
+
+  // Source — MOVED UP (before property details)
+  html += `<div class="field-group">
+    <div class="field-label">📌 Source <span class="req">*</span></div>
+    <select class="field-select" id="f_source" onchange="onSourceChange()">
+      <option value="">-- Select --</option>
+      <option>Newspaper</option>
+      <option>Person</option>
+      <option>Online</option>
+      <option>WhatsApp</option>
+      <option>Referral</option>
+      <option>Other</option>
+    </select>
+  </div>`;
+
+  // Area / Building
+  html += `<div class="field-group">
+    <div class="field-label">🏙️ Area / Building Name <span class="req">*</span></div>
+    <input type="text" class="field-input" id="f_area" placeholder="e.g. Maymar, Halima Tower">
+  </div>`;
+
+  // Price — hidden when Newspaper selected
+  html += `<div class="field-group" id="priceFieldGroup">
+    <div class="field-label">💰 Price (PKR)</div>
+    <div class="price-row">
+      <div class="field-group">
+        <input type="number" class="field-input" id="f_price" placeholder="e.g. 8500000">
+      </div>
+      <div class="price-badge-group">
+        <div class="price-badge active fixed" id="badge_fixed" onclick="setPriceType('fixed')">Fixed</div>
+        <div class="price-badge negotiable" id="badge_neg" onclick="setPriceType('negotiable')">Nego.</div>
+      </div>
+    </div>
+  </div>
+  <div id="newspaperPriceNote" class="hidden" style="background:#fef9c3;border:1.5px solid #fde047;border-radius:8px;padding:9px 12px;font-size:12px;color:#854d0e;margin-bottom:13px">
+    📰 Newspaper source — price field hidden (ads mein price nahi hoti)
+  </div>`;
+
+  // Rent-specific fields
+  if (isRent) {
+    html += `<div class="rent-fields">
+      <div class="rent-label">🔑 Rent Details</div>
+      <div class="field-group" style="margin-bottom:10px">
+        <div class="field-label">Rent Period</div>
+        <select class="field-select" id="f_rentPeriod">
+          <option value="Monthly">Monthly</option>
+          <option value="Yearly">Yearly</option>
+        </select>
+      </div>
+      <div class="field-row">
+        <div class="field-group">
+          <div class="field-label">Advance Rent (PKR)</div>
+          <input type="number" class="field-input" id="f_advance" placeholder="e.g. 100000">
+        </div>
+        <div class="field-group">
+          <div class="field-label">Security Deposit (PKR)</div>
+          <input type="number" class="field-input" id="f_security" placeholder="e.g. 50000">
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // Marketed By + POC
+  html += `<div class="field-group">
+    <div class="field-label">👤 Marketed By</div>
+    <input type="text" class="field-input" id="f_marketedBy" placeholder="Banda ya Agency ka naam">
+  </div>
+  <div class="field-group">
+    <div class="field-label">📞 POC (Phone Numbers)</div>
+    <div class="poc-list" id="pocList"></div>
+    <button class="add-poc-btn" onclick="addPoc()">➕ Number Add Karein</button>
+  </div>`;
+
+  // Notes
+  html += `<div class="field-group">
+    <div class="field-label">📝 Notes</div>
+    <textarea class="field-textarea" id="f_notes" placeholder="Extra info ya remarks..."></textarea>
+  </div>`;
+
+  // Tracing Code
+  html += `<div class="field-group">
+    <div class="field-label">🔗 Tracing Code (Auto)</div>
+    <div class="tracing-box">
+      <div class="tracing-code" id="tracingCode">-</div>
+      <div class="tracing-badge" id="tracingBadge">Unique</div>
+    </div>
+  </div>`;
+
+  container.innerHTML = html;
+  state.pocNumbers = [''];
+  renderPocList();
+  updateTracing();
+}
+
+// ============ POC ============
+function renderPocList() {
+  const container = document.getElementById('pocList');
+  if (!container) return;
+  container.innerHTML = state.pocNumbers.map((num, i) =>
+    `<div class="poc-item">
+      <input type="tel" class="field-input" value="${num}" placeholder="03XX-XXXXXXX"
+        oninput="state.pocNumbers[${i}]=this.value"
+        style="margin:0">
+      ${i > 0 ? `<button class="poc-remove" onclick="removePoc(${i})">−</button>` : ''}
+    </div>`
+  ).join('');
+}
+
+function addPoc() {
+  state.pocNumbers.push('');
+  renderPocList();
+}
+
+function removePoc(i) {
+  state.pocNumbers.splice(i, 1);
+  renderPocList();
+}
+
+// ============ PRICE TYPE ============
+let priceType = 'fixed';
+function setPriceType(t) {
+  priceType = t;
+  document.getElementById('badge_fixed').classList.toggle('active', t === 'fixed');
+  document.getElementById('badge_fixed').classList.toggle('fixed', t === 'fixed');
+  document.getElementById('badge_neg').classList.toggle('active', t === 'negotiable');
+  document.getElementById('badge_neg').classList.toggle('negotiable', t === 'negotiable');
+}
+
+function onSourceChange() {
+  const src = val('f_source');
+  const priceGroup = document.getElementById('priceFieldGroup');
+  const noteEl = document.getElementById('newspaperPriceNote');
+  if (!priceGroup) return;
+  if (src === 'Newspaper') {
+    priceGroup.classList.add('hidden');
+    noteEl.classList.remove('hidden');
+  } else {
+    priceGroup.classList.remove('hidden');
+    noteEl.classList.add('hidden');
+  }
+}
+
+function setUnit(unit) {
+  state.sqUnit = unit;
+  const sqydsBtn = document.getElementById('unit_sqyds');
+  const sqftBtn = document.getElementById('unit_sqft');
+  if (!sqydsBtn) return;
+  if (unit === 'Sqyds') {
+    sqydsBtn.style.background = '#5c3d1e'; sqydsBtn.style.color = '#fdf0d8';
+    sqftBtn.style.background = 'white'; sqftBtn.style.color = 'var(--gray-500)';
+  } else {
+    sqftBtn.style.background = '#5c3d1e'; sqftBtn.style.color = '#fdf0d8';
+    sqydsBtn.style.background = 'white'; sqydsBtn.style.color = 'var(--gray-500)';
+  }
+}
+
+// ============ TRACING ============
+function updateTracing() {
+  const cat = state.category;
+  let num = '';
+  if (cat === 'plots') num = val('f_plotNo') || val('f_houseNo') || '';
+  else num = val('f_houseNo') || val('f_plotNo') || '';
+
+  const sector = val('f_sector');
+  const sub = val('f_subSector');
+  const sq = val('f_sqyds');
+  const floor = val('f_floor');
+
+  let parts = [num, sector, sub || floor, sq].filter(x => x);
+  const code = parts.length ? '-' + parts.join('/') : '-';
+
+  const codeEl = document.getElementById('tracingCode');
+  const badgeEl = document.getElementById('tracingBadge');
+  if (!codeEl) return;
+
+  codeEl.textContent = code;
+
+  // Check duplicate
+  const entries = getEntries();
+  const dupes = entries.filter(e => e.tracing === code && code !== '-');
+  if (dupes.length > 0) {
+    badgeEl.textContent = `⚠️ ${dupes.length} Duplicate`;
+    badgeEl.className = 'tracing-badge duplicate';
+  } else {
+    badgeEl.textContent = 'Unique';
+    badgeEl.className = 'tracing-badge';
+  }
+  return code;
+}
+
+function val(id) {
+  const el = document.getElementById(id);
+  return el ? el.value.trim() : '';
+}
+
+// ============ SAVE ENTRY ============
+function saveEntry() {
+  const date = val('f_date');
+  const area = val('f_area');
+  const source = val('f_source');
+  const price = val('f_price');
+  const isNewspaper = source === 'Newspaper';
+  if (!date || !area) {
+    showToast('⚠️ Date aur Area zaroori hain', 'error');
+    return;
+  }
+  if (!isNewspaper && !price) {
+    showToast('⚠️ Price fill karein ya Newspaper source select karein', 'error');
+    return;
+  }
+
+  const tracing = updateTracing();
+  const entry = {
+    id: Date.now().toString(),
+    date, purpose: state.purpose, category: state.category,
+    propertyType: state.propertyType,
+    houseNo: val('f_houseNo'), plotNo: val('f_plotNo'),
+    floor: val('f_floor'), sector: val('f_sector'),
+    subSector: val('f_subSector'), sqyds: val('f_sqyds'),
+    sqUnit: state.sqUnit,
+    area, price, priceType,
+    marketedBy: val('f_marketedBy'),
+    poc: state.pocNumbers.filter(n => n.trim()),
+    source: val('f_source'), notes: val('f_notes'),
+    rentPeriod: val('f_rentPeriod'), advance: val('f_advance'),
+    security: val('f_security'),
+    tracing, synced: false,
+    savedAt: new Date().toISOString()
+  };
+
+  const entries = getEntries();
+  entries.unshift(entry);
+  saveEntries(entries);
+
+  showToast('✅ Entry Save Ho Gayi!', 'success');
+
+  // Auto sync if online
+  if (navigator.onLine) syncEntry(entry);
+
+  // Reset form
+  setTimeout(() => renderFormFields(), 300);
+}
+
+// ============ STORAGE ============
+function getEntries() {
+  try { return JSON.parse(localStorage.getItem('ra_entries') || '[]'); }
+  catch { return []; }
+}
+function saveEntries(e) { localStorage.setItem('ra_entries', JSON.stringify(e)); }
+
+// ============ RECORDS ============
+function renderRecords() {
+  const entries = getEntries();
+  const q = document.getElementById('searchInput')?.value?.toLowerCase() || '';
+  const filtered = q ? entries.filter(e =>
+    [e.area, e.tracing, e.propertyType, e.sector, e.plotNo, e.houseNo, e.marketedBy, e.prevOwner, e.newOwner]
+    .some(v => (v || '').toLowerCase().includes(q))
+  ) : entries;
+
+  document.getElementById('recordCount').textContent = filtered.length;
+
+  if (filtered.length === 0) {
+    document.getElementById('recordsList').innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">📋</div>
+        <p>${q ? 'Koi nateeja nahi mila' : 'Abhi tak koi entry nahi hai'}</p>
+      </div>`;
+    return;
+  }
+
+  // Find duplicates
+  const tracingMap = {};
+  entries.forEach(e => { if (e.tracing && e.tracing !== '-') tracingMap[e.tracing] = (tracingMap[e.tracing] || 0) + 1; });
+
+  document.getElementById('recordsList').innerHTML = filtered.map(e => {
+    const isDupe = tracingMap[e.tracing] > 1;
+    const pocStr = Array.isArray(e.poc) ? e.poc.join(', ') : e.poc;
+    const priceFormatted = e.price ? 'PKR ' + Number(e.price).toLocaleString('en-PK') : '';
+
+    return `<div class="record-card ${isDupe ? 'duplicate-flag' : ''}">
+      <div class="record-top">
+        <div>
+          <div class="record-area">${e.area || '-'}</div>
+          <div class="record-tracing">${e.tracing}</div>
+        </div>
+        <div class="record-type-badge ${e.purpose}">${e.propertyType} • ${e.purpose === 'rent' ? 'Rent' : 'Sale'}</div>
+      </div>
+      <div class="record-details">
+        ${e.sector ? `<div class="record-detail">📍 <strong>${e.sector}${e.subSector ? '/' + e.subSector : ''}</strong></div>` : ''}
+        ${e.sqyds ? `<div class="record-detail">📐 <strong>${e.sqyds} ${e.sqUnit || 'Sqyds'}</strong></div>` : ''}
+        ${e.marketedBy ? `<div class="record-detail">👤 ${e.marketedBy}</div>` : ''}
+        ${pocStr ? `<div class="record-detail">📞 ${pocStr}</div>` : ''}
+        ${e.source ? `<div class="record-detail">📌 ${e.source}</div>` : ''}
+      </div>
+      ${e.newOwner ? `<div class="owner-line">🆕 Naya Owner: <strong>${e.newOwner}</strong></div>` : ''}
+      ${e.prevOwner ? `<div class="owner-line">↩️ Purana Owner: ${e.prevOwner}</div>` : ''}
+      ${e.imageUrl ? `<div class="owner-line"><a href="${e.imageUrl}" target="_blank" style="color:#5c3d1e">📰 Newspaper photo dekhein</a></div>` : ''}
+      ${priceFormatted ? `<div class="record-price">${priceFormatted} <span style="font-size:11px;font-weight:500;color:var(--gray-400)">(${e.priceType || 'fixed'})</span></div>` : ''}
+      <div class="record-actions">
+        <button class="rec-btn wa" onclick="shareWhatsApp('${e.id}')">💬 WhatsApp</button>
+        ${!e.synced ? `<button class="rec-btn sync" onclick="syncSingle('${e.id}')">☁️ Sync</button>` : ''}
+        <button class="rec-btn del" onclick="deleteEntry('${e.id}')">🗑️</button>
+      </div>
+      <div class="record-sync-status ${e.synced ? 'synced' : 'not-synced'}">
+        ${e.synced ? '✓ Synced' : '⏳ Pending'}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteEntry(id) {
+  if (!confirm('Yeh entry delete karein?')) return;
+  let entries = getEntries();
+  entries = entries.filter(e => e.id !== id);
+  saveEntries(entries);
+  renderRecords();
+  updateStats();
+  showToast('🗑️ Entry Delete Ho Gayi');
+}
+
+// ============ WHATSAPP SHARE ============
+function shareWhatsApp(id) {
+  let entry;
+  if (id) {
+    entry = getEntries().find(e => e.id === id);
+  } else {
+    // Current form
+    const date = val('f_date');
+    const area = val('f_area');
+    if (!area) { showToast('⚠️ Pehle Area fill karein', 'error'); return; }
+    const tracing = updateTracing();
+    entry = {
+      date, purpose: state.purpose, category: state.category,
+      propertyType: state.propertyType,
+      houseNo: val('f_houseNo'), plotNo: val('f_plotNo'),
+      floor: val('f_floor'), sector: val('f_sector'),
+      subSector: val('f_subSector'), sqyds: val('f_sqyds'),
+      area, price: val('f_price'), priceType,
+      marketedBy: val('f_marketedBy'),
+      poc: state.pocNumbers.filter(n => n.trim()),
+      source: val('f_source'), notes: val('f_notes'),
+      rentPeriod: val('f_rentPeriod'), advance: val('f_advance'),
+      security: val('f_security'), tracing
+    };
+  }
+
+  if (!entry) return;
+
+  const pocStr = Array.isArray(entry.poc) ? entry.poc.join('\n📞 ') : entry.poc;
+  const priceFormatted = entry.price ? 'PKR ' + Number(entry.price).toLocaleString('en-PK') : 'N/A';
+  const isRent = entry.purpose === 'rent';
+
+  let msg = `🏢 *REHMANI ASSOCIATES*
+📍 Gulshan e Maymar, Karachi
+
+━━━━━━━━━━━━━━━━━━━━
+🏷️ *${entry.propertyType} for ${isRent ? 'Rent' : 'Sale'}*
+━━━━━━━━━━━━━━━━━━━━
+
+📅 Date: ${entry.date || '-'}
+🏙️ Area: ${entry.area || '-'}`;
+
+  if (entry.houseNo) msg += `\n🏠 House/Flat No: ${entry.houseNo}`;
+  if (entry.plotNo) msg += `\n📌 Plot No: ${entry.plotNo}`;
+  if (entry.floor) msg += `\n🏢 Floor: ${entry.floor}`;
+  if (entry.sector) msg += `\n📍 Sector/Block: ${entry.sector}`;
+  if (entry.subSector) msg += `\n🔢 Sub Sector: ${entry.subSector}`;
+  if (entry.sqyds) msg += `\n📐 Size: ${entry.sqyds} ${entry.sqUnit || 'Sqyds'}`;
+
+  if (entry.source !== 'Newspaper' && entry.price) {
+    msg += `\n\n💰 *Price: ${priceFormatted}* (${entry.priceType === 'negotiable' ? 'Negotiable' : 'Fixed'})`;
+  }
+
+  if (isRent) {
+    if (entry.rentPeriod) msg += `\n🔑 Rent Period: ${entry.rentPeriod}`;
+    if (entry.advance) msg += `\n💳 Advance: PKR ${Number(entry.advance).toLocaleString('en-PK')}`;
+    if (entry.security) msg += `\n🔒 Security: PKR ${Number(entry.security).toLocaleString('en-PK')}`;
+  }
+
+  if (entry.marketedBy) msg += `\n\n👤 Marketed By: ${entry.marketedBy}`;
+  if (pocStr) msg += `\n📞 ${pocStr}`;
+  if (entry.source) msg += `\n📌 Source: ${entry.source}`;
+  if (entry.notes) msg += `\n📝 Notes: ${entry.notes}`;
+
+  msg += `
+
+━━━━━━━━━━━━━━━━━━━━
+👤 *Junaid Rehmani*
+🏢 *Rehmani Associates*
+📞 0321-8254254
+📞 0335-8254254
+📍 Shop 1 & 2, SB-39, Sector X-4
+   Near Nawaz Shareef Park
+   Gulshan e Maymar, Karachi
+🗺️ https://maps.app.goo.gl/knpWAgpBbdVpp6uo8`;
+
+  const encoded = encodeURIComponent(msg);
+  window.open(`https://wa.me/?text=${encoded}`, '_blank');
+}
+
+// ============ GOOGLE SHEETS SYNC ============
+// 👇 Apps Script Web App URL — sirf EK BAAR yahan paste karein
+const GS_URL = 'https://script.google.com/macros/s/AKfycby_ndes8tHYk3NE93gGDJPrrGeMeHAeVOoLHebkMDPU2IeVqnmmnI49QD0EGdXzIAa-HQ/exec';
+
+function getGsUrl() {
+  return (GS_URL && GS_URL.startsWith('https://script.google.com')) ? GS_URL : '';
+}
+function loadGsUrl() {
+  const box = document.getElementById('sheetStatusBox');
+  if (!box) return;
+  if (getGsUrl()) {
+    box.style.cssText += ';background:#ecfdf5;border:1px solid #86efac;color:#14532d';
+    box.innerHTML = '✅ <strong>Sheet connected hai</strong><br>Har entry khud sheet mein chali jayegi.';
+  } else {
+    box.style.cssText += ';background:#fee2e2;border:1px solid #fca5a5;color:#991b1b';
+    box.innerHTML = '⚠️ <strong>Sheet connected nahi</strong><br>App file mein GS_URL set karna baqi hai.';
+  }
+}
+
+async function syncEntry(entry) {
+  const url = getGsUrl();
+  if (!url) return false;
+  try {
+    const payload = {
+      date: entry.date, purpose: entry.purpose,
+      category: entry.category, propertyType: entry.propertyType,
+      houseNo: entry.houseNo || entry.plotNo || '',
+      plotNo: entry.plotNo || '', floor: entry.floor || '',
+      sector: entry.sector || '', subSector: entry.subSector || '',
+      sqyds: entry.sqyds || '', area: entry.area || '',
+      price: entry.price || '', priceType: entry.priceType || '',
+      marketedBy: entry.marketedBy || '',
+      poc: Array.isArray(entry.poc) ? entry.poc.join(', ') : entry.poc || '',
+      source: entry.source || '', notes: entry.notes || '',
+      tracing: entry.tracing || '',
+      rentPeriod: entry.rentPeriod || '',
+      advance: entry.advance || '', security: entry.security || '',
+      prevOwner: entry.prevOwner || '', newOwner: entry.newOwner || '',
+      newsRef: entry.newsRef || '', imageUrl: entry.imageUrl || ''
+    };
+    await fetch(url, {
+      method: 'POST', mode: 'no-cors',
+      headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify(payload)
+    });
+    // Mark as synced
+    let entries = getEntries();
+    entries = entries.map(e => e.id === entry.id ? { ...e, synced: true } : e);
+    saveEntries(entries);
+    return true;
+  } catch { return false; }
+}
+
+async function syncNow() {
+  if (!navigator.onLine) { showToast('❌ Internet nahi hai', 'error'); return; }
+  const url = getGsUrl();
+  if (!url) { showToast('⚠️ Sheet connected nahi (GS_URL)', 'error'); switchTab('settings'); return; }
+
+  const entries = getEntries().filter(e => !e.synced);
+  if (entries.length === 0) { showToast('✅ Sab Sync Ho Chuka Hai'); return; }
+
+  document.getElementById('loadingOverlay').classList.remove('hidden');
+  document.getElementById('loadingText').textContent = `${entries.length} entries sync ho rahi hain...`;
+
+  let synced = 0;
+  for (const entry of entries) {
+    const ok = await syncEntry(entry);
+    if (ok) synced++;
+  }
+
+  document.getElementById('loadingOverlay').classList.add('hidden');
+  showToast(`☁️ ${synced}/${entries.length} entries sync hui`, 'success');
+  if (state.currentTab === 'records') renderRecords();
+  updateStats();
+}
+
+async function syncSingle(id) {
+  if (!navigator.onLine) { showToast('❌ Internet nahi hai', 'error'); return; }
+  const entry = getEntries().find(e => e.id === id);
+  if (!entry) return;
+  const ok = await syncEntry(entry);
+  showToast(ok ? '☁️ Sync Ho Gaya' : '❌ Sync Fail', ok ? 'success' : 'error');
+  renderRecords();
+}
+
+async function autoSync() {
+  if (!navigator.onLine) return;
+  const url = getGsUrl();
+  if (!url) return;
+  const pending = getEntries().filter(e => !e.synced);
+  for (const entry of pending) await syncEntry(entry);
+  if (state.currentTab === 'records') renderRecords();
+  updateStats();
+}
+
+// ============ SYNC BANNER ============
+function updateSyncBanner() {
+  const banner = document.getElementById('syncBanner');
+  const text = document.getElementById('syncText');
+  const pending = getEntries().filter(e => !e.synced).length;
+
+  if (navigator.onLine) {
+    banner.className = 'sync-banner online';
+    text.textContent = pending > 0
+      ? `Online • ${pending} entries sync pending`
+      : 'Online • Sab Synced ✓';
+  } else {
+    banner.className = 'sync-banner';
+    text.textContent = pending > 0
+      ? `Offline • ${pending} entries queue mein hain`
+      : 'Offline Mode • Data locally save ho raha hai';
+  }
+}
+
+// ============ STATS ============
+function updateStats() {
+  const entries = getEntries();
+  const synced = entries.filter(e => e.synced).length;
+  const tracingMap = {};
+  entries.forEach(e => { if (e.tracing && e.tracing !== '-') tracingMap[e.tracing] = (tracingMap[e.tracing] || 0) + 1; });
+  const dupes = Object.values(tracingMap).filter(c => c > 1).length;
+
+  document.getElementById('stat-total').textContent = entries.length;
+  document.getElementById('stat-synced').textContent = synced;
+  document.getElementById('stat-pending').textContent = entries.length - synced;
+  document.getElementById('stat-dupes').textContent = dupes;
+}
+
+// ============ HELPERS ============
+function getTodayDate() {
+  return new Date().toISOString().split('T')[0];
+}
+
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// ============ SEARCH MODE ============
+let searchMode = 'local';
+
+function setSearchMode(mode) {
+  searchMode = mode;
+  document.getElementById('btn-local').classList.toggle('active', mode === 'local');
+  document.getElementById('btn-sheet').classList.toggle('active', mode === 'sheet');
+  document.getElementById('local-search-section').classList.toggle('hidden', mode === 'sheet');
+  document.getElementById('sheet-search-section').classList.toggle('hidden', mode === 'local');
+  if (mode === 'sheet') {
+    const url = getGsUrl();
+    if (!url) {
+      showToast('⚠️ Sheet connected nahi (GS_URL)', 'error');
+      setSearchMode('local');
+    }
+  }
+}
+
+// ============ SHEET SEARCH ============
+async function searchInSheet() {
+  const q = document.getElementById('sheetSearchInput').value.trim().toLowerCase();
+  if (!q) { showToast('⚠️ Kuch likho search karne ke liye', 'error'); return; }
+  if (!navigator.onLine) { showToast('❌ Internet chahiye sheet search ke liye', 'error'); return; }
+
+  const gsUrl = getGsUrl();
+  if (!gsUrl) { showToast('⚠️ Sheet connected nahi (GS_URL)', 'error'); return; }
+
+  const resultsDiv = document.getElementById('sheetSearchResults');
+  resultsDiv.innerHTML = `<div style="text-align:center;padding:30px;color:var(--gray-400)">
+    <div class="spinner" style="margin:0 auto 12px"></div>
+    <div style="font-size:13px">Sheet mein dhundh raha hoon...</div>
+  </div>`;
+
+  try {
+    // Build GET URL with search param
+    const fetchUrl = gsUrl + '?search=' + encodeURIComponent(q);
+    const resp = await fetch(fetchUrl, { method: 'GET' });
+    const text = await resp.text();
+
+    let data;
+    try { data = JSON.parse(text); } catch { data = null; }
+
+    if (!data || !data.results) {
+      // Fallback: fetch all and filter client-side
+      resultsDiv.innerHTML = `<div style="text-align:center;padding:24px;color:var(--gray-400);font-size:13px">
+        ⚠️ Sheet search ke liye Apps Script update karna hoga.<br>
+        <span style="font-size:11px;margin-top:6px;display:block">Settings tab mein naya code diya gaya hai.</span>
+      </div>`;
+      // Show update instructions
+      showSheetSearchUpgradeNote();
+      return;
+    }
+
+    renderSheetResults(data.results, q);
+  } catch(e) {
+    // Show upgrade note
+    showSheetSearchUpgradeNote();
+  }
+}
+
+function showSheetSearchUpgradeNote() {
+  const resultsDiv = document.getElementById('sheetSearchResults');
+  resultsDiv.innerHTML = `<div class="section-card" style="margin-top:8px">
+    <div class="section-body">
+      <div style="font-size:12px;font-weight:700;color:#5c3d1e;margin-bottom:8px">⚠️ Apps Script Update Karna Hoga</div>
+      <div style="font-size:11.5px;color:var(--gray-500);line-height:1.7;margin-bottom:12px">
+        Sheet search ke liye Apps Script mein naya code paste karna hoga.
+      </div>
+      <div style="background:#1e293b;border-radius:8px;padding:10px;overflow-x:auto">
+        <pre id="newScriptCode" style="font-size:9.5px;color:#7dd3fc;white-space:pre-wrap;word-break:break-word">function doPost(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSheet();
+    var data = JSON.parse(e.postData.contents);
+    sheet.appendRow([
+      data.date, data.purpose, data.category,
+      data.propertyType, data.houseNo, data.plotNo,
+      data.floor, data.sector, data.subSector,
+      data.sqyds, data.area, data.price,
+      data.priceType, data.marketedBy, data.poc,
+      data.source, data.notes, data.tracing,
+      data.rentPeriod, data.advance, data.security
+    ]);
+    return ContentService.createTextOutput(JSON.stringify({status:"ok"}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({status:"error",message:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  try {
+    var sheet = SpreadsheetApp.getActiveSheet();
+    var q = (e.parameter.search || "").toLowerCase();
+    var rows = sheet.getDataRange().getValues();
+    var headers = rows[0];
+    var results = [];
+    for (var i = 1; i < rows.length; i++) {
+      var row = rows[i];
+      var rowStr = row.join(" ").toLowerCase();
+      if (!q || rowStr.indexOf(q) !== -1) {
+        var obj = {};
+        for (var j = 0; j < headers.length; j++) {
+          obj[headers[j]] = row[j];
+        }
+        results.push(obj);
+      }
+    }
+    return ContentService.createTextOutput(JSON.stringify({status:"ok", results:results}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService.createTextOutput(JSON.stringify({status:"error",message:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}</pre>
+      </div>
+      <button onclick="copyNewScript()" style="margin-top:10px;width:100%;padding:10px;background:#5c3d1e;color:#fdf0d8;border:none;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">
+        📋 Code Copy Karein
+      </button>
+      <div style="font-size:11px;color:var(--gray-400);margin-top:8px;line-height:1.6">
+        Copy karke Apps Script mein paste karein → Save → New Deployment → naya URL settings mein save karein
+      </div>
+    </div>
+  </div>`;
+}
+
+function copyNewScript() {
+  const code = document.getElementById('newScriptCode').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    showToast('✅ Code Copy Ho Gaya!', 'success');
+  }).catch(() => {
+    showToast('Code manually copy karein', '');
+  });
+}
+
+function renderSheetResults(results, q) {
+  const resultsDiv = document.getElementById('sheetSearchResults');
+  if (!results || results.length === 0) {
+    resultsDiv.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><p>"${q}" ke liye koi nateeja nahi</p></div>`;
+    return;
+  }
+
+  resultsDiv.innerHTML = `<div style="font-size:12px;font-weight:600;color:var(--gray-500);margin-bottom:10px">${results.length} nateeja mila</div>` +
+    results.map(r => {
+      const price = r['Price (PKR)'] ? 'PKR ' + Number(r['Price (PKR)']).toLocaleString('en-PK') : '';
+      const purpose = (r['Purpose'] || '').toLowerCase();
+      return `<div class="sheet-result-card">
+        <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+          <div>
+            <div class="rec-area">${r['Area'] || '-'}</div>
+            <div class="rec-tracing">${r['Tracing'] || ''}</div>
+          </div>
+          <div class="rec-badge">${r['Property Type'] || ''} • ${purpose === 'rent' ? 'Rent' : 'Sale'}</div>
+        </div>
+        <div class="rec-info">
+          ${r['Sector'] ? '📍 ' + r['Sector'] + (r['Sub Sector'] ? '/' + r['Sub Sector'] : '') + '<br>' : ''}
+          ${r['Sqyds'] ? '📐 ' + r['Sqyds'] + ' sqyds<br>' : ''}
+          ${r['Marketed By'] ? '👤 ' + r['Marketed By'] + '<br>' : ''}
+          ${r['POC'] ? '📞 ' + r['POC'] + '<br>' : ''}
+          ${r['Source'] ? '📌 ' + r['Source'] : ''}
+          ${r['Date'] ? ' • 📅 ' + r['Date'] : ''}
+        </div>
+        ${r['New Owner'] ? `<div class="owner-line">🆕 Naya Owner: <strong>${r['New Owner']}</strong></div>` : ''}
+        ${r['Previous Owner'] ? `<div class="owner-line">↩️ Purana Owner: ${r['Previous Owner']}</div>` : ''}
+        ${r['Image Link'] ? `<div class="owner-line"><a href="${r['Image Link']}" target="_blank" style="color:#5c3d1e">📰 Newspaper photo dekhein</a></div>` : ''}
+        ${price ? `<div class="rec-price">${price} <span style="font-size:11px;font-weight:500;color:var(--gray-400)">(${r['Price Type'] || ''})</span></div>` : ''}
+        <div style="margin-top:10px">
+          <button class="rec-btn wa" onclick="shareWhatsAppFromSheet(${JSON.stringify(r).replace(/"/g, '&quot;')})">💬 WhatsApp</button>
+        </div>
+      </div>`;
+    }).join('');
+}
+
+function shareWhatsAppFromSheet(r) {
+  const isRent = (r['Purpose'] || '').toLowerCase() === 'rent';
+  const price = r['Price (PKR)'] ? 'PKR ' + Number(r['Price (PKR)']).toLocaleString('en-PK') : '';
+  const isNewspaper = r['Source'] === 'Newspaper';
+
+  let msg = `🏢 *REHMANI ASSOCIATES*
+📍 Gulshan e Maymar, Karachi
+
+━━━━━━━━━━━━━━━━━━━━
+🏷️ *${r['Property Type'] || ''} for ${isRent ? 'Rent' : 'Sale'}*
+━━━━━━━━━━━━━━━━━━━━
+
+📅 Date: ${r['Date'] || '-'}
+🏙️ Area: ${r['Area'] || '-'}`;
+
+  if (r['House/Flat No']) msg += `
+🏠 House/Flat No: ${r['House/Flat No']}`;
+  if (r['Plot No']) msg += `
+📌 Plot No: ${r['Plot No']}`;
+  if (r['Floor']) msg += `
+🏢 Floor: ${r['Floor']}`;
+  if (r['Sector']) msg += `
+📍 Sector/Block: ${r['Sector']}`;
+  if (r['Sub Sector']) msg += `
+🔢 Sub Sector: ${r['Sub Sector']}`;
+  if (r['Sqyds']) msg += `
+📐 Size: ${r['Sqyds']} sqyds/sqft`;
+
+  if (!isNewspaper && price) {
+    msg += `
+
+💰 *Price: ${price}* (${r['Price Type'] === 'negotiable' ? 'Negotiable' : 'Fixed'})`;
+  }
+  if (isRent) {
+    if (r['Rent Period']) msg += `
+🔑 Rent Period: ${r['Rent Period']}`;
+    if (r['Advance']) msg += `
+💳 Advance: PKR ${Number(r['Advance']).toLocaleString('en-PK')}`;
+    if (r['Security']) msg += `
+🔒 Security: PKR ${Number(r['Security']).toLocaleString('en-PK')}`;
+  }
+  if (r['Marketed By']) msg += `
+
+👤 Marketed By: ${r['Marketed By']}`;
+  if (r['POC']) msg += `
+📞 ${r['POC']}`;
+  if (r['Notes']) msg += `
+📝 Notes: ${r['Notes']}`;
+
+  msg += `
+
+━━━━━━━━━━━━━━━━━━━━
+👤 *Junaid Rehmani*
+🏢 *Rehmani Associates*
+📞 0321-8254254
+📞 0335-8254254
+📍 Shop 1 & 2, SB-39, Sector X-4
+   Near Nawaz Shareef Park
+   Gulshan e Maymar, Karachi
+🗺️ https://maps.app.goo.gl/knpWAgpBbdVpp6uo8`;
+
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
+// ============ NEWSPAPER SCAN ============
+let scanState = { notices: [], imageUrl: '', preview: '' };
+
+function esc(v) {
+  return String(v == null ? '' : v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+}
+
+function compressImage(file, maxSide = 2000, quality = 0.85) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      let { width: w, height: h } = img;
+      const scale = Math.min(1, maxSide / Math.max(w, h));
+      w = Math.round(w * scale); h = Math.round(h * scale);
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, w, h);
+      ctx.drawImage(img, 0, 0, w, h);
+      URL.revokeObjectURL(url);
+      resolve(c.toDataURL('image/jpeg', quality));
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('Image load fail')); };
+    img.src = url;
+  });
+}
+
+async function postJson(payload) {
+  const resp = await fetch(getGsUrl(), {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  });
+  return JSON.parse(await resp.text());
+}
+
+function makeTracing(n) {
+  const parts = [n.plotNo, n.sector, n.subSector, n.size].map(x => (x || '').toString().trim()).filter(Boolean);
+  return parts.length ? '-' + parts.join('/') : '-';
+}
+
+async function onScanFile(input) {
+  const file = input.files && input.files[0];
+  input.value = '';
+  if (!file) return;
+  if (!navigator.onLine) { showToast('❌ Scan ke liye internet chahiye', 'error'); return; }
+  if (!getGsUrl()) { showToast('⚠️ Sheet connected nahi (GS_URL)', 'error'); return; }
+
+  const overlay = document.getElementById('loadingOverlay');
+  const lt = document.getElementById('loadingText');
+  overlay.classList.remove('hidden');
+  try {
+    lt.textContent = 'Photo tayyar ho rahi hai...';
+    const dataUrl = await compressImage(file);
+    lt.textContent = 'Notice parh raha hoon... (10-20 sec)';
+    const res = await postJson({ action: 'scan', image: dataUrl.split(',')[1], mimeType: 'image/jpeg' });
+    if (res.status !== 'ok') throw new Error(res.message || 'Scan fail');
+    if (!res.notices || !res.notices.length) {
+      overlay.classList.add('hidden');
+      showToast('⚠️ Photo mein koi notice nahi mila — saaf photo dobara lein', 'error');
+      return;
+    }
+    scanState = {
+      imageUrl: res.imageUrl || '',
+      preview: dataUrl,
+      notices: res.notices.map(n => ({ ...n, include: true, matches: null }))
+    };
+    overlay.classList.add('hidden');
+    renderScanModal();
+    document.getElementById('scanModal').classList.remove('hidden');
+    checkSheetMatches();
+  } catch (err) {
+    overlay.classList.add('hidden');
+    showToast('❌ ' + (err.message || 'Scan fail'), 'error');
+  }
+}
+
+function renderScanModal() {
+  const body = document.getElementById('scanModalBody');
+  const f = (i, key, label, ph = '') => `<div class="field-group">
+      <div class="field-label">${label}</div>
+      <input class="field-input" value="${esc(scanState.notices[i][key])}" placeholder="${ph}"
+        oninput="onNoticeEdit(${i}, '${key}', this.value)">
+    </div>`;
+
+  body.innerHTML = `<img src="${scanState.preview}" class="scan-preview" alt="Newspaper notice">
+    <div style="font-size:11.5px;color:var(--gray-500);margin-bottom:10px">
+      ⚠️ Plot number aur sector photo se zaroor mila lein — AI se galti ho sakti hai.
+    </div>` +
+    scanState.notices.map((n, i) => {
+      let match = '';
+      if (n.matches === null) match = `<div class="notice-match none" style="background:#f5ece0;color:var(--gray-500);border-color:var(--gray-200)">⏳ Sheet mein check ho raha hai...</div>`;
+      else if (n.matches > 0) match = `<div class="notice-match hit">🔔 Ye property sheet mein pehle se <strong>${n.matches}</strong> dafa hai</div>`;
+      else if (n.matches === 0) match = `<div class="notice-match none">✓ Sheet mein pehli dafa aa rahi hai</div>`;
+      return `<div class="notice-card ${n.include ? '' : 'off'}" id="notice-${i}">
+        <div class="notice-head">
+          <label><input type="checkbox" ${n.include ? 'checked' : ''} onchange="toggleNotice(${i}, this.checked)"> Notice ${i + 1}${n.corner ? ' • Corner' : ''}</label>
+          <span style="font-size:11px;color:var(--gray-500)">${esc(n.propertyKind || 'Plot')}</span>
+        </div>
+        <div class="field-row">${f(i, 'plotNo', '📌 Plot / House No')}${f(i, 'size', '📐 Size (Sqyds)')}</div>
+        <div class="field-row">${f(i, 'sector', '📍 Sector')}${f(i, 'subSector', '🔢 Sub Sector')}</div>
+        ${f(i, 'area', '🏙️ Area / Scheme')}
+        <div style="background:#fdf0d8;border:1.5px solid var(--gold);border-radius:10px;padding:10px 10px 1px;margin-bottom:9px">
+          <div style="font-size:11px;font-weight:800;color:#5c3d1e;margin-bottom:6px">📣 AD AGENT (is se owner tak pohanchna hai)</div>
+          ${f(i, 'agentName', '👤 Agent / Agency Naam')}
+          <div class="field-group">
+            <div class="field-label">📞 Agent Numbers (comma se alag)</div>
+            <input class="field-input" type="text" inputmode="tel" value="${esc((n.agentPhones || []).join(', '))}" placeholder="0334-2053146, 0322-2238479"
+              oninput="onNoticeEdit(${i}, 'agentPhones', this.value.split(',').map(x => x.trim()).filter(Boolean))">
+          </div>
+        </div>
+        ${f(i, 'newOwner', '🆕 Naya Owner (Khareedar)')}
+        ${f(i, 'prevOwner', '↩️ Purana Owner (Farokht Kunindah)')}
+        <div class="field-row">${f(i, 'newspaper', '📰 Akhbar', 'e.g. Jang')}${f(i, 'refNo', '🔖 Ref No')}</div>
+        <div class="field-group">
+          <div class="field-label">📅 Akhbar ki Date</div>
+          <input type="date" class="field-input" value="${esc(n.date || getTodayDate())}" oninput="onNoticeEdit(${i}, 'date', this.value)">
+        </div>
+        <div class="notice-trace" id="trace-${i}">${esc(makeTracing(n))}</div>
+        <div id="match-${i}">${match}</div>
+      </div>`;
+    }).join('');
+}
+
+function onNoticeEdit(i, key, value) {
+  scanState.notices[i][key] = value;
+  const t = document.getElementById('trace-' + i);
+  if (t) t.textContent = makeTracing(scanState.notices[i]);
+}
+
+function toggleNotice(i, on) {
+  scanState.notices[i].include = on;
+  document.getElementById('notice-' + i).classList.toggle('off', !on);
+}
+
+function closeScanModal() {
+  document.getElementById('scanModal').classList.add('hidden');
+}
+
+async function checkSheetMatches() {
+  for (let i = 0; i < scanState.notices.length; i++) {
+    const code = makeTracing(scanState.notices[i]);
+    let count = 0;
+    if (code !== '-') {
+      try {
+        const resp = await fetch(getGsUrl() + '?search=' + encodeURIComponent(code.toLowerCase()));
+        const data = JSON.parse(await resp.text());
+        count = (data.results || []).filter(r => String(r['Tracing'] || '').toLowerCase() === code.toLowerCase()).length;
+      } catch { count = undefined; }
+    }
+    scanState.notices[i].matches = count;
+    const el = document.getElementById('match-' + i);
+    if (!el) continue;
+    if (count > 0) el.innerHTML = `<div class="notice-match hit">🔔 Ye property sheet mein pehle se <strong>${count}</strong> dafa hai</div>`;
+    else if (count === 0) el.innerHTML = `<div class="notice-match none">✓ Sheet mein pehli dafa aa rahi hai</div>`;
+    else el.innerHTML = '';
+  }
+}
+
+function saveScannedNotices() {
+  const chosen = scanState.notices.filter(n => n.include);
+  if (!chosen.length) { showToast('⚠️ Koi notice select nahi', 'error'); return; }
+  for (const n of chosen) {
+    if (!n.plotNo || !n.sector) { showToast('⚠️ Har notice mein Plot No aur Sector zaroori hai', 'error'); return; }
+  }
+  const entries = getEntries();
+  const now = Date.now();
+  const newOnes = chosen.map((n, k) => {
+    const isHouse = /house|ghar|makan|bungalow/i.test(n.propertyKind || '');
+    const notesParts = [];
+    if (n.corner) notesParts.push('Corner');
+    if (n.newspaper) notesParts.push('Akhbar: ' + n.newspaper);
+    return {
+      id: (now + k).toString(),
+      date: n.date || getTodayDate(),
+      purpose: 'sell',
+      category: isHouse ? 'home' : 'plots',
+      propertyType: isHouse ? 'House' : 'Residential Plot',
+      houseNo: isHouse ? n.plotNo : '', plotNo: isHouse ? '' : n.plotNo,
+      floor: '', sector: n.sector || '', subSector: n.subSector || '',
+      sqyds: n.size || '', sqUnit: 'Sqyds',
+      area: n.area || '', price: '', priceType: '',
+      marketedBy: n.agentName || '', poc: Array.isArray(n.agentPhones) ? n.agentPhones : [],
+      source: 'Newspaper', notes: notesParts.join(' | '),
+      rentPeriod: '', advance: '', security: '',
+      prevOwner: n.prevOwner || '', newOwner: n.newOwner || '',
+      newsRef: n.refNo || '', imageUrl: scanState.imageUrl || '',
+      tracing: makeTracing(n), synced: false,
+      savedAt: new Date().toISOString()
+    };
+  });
+  saveEntries([...newOnes, ...entries]);
+  closeScanModal();
+  showToast(`✅ ${newOnes.length} notice save ho gaye`, 'success');
+  if (navigator.onLine) newOnes.forEach(e => syncEntry(e).then(() => { updateStats(); updateSyncBanner(); }));
+  updateStats(); updateSyncBanner();
+}
+
+function clearAllData() {
+  if (!confirm('Sab data clear karna chahte hain? Yeh wapis nahi aaega!')) return;
+  localStorage.removeItem('ra_entries');
+  renderRecords();
+  updateStats();
+  showToast('🗑️ Sab data clear ho gaya');
+}
+</script>
+</body>
+</html>
