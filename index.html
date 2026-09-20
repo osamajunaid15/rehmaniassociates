@@ -1321,10 +1321,8 @@ function shareWhatsApp(id) {
     if (entry.security) msg += `\n🔒 Security: PKR ${Number(entry.security).toLocaleString('en-PK')}`;
   }
 
-  if (entry.marketedBy) msg += `\n\n👤 Marketed By: ${entry.marketedBy}`;
-  if (pocStr) msg += `\n📞 ${pocStr}`;
-  if (entry.source) msg += `\n📌 Source: ${entry.source}`;
-  if (entry.notes) msg += `\n📝 Notes: ${entry.notes}`;
+  // Agent, POC, owners, source aur notes client ko NAHI jaate — sirf Rehmani Associates ka contact
+  if (/corner/i.test(entry.notes || '')) msg += '\n⭐ Corner';
 
   msg += `
 
@@ -1696,13 +1694,8 @@ function shareWhatsAppFromSheet(r) {
     if (r['Security']) msg += `
 🔒 Security: PKR ${Number(r['Security']).toLocaleString('en-PK')}`;
   }
-  if (r['Marketed By']) msg += `
-
-👤 Marketed By: ${r['Marketed By']}`;
-  if (r['POC']) msg += `
-📞 ${r['POC']}`;
-  if (r['Notes']) msg += `
-📝 Notes: ${r['Notes']}`;
+  // Agent, POC, owners aur notes client ko NAHI jaate — sirf Rehmani Associates ka contact
+  if (/corner/i.test(r['Notes'] || '')) msg += '\n⭐ Corner';
 
   msg += `
 
