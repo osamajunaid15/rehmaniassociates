@@ -1067,8 +1067,8 @@ const T = {
   adAgent:      ['AD AGENT (reach the owner through him)', 'AD AGENT (is se owner tak pohanchna hai)'],
   nAgentName:   ['Agent / Agency Name', 'Agent / Agency Naam'],
   nAgentPhones: ['Agent Numbers (comma separated)', 'Agent Numbers (comma se alag)'],
-  nSeller:      ['Seller', 'Seller'],
-  nPurchaser:   ['Purchaser', 'Purchaser'],
+  nSeller:      ['Seller (Farokht Kunindah)', 'Seller (Farokht Kunindah)'],
+  nPurchaser:   ['Purchaser (Khareedar)', 'Purchaser (Khareedar)'],
   nNewspaper:   ['Newspaper', 'Newspaper'],
   nNewspaperOther: ['Newspaper Name', 'Newspaper Ka Naam'],
   nRefNo:       ['Ref No', 'Ref No'],
@@ -1757,17 +1757,17 @@ function deleteEntry(id) {
 
 const RA_FOOTER = `
 
-📍 *Address:*
+• *Address:*
 Shop# 1 & 2, SB-39, Sector X, Sub Sector IV
 Near Nawaz Shareef Park
 Gulshan-e-Maymar, Karachi
 
-🗺️ *Office Location:*
+• *Office Location:*
 https://maps.app.goo.gl/NafeZkDnmuqt9Zfd6`;
 
-const RA_HEADER = `🏢 *REHMANI ASSOCIATES*
-📞 0321-8254254
-📞 0335-8254254`;
+const RA_HEADER = `*REHMANI ASSOCIATES*
+• 0321-8254254
+• 0335-8254254`;
 
 // House/Flat/Shop/Office/Plot — sirf jo cheez hai wahi likhte hain
 function numLabelFor(category, propertyType, isHouseField) {
@@ -1782,21 +1782,21 @@ function buildShareMsg(d) {
   const isRent = d.purpose === 'rent';
   let msg = RA_HEADER + `
 
-🏷️ *${d.propertyType || 'Property'} for ${isRent ? 'Rent' : 'Sale'}*
+• *${d.propertyType || 'Property'} for ${isRent ? 'Rent' : 'Sale'}*
 `;
-  if (d.num) msg += `\n📌 ${d.numLabel}: *${d.num}*`;
-  if (d.floor) msg += `\n🏢 Floor: *${d.floor}*`;
-  if (d.sector) msg += `\n📍 Sector: *${d.sector}*`;
-  if (d.subSector) msg += `\n🔢 Sub Sector: *${d.subSector}*`;
-  if (d.size) msg += `\n📐 Size: *${d.size}*`;
-  if (d.area) msg += `\n🏙️ Area: ${d.area}`;
-  if (d.corner) msg += `\n⭐ Corner`;
+  if (d.num) msg += `\n• ${d.numLabel}: *${d.num}*`;
+  if (d.floor) msg += `\n• Floor: *${d.floor}*`;
+  if (d.sector) msg += `\n• Sector: *${d.sector}*`;
+  if (d.subSector) msg += `\n• Sub Sector: *${d.subSector}*`;
+  if (d.size) msg += `\n• Size: *${d.size}*`;
+  if (d.area) msg += `\n• Area: ${d.area}`;
+  if (d.corner) msg += `\n• Corner`;
 
-  if (d.price) msg += `\n\n💰 *Price: ${d.price}*${d.priceType ? ' (' + d.priceType + ')' : ''}`;
+  if (d.price) msg += `\n\n• *Price: ${d.price}*${d.priceType ? ' (' + d.priceType + ')' : ''}`;
   if (isRent) {
-    if (d.rentPeriod) msg += `\n🔑 Rent Period: ${d.rentPeriod}`;
-    if (d.advance) msg += `\n💳 Advance: PKR ${Number(d.advance).toLocaleString('en-PK')}`;
-    if (d.security) msg += `\n🔒 Security: PKR ${Number(d.security).toLocaleString('en-PK')}`;
+    if (d.rentPeriod) msg += `\n• Rent Period: ${d.rentPeriod}`;
+    if (d.advance) msg += `\n• Advance: PKR ${Number(d.advance).toLocaleString('en-PK')}`;
+    if (d.security) msg += `\n• Security: PKR ${Number(d.security).toLocaleString('en-PK')}`;
   }
   // Agent, POC, Seller/Purchaser, Source aur Notes client ko NAHI jaate
   return msg + RA_FOOTER;
