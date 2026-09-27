@@ -611,6 +611,21 @@
     border: 1.5px solid #fca5a5; border-radius: var(--radius-sm);
     font-size: 13px; font-weight: 800; cursor: pointer; font-family: inherit;
   }
+  .lang-row { display: flex; gap: 8px; margin-top: 11px; }
+  .lang-btn {
+    flex: 1; padding: 12px; border-radius: var(--radius-sm); cursor: pointer;
+    border: 1.5px solid var(--gray-200); background: white; color: var(--gray-500);
+    font-size: 13px; font-weight: 800; font-family: inherit;
+  }
+  .lang-btn.active { background: #5c3d1e; color: #fdf0d8; border-color: #5c3d1e; }
+  .dup-wrap { position: fixed; inset: 0; background: rgba(45,32,21,.6); z-index: 400; display: flex; align-items: center; justify-content: center; padding: 22px; }
+  .dup-box { background: white; border-radius: 16px; max-width: 420px; width: 100%; overflow: hidden; box-shadow: var(--shadow-md); }
+  .dup-head { background: #fef3c7; border-bottom: 1px solid #fcd34d; padding: 14px 16px; font-size: 15px; font-weight: 800; color: #92400e; }
+  .dup-body { padding: 14px 16px; font-size: 13px; color: var(--gray-700); line-height: 1.65; max-height: 50vh; overflow-y: auto; }
+  .dup-item { background: #fdf8f2; border: 1px solid var(--gray-200); border-radius: 9px; padding: 8px 11px; margin: 7px 0; font-family: monospace; font-size: 12.5px; color: #5c3d1e; }
+  .dup-foot { padding: 12px 16px; border-top: 1px solid var(--gray-200); display: flex; gap: 8px; }
+  .dup-foot button { flex: 1; padding: 12px; border-radius: var(--radius-sm); border: none; font-size: 13.5px; font-weight: 800; cursor: pointer; font-family: inherit; background: #5c3d1e; color: #fdf0d8; }
+  .dup-foot button.ghost { background: white; color: var(--gray-500); border: 1.5px solid var(--gray-200); }
   .owner-line { font-size: 12px; color: var(--gray-700); margin-top: 3px; }
 </style>
 </head>
@@ -652,13 +667,13 @@
 
   <!-- Newspaper Scan -->
   <div class="scan-card">
-    <div class="scan-title">📰 Newspaper Notice Scan</div>
-    <div class="scan-sub">Ittila-e-Aam wale box ki photo lein ya gallery se ek saath kai photos select karein — plot, sector, agent aur owners khud nikal aayenge.</div>
+    <div class="scan-title">📰 <span data-i18n="scanTitle">Newspaper Notice Scan</span></div>
+    <div class="scan-sub" data-i18n="scanSub">Photograph the Ittila-e-Aam box, or pick several photos from the gallery — plot, sector, agent and names are read for you.</div>
     <div class="scan-btns">
-      <button class="scan-btn" onclick="document.getElementById('scanCamera').click()">📷 Photo Lein</button>
-      <button class="scan-btn ghost" onclick="document.getElementById('scanGallery').click()">🖼️ Gallery</button>
+      <button class="scan-btn" onclick="document.getElementById('scanCamera').click()">📷 <span data-i18n="btnPhoto">Take Photo</span></button>
+      <button class="scan-btn ghost" onclick="document.getElementById('scanGallery').click()">🖼️ <span data-i18n="btnGallery">Gallery</span></button>
     </div>
-    <button class="scan-btn ghost" style="width:100%;margin-top:8px" onclick="openVoiceModal()">🎤 Bol Kar / Likh Kar Entry</button>
+    <button class="scan-btn ghost" style="width:100%;margin-top:8px" onclick="openVoiceModal()">🎤 <span data-i18n="btnVoice">Speak or Type Entry</span></button>
     <input type="file" id="scanCamera" accept="image/*" capture="environment" class="hidden" onchange="onScanFile(this)">
     <input type="file" id="scanGallery" accept="image/*" multiple class="hidden" onchange="onScanFile(this)">
   </div>
@@ -667,12 +682,12 @@
   <div class="section-card">
     <div class="section-header">
       <div class="section-icon">🎯</div>
-      <div class="section-title">Purpose</div>
+      <div class="section-title" data-i18n="secPurpose">Purpose</div>
     </div>
     <div class="section-body">
       <div class="purpose-toggle">
-        <button class="purpose-btn sell active" onclick="setPurpose('sell')">🏷️ Sell</button>
-        <button class="purpose-btn rent" onclick="setPurpose('rent')">🔑 Rent</button>
+        <button class="purpose-btn sell active" onclick="setPurpose('sell')">🏷️ <span data-i18n="sell">Sell</span></button>
+        <button class="purpose-btn rent" onclick="setPurpose('rent')">🔑 <span data-i18n="rent">Rent</span></button>
       </div>
     </div>
   </div>
@@ -681,13 +696,13 @@
   <div class="section-card">
     <div class="section-header">
       <div class="section-icon">🏗️</div>
-      <div class="section-title">Property Type</div>
+      <div class="section-title" data-i18n="secType">Property Type</div>
     </div>
     <div class="section-body">
       <div class="cat-tabs">
-        <div class="cat-tab active" onclick="setCategory('home')" id="cat-home">🏠 Home</div>
-        <div class="cat-tab" onclick="setCategory('plots')" id="cat-plots">🌿 Plots</div>
-        <div class="cat-tab" onclick="setCategory('commercial')" id="cat-commercial">🏢 Commercial</div>
+        <div class="cat-tab active" onclick="setCategory('home')" id="cat-home">🏠 <span data-i18n="catHome">Home</span></div>
+        <div class="cat-tab" onclick="setCategory('plots')" id="cat-plots">🌿 <span data-i18n="catPlots">Plots</span></div>
+        <div class="cat-tab" onclick="setCategory('commercial')" id="cat-commercial">🏢 <span data-i18n="catComm">Commercial</span></div>
       </div>
       <div class="type-chips" id="typeChips"></div>
     </div>
@@ -697,7 +712,7 @@
   <div class="section-card">
     <div class="section-header">
       <div class="section-icon">📝</div>
-      <div class="section-title">Property Details</div>
+      <div class="section-title" data-i18n="secDetails">Property Details</div>
     </div>
     <div class="section-body" id="formFields"></div>
   </div>
@@ -705,7 +720,7 @@
   <!-- Submit -->
   <div class="action-btns">
     <button class="btn-save" onclick="saveEntry()">
-      <span>💾</span> Save Entry
+      <span>💾</span> <span data-i18n="saveEntry">Save Entry</span>
     </button>
     <button class="btn-whatsapp" onclick="shareWhatsApp(null)" title="Share on WhatsApp">
       💬
@@ -720,22 +735,22 @@
   <!-- Search Mode Toggle -->
   <div style="display:flex;gap:8px;margin-bottom:12px">
     <button class="search-mode-btn" id="btn-local" onclick="setSearchMode('local')">
-      📱 Is Device Ki Entries
+      📱 <span data-i18n="localEntries">This Device</span>
     </button>
     <button class="search-mode-btn active" id="btn-sheet" onclick="setSearchMode('sheet')">
-      ☁️ Sheet Mein Dhundho
+      ☁️ <span data-i18n="sheetSearch">Search in Sheet</span>
     </button>
   </div>
 
   <!-- LOCAL SEARCH -->
   <div id="local-search-section">
     <div class="records-header">
-      <div class="records-title">All Entries</div>
+      <div class="records-title" data-i18n="allEntries">All Entries</div>
       <div class="records-count" id="recordCount">0</div>
     </div>
     <div class="search-box">
       <span class="search-icon">🔍</span>
-      <input type="text" placeholder="Search by area, tracing, type..." id="searchInput" oninput="renderRecords()">
+      <input type="text" data-i18n-ph="phSearch" placeholder="Search by area, tracing, type..." id="searchInput" oninput="renderRecords()">
     </div>
     <div id="recordsList"></div>
   </div>
@@ -744,15 +759,15 @@
   <div id="sheet-search-section" class="hidden">
     <div class="section-card">
       <div class="section-body">
-        <div class="field-label" style="margin-bottom:8px">🔍 Google Sheet Mein Search Karein</div>
+        <div class="field-label" style="margin-bottom:8px">🔍 <span data-i18n="sheetSearchT">Search the Google Sheet</span></div>
         <div style="display:flex;gap:8px">
-          <input type="text" class="field-input" id="sheetSearchInput" placeholder="Plot no, area, tracing..." style="flex:1">
+          <input type="text" class="field-input" id="sheetSearchInput" data-i18n-ph="phSheetSearch" placeholder="Plot no, area, tracing..." style="flex:1">
           <button onclick="searchInSheet()" style="padding:10px 16px;background:#5c3d1e;color:#fdf0d8;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap">
-            Search
+            <span data-i18n="btnSearch">Search</span>
           </button>
         </div>
         <div style="font-size:11px;color:var(--gray-400);margin-top:6px">
-          Sab devices ki entries yahan se dhundh sakte hain
+          <span data-i18n="sheetSearchN">Entries from every device are searchable here</span>
         </div>
       </div>
     </div>
@@ -766,14 +781,14 @@
   <div class="section-card">
     <div class="section-header">
       <div class="section-icon">📊</div>
-      <div class="section-title">Google Sheet</div>
+      <div class="section-title" data-i18n="secSheet">Google Sheet</div>
     </div>
     <div class="section-body">
       <div id="sheetStatusBox" style="border-radius:8px;padding:11px;font-size:12.5px;line-height:1.6"></div>
       <div id="usageBox" style="margin-top:12px"></div>
       <a href="https://docs.google.com/spreadsheets/d/1PqM3Zd4uqMbkYRCF8yj_hS_1Eyx3cPIpkQDcSAsdfwg" target="_blank"
          style="display:block;text-align:center;margin-top:10px;padding:11px;background:#5c3d1e;color:#fdf0d8;border-radius:var(--radius-sm);font-size:13px;font-weight:700;text-decoration:none">
-        📄 Google Sheet Kholein
+        📄 <span data-i18n="openSheet">Open Google Sheet</span>
       </a>
     </div>
   </div>
@@ -781,14 +796,28 @@
   <div class="section-card">
     <div class="section-header">
       <div class="section-icon">📈</div>
-      <div class="section-title">Sync Status</div>
+      <div class="section-title" data-i18n="secSync">Sync Status</div>
     </div>
     <div class="section-body">
       <div class="stat-grid">
-        <div class="stat-tile"><div class="n" id="stat-total">0</div><div class="l">Total Entries</div></div>
-        <div class="stat-tile"><div class="n" id="stat-synced">0</div><div class="l">Sheet Mein Gayi</div></div>
-        <div class="stat-tile" id="tile-pending"><div class="n" id="stat-pending">0</div><div class="l">Pending Sync</div></div>
-        <div class="stat-tile" id="tile-dupes"><div class="n" id="stat-dupes">0</div><div class="l">Duplicate Flags</div></div>
+        <div class="stat-tile"><div class="n" id="stat-total">0</div><div class="l" data-i18n="stTotal">Total Entries</div></div>
+        <div class="stat-tile"><div class="n" id="stat-synced">0</div><div class="l" data-i18n="stSynced">In Sheet</div></div>
+        <div class="stat-tile" id="tile-pending"><div class="n" id="stat-pending">0</div><div class="l" data-i18n="stPending">Pending Sync</div></div>
+        <div class="stat-tile" id="tile-dupes"><div class="n" id="stat-dupes">0</div><div class="l" data-i18n="stDupes">Duplicate Flags</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-card">
+    <div class="section-header">
+      <div class="section-icon">🌐</div>
+      <div class="section-title" data-i18n="secLang">Language</div>
+    </div>
+    <div class="section-body">
+      <div class="danger-note" data-i18n="langNote">Choose the language for the whole app.</div>
+      <div class="lang-row">
+        <button class="lang-btn active" data-lang="en" onclick="setLang('en')" data-i18n="langEn">English</button>
+        <button class="lang-btn" data-lang="ur" onclick="setLang('ur')" data-i18n="langUr">Roman Urdu</button>
       </div>
     </div>
   </div>
@@ -796,14 +825,14 @@
   <div class="section-card">
     <div class="section-header">
       <div class="section-icon">🔒</div>
-      <div class="section-title">App Lock</div>
+      <div class="section-title" data-i18n="secLock">App Lock</div>
     </div>
     <div class="section-body">
       <div class="danger-note" style="margin-bottom:0">
-        Har naye phone ya browser par app khulte waqt password maangti hai. Ek dafa daalne ke baad wo device yaad rakhi jati hai.
+        <span data-i18n="lockNote">Every new phone or browser asks for the password once, then remembers that device.</span>
       </div>
       <button class="btn-danger" style="margin-top:11px;color:#5c3d1e;border-color:var(--gold)" onclick="lockThisDevice()">
-        🔒 Is Device Ko Lock Karein
+        🔒 <span data-i18n="lockBtn">Lock This Device</span>
       </button>
     </div>
   </div>
@@ -811,13 +840,13 @@
   <div class="section-card danger-card">
     <div class="section-header">
       <div class="section-icon">🗑️</div>
-      <div class="section-title">Data Management</div>
+      <div class="section-title" data-i18n="secData">Data Management</div>
     </div>
     <div class="section-body">
       <div class="danger-note">
-        Is phone ki saari local entries mit jayengi. Google Sheet ka data mehfooz rahega. Password zaroori hai.
+        <span data-i18n="dataNote">All local entries on this phone are erased. The Google Sheet stays safe. Password required.</span>
       </div>
-      <button class="btn-danger" onclick="clearAllData()">🗑️ Sab Data Clear Karein</button>
+      <button class="btn-danger" onclick="clearAllData()">🗑️ <span data-i18n="clearBtn">Clear All Data</span></button>
     </div>
   </div>
 
@@ -828,29 +857,29 @@
 <div id="lockScreen" class="hidden">
   <div class="lock-logo">🏢</div>
   <h1>REHMANI ASSOCIATES</h1>
-  <div class="lock-sub">Property Data App</div>
-  <input type="password" id="lockInput" placeholder="Password"
+  <div class="lock-sub" data-i18n="lockSub">Property Data App</div>
+  <input type="password" id="lockInput" data-i18n-ph="phPassword" placeholder="Password"
          autocomplete="current-password" autocapitalize="off" autocorrect="off" spellcheck="false"
          onkeydown="if(event.key==='Enter')tryUnlock()">
   <label style="font-size:11.5px;color:#e8d9c4;margin-top:8px;display:flex;align-items:center;gap:6px;cursor:pointer">
-    <input type="checkbox" onchange="document.getElementById('lockInput').type=this.checked?'text':'password'"> Password dikhayein
+    <input type="checkbox" onchange="document.getElementById('lockInput').type=this.checked?'text':'password'"> <span data-i18n="showPass">Show password</span>
   </label>
-  <button onclick="tryUnlock()">🔓 Kholein</button>
+  <button onclick="tryUnlock()">🔓 <span data-i18n="unlock">Unlock</span></button>
   <div id="lockMsg"></div>
-  <div class="lock-foot">Ye device yaad rakhi jayegi</div>
+  <div class="lock-foot" data-i18n="lockFoot">This device will be remembered</div>
 </div>
 
 <!-- Newspaper Review Modal -->
 <div class="modal-wrap hidden" id="scanModal">
   <div class="modal-sheet">
     <div class="modal-head">
-      <div class="modal-head-title">📰 Check Karein, Phir Save</div>
+      <div class="modal-head-title">📰 <span data-i18n="scanModalT">Check, Then Save</span></div>
       <button class="modal-close" onclick="closeScanModal()">✕</button>
     </div>
     <div class="modal-body" id="scanModalBody"></div>
     <div class="modal-foot" style="display:flex;gap:8px">
-      <button onclick="document.getElementById('scanGallery').click()" style="padding:0 14px;background:white;color:#5c3d1e;border:1.5px solid var(--gold);border-radius:var(--radius);font-weight:800;font-size:13px;cursor:pointer;font-family:inherit">➕ Photos</button>
-      <button class="btn-save" style="flex:1" onclick="saveScannedNotices()"><span>💾</span> Save Selected</button>
+      <button onclick="document.getElementById('scanGallery').click()" style="padding:0 14px;background:white;color:#5c3d1e;border:1.5px solid var(--gold);border-radius:var(--radius);font-weight:800;font-size:13px;cursor:pointer;font-family:inherit">➕ <span data-i18n="addPhotos">Photos</span></button>
+      <button class="btn-save" style="flex:1" onclick="saveScannedNotices()"><span>💾</span> <span data-i18n="saveSelected">Save Selected</span></button>
     </div>
   </div>
 </div>
@@ -859,29 +888,29 @@
 <div class="modal-wrap hidden" id="voiceModal">
   <div class="modal-sheet">
     <div class="modal-head">
-      <div class="modal-head-title">🎤 Bol Kar Entry</div>
+      <div class="modal-head-title">🎤 <span data-i18n="voiceTitle">Speak or Type Entry</span></div>
       <button class="modal-close" onclick="closeVoiceModal()">✕</button>
     </div>
     <div class="modal-body">
       <div style="font-size:11.5px;color:var(--gray-500);margin-bottom:10px;line-height:1.6">
-        Mic dabayein aur bol dein, ya WhatsApp se aaya hua text neeche paste kar dein.<br>
-        Misal: "Plot A-093 sector R sub sector three, 290 gaz, Gulshan-e-Maymar, agent Asad Enterprises 0334-2053146, demand ek crore bees lakh"
+        <span data-i18n="voiceNote">Press the mic and speak, or paste a message from WhatsApp below.</span><br>
+        <span data-i18n="voiceEg">Example: "Plot A-57 sector T sub sector four, 240 gaz, Gulshan-e-Maymar, agent Asad Enterprises 0334-2053146, demand one crore twenty lakh"</span>
       </div>
       <div style="display:flex;gap:8px;margin-bottom:10px">
-        <button id="micBtn" onclick="toggleMic()" style="flex:1;padding:14px;border-radius:var(--radius-sm);border:none;background:#5c3d1e;color:#fdf0d8;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit">🎤 Bolna Shuru</button>
+        <button id="micBtn" onclick="toggleMic()" style="flex:1;padding:14px;border-radius:var(--radius-sm);border:none;background:#5c3d1e;color:#fdf0d8;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit">🎤 <span id="micBtnLabel" data-i18n="micStart">Start Speaking</span></button>
         <select id="micLang" class="field-input" style="width:auto;padding:0 10px">
           <option value="ur-PK">اردو</option>
           <option value="en-US">English</option>
         </select>
       </div>
-      <textarea id="voiceText" class="field-input" rows="7" placeholder="Yahan bola hua text aayega — theek bhi kar sakte hain..." style="resize:vertical"></textarea>
+      <textarea id="voiceText" class="field-input" rows="7" data-i18n-ph="phVoice" placeholder="Your words appear here — you can edit them too..." style="resize:vertical"></textarea>
       <div style="display:flex;gap:8px;margin-top:8px">
-        <button onclick="romanize()" style="flex:1;padding:10px;border-radius:var(--radius-sm);border:1.5px solid var(--gold);background:white;color:#5c3d1e;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit">🔤 Roman Urdu Karein</button>
-        <button onclick="document.getElementById('voiceText').value=''" style="padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--gray-200);background:white;color:var(--gray-500);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit">Saaf</button>
+        <button onclick="romanize()" style="flex:1;padding:10px;border-radius:var(--radius-sm);border:1.5px solid var(--gold);background:white;color:#5c3d1e;font-size:12.5px;font-weight:800;cursor:pointer;font-family:inherit">🔤 <span data-i18n="romanBtn">Convert to Roman Urdu</span></button>
+        <button onclick="document.getElementById('voiceText').value=''" style="padding:10px 14px;border-radius:var(--radius-sm);border:1.5px solid var(--gray-200);background:white;color:var(--gray-500);font-size:12.5px;font-weight:700;cursor:pointer;font-family:inherit"><span data-i18n="clearBtnSm">Clear</span></button>
       </div>
     </div>
     <div class="modal-foot">
-      <button class="btn-save" style="width:100%" onclick="parseVoiceText()"><span>✨</span> Detail Nikalein</button>
+      <button class="btn-save" style="width:100%" onclick="parseVoiceText()"><span>✨</span> <span data-i18n="extractBtn">Extract Details</span></button>
     </div>
   </div>
 </div>
@@ -892,10 +921,261 @@
 <!-- Loading -->
 <div class="loading-overlay hidden" id="loadingOverlay">
   <div class="spinner"></div>
-  <div class="loading-text" id="loadingText">Syncing...</div>
+  <div class="loading-text" id="loadingText" data-i18n="syncing">Syncing...</div>
 </div>
 
 <script>
+
+// ============ LANGUAGE ============
+let LANG = 'en';
+try { LANG = localStorage.getItem('ra_lang') || 'en'; } catch (e) {}
+
+const T = {
+  // tabs / header
+  tagline:      ['Real Estate Data Entry', 'Real Estate Data Entry'],
+  tabEntry:     ['Entry', 'Entry'],
+  tabRecords:   ['Records', 'Records'],
+  tabSettings:  ['Settings', 'Settings'],
+  // scan card
+  scanTitle:    ['Newspaper Notice Scan', 'Newspaper Notice Scan'],
+  scanSub:      ['Photograph the Ittila-e-Aam box, or pick several photos from the gallery — plot, sector, agent and names are read for you.',
+                 'Ittila-e-Aam wale box ki photo lein ya gallery se kai photos select karein — plot, sector, agent aur naam khud nikal aayenge.'],
+  btnPhoto:     ['Take Photo', 'Photo Lein'],
+  btnGallery:   ['Gallery', 'Gallery'],
+  btnVoice:     ['Speak or Type Entry', 'Bol Kar / Likh Kar Entry'],
+  // sections
+  secPurpose:   ['Purpose', 'Purpose'],
+  secType:      ['Property Type', 'Property Type'],
+  secDetails:   ['Property Details', 'Property Details'],
+  sell:         ['Sell', 'Sell'],
+  rent:         ['Rent', 'Rent'],
+  catHome:      ['Home', 'Home'],
+  catPlots:     ['Plots', 'Plots'],
+  catComm:      ['Commercial', 'Commercial'],
+  // form labels
+  fDate:        ['Date', 'Date'],
+  fHouseNo:     ['House / Flat No.', 'House / Flat No.'],
+  fFloor:       ['Floor', 'Floor'],
+  fPlotNo:      ['Plot Number', 'Plot Number'],
+  fShopNo:      ['Shop No.', 'Shop No.'],
+  fOfficeNo:    ['Office No.', 'Office No.'],
+  fSector:      ['Sector', 'Sector'],
+  fSubSector:   ['Sub-Sector', 'Sub-Sector'],
+  fSize:        ['Size', 'Size'],
+  fSource:      ['Source', 'Source'],
+  fArea:        ['Area / Building Name', 'Area / Building Name'],
+  fPrice:       ['Price (PKR)', 'Price (PKR)'],
+  fRentDetails: ['Rent Details', 'Rent Details'],
+  fRentPeriod:  ['Rent Period', 'Rent Period'],
+  fAdvance:     ['Advance Rent (PKR)', 'Advance Rent (PKR)'],
+  fSecurity:    ['Security Deposit (PKR)', 'Security Deposit (PKR)'],
+  fMarketedBy:  ['Marketed By', 'Marketed By'],
+  fPoc:         ['POC (Phone Numbers)', 'POC (Phone Numbers)'],
+  fNotes:       ['Notes', 'Notes'],
+  fTracing:     ['Tracing Code (Auto)', 'Tracing Code (Auto)'],
+  addNumber:    ['Add Number', 'Number Add Karein'],
+  unique:       ['Unique', 'Unique'],
+  duplicate:    ['Duplicate', 'Duplicate'],
+  selectOpt:    ['-- Select --', '-- Select --'],
+  monthly:      ['Monthly', 'Monthly'],
+  yearly:       ['Yearly', 'Yearly'],
+  fixed:        ['Fixed', 'Fixed'],
+  nego:         ['Nego.', 'Nego.'],
+  newsPriceNote:['Newspaper source — price hidden (ads carry no price)',
+                 'Newspaper source — price hidden (ads mein price nahi hoti)'],
+  phHouseNo:    ['e.g. 104, A-5', 'e.g. 104, A-5'],
+  phFloor:      ['e.g. 1st, Ground', 'e.g. 1st, Ground'],
+  phPlot:       ['e.g. L-64', 'e.g. L-64'],
+  phSector:     ['e.g. A, Q, X-4', 'e.g. A, Q, X-4'],
+  phSub:        ['e.g. 2, IV', 'e.g. 2, IV'],
+  phSize:       ['e.g. 80, 2200', 'e.g. 80, 2200'],
+  phArea:       ['e.g. Maymar, Halima Tower', 'e.g. Maymar, Halima Tower'],
+  phPrice:      ['e.g. 8500000', 'e.g. 8500000'],
+  phMarketed:   ['Person or agency name', 'Banda ya agency ka naam'],
+  phNotes:      ['Extra info or remarks...', 'Extra info ya remarks...'],
+  // buttons
+  saveEntry:    ['Save Entry', 'Save Entry'],
+  // records
+  localEntries: ['This Device', 'Is Device Ki Entries'],
+  sheetSearch:  ['Search in Sheet', 'Sheet Mein Dhundho'],
+  allEntries:   ['All Entries', 'All Entries'],
+  phSearch:     ['Search by area, tracing, type...', 'Area, tracing, type se dhundein...'],
+  sheetSearchT: ['Search the Google Sheet', 'Google Sheet Mein Search Karein'],
+  phSheetSearch:['Plot no, area, tracing...', 'Plot no, area, tracing...'],
+  btnSearch:    ['Search', 'Search'],
+  sheetSearchN: ['Entries from every device are searchable here',
+                 'Sab devices ki entries yahan se mil jayengi'],
+  noResults:    ['No results found', 'Koi nateeja nahi mila'],
+  noEntries:    ['No entries yet', 'Abhi tak koi entry nahi'],
+  resultsFound: ['results found', 'nateeje mile'],
+  seller:       ['Seller', 'Seller'],
+  purchaser:    ['Purchaser', 'Purchaser'],
+  viewPhoto:    ['View newspaper photo', 'Newspaper photo dekhein'],
+  synced:       ['Synced', 'Synced'],
+  pending:      ['Pending', 'Pending'],
+  // settings
+  secSheet:     ['Google Sheet', 'Google Sheet'],
+  sheetOk:      ['Sheet connected', 'Sheet connected hai'],
+  sheetOkSub:   ['Every entry goes to the sheet automatically.', 'Har entry khud sheet mein chali jayegi.'],
+  sheetNo:      ['Sheet not connected', 'Sheet connected nahi'],
+  sheetNoSub:   ['GS_URL still needs to be set in the app file.', 'App file mein GS_URL set karna baqi hai.'],
+  openSheet:    ['Open Google Sheet', 'Google Sheet Kholein'],
+  secSync:      ['Sync Status', 'Sync Status'],
+  stTotal:      ['Total Entries', 'Total Entries'],
+  stSynced:     ['In Sheet', 'Sheet Mein Gayi'],
+  stPending:    ['Pending Sync', 'Pending Sync'],
+  stDupes:      ['Duplicate Flags', 'Duplicate Flags'],
+  secLang:      ['Language', 'Language'],
+  langNote:     ['Choose the language for the whole app.', 'Poori app ki zabaan chunein.'],
+  langEn:       ['English', 'English'],
+  langUr:       ['Roman Urdu', 'Roman Urdu'],
+  secLock:      ['App Lock', 'App Lock'],
+  lockNote:     ['Every new phone or browser asks for the password once, then remembers that device.',
+                 'Har naye phone ya browser par ek dafa password maangti hai, phir wo device yaad rakhti hai.'],
+  lockBtn:      ['Lock This Device', 'Is Device Ko Lock Karein'],
+  secData:      ['Data Management', 'Data Management'],
+  dataNote:     ['All local entries on this phone are erased. The Google Sheet stays safe. Password required.',
+                 'Is phone ki saari local entries mit jayengi. Google Sheet mehfooz rahegi. Password zaroori hai.'],
+  clearBtn:     ['Clear All Data', 'Sab Data Clear Karein'],
+  aiUsage:      ['AI Usage — Today', 'AI Usage — Aaj'],
+  last7:        ['Last 7 days', 'Pichlay 7 din'],
+  noRecord:     ['No record', 'Koi record nahi'],
+  limitHit:     ['times Google limit was hit', 'dafa Google ki limit lagi'],
+  blockedToday: ['Off today', 'Aaj band'],
+  usageLoad:    ['Loading AI usage...', 'AI usage load ho raha hai...'],
+  usageFail:    ['Usage did not load', 'Usage load nahi hua'],
+  // lock screen
+  lockSub:      ['Property Data App', 'Property Data App'],
+  phPassword:   ['Password', 'Password'],
+  showPass:     ['Show password', 'Password dikhayein'],
+  unlock:       ['Unlock', 'Kholein'],
+  lockFoot:     ['This device will be remembered', 'Ye device yaad rakhi jayegi'],
+  wrongPass:    ['Wrong password', 'Password ghalat hai'],
+  enterPass:    ['Enter password:', 'Password daalein:'],
+  // scan modal
+  scanModalT:   ['Check, Then Save', 'Check Karein, Phir Save'],
+  addPhotos:    ['Photos', 'Photos'],
+  saveSelected: ['Save Selected', 'Save Selected'],
+  checkWarn:    ['Check the plot number and sector against the photo — AI can misread. Tap a photo to enlarge it.',
+                 'Plot number aur sector photo se mila lein — AI se galti ho sakti hai. Photo par tap karein to bari ho jayegi.'],
+  notice:       ['Notice', 'Notice'],
+  corner:       ['Corner', 'Corner'],
+  nPlotNo:      ['Plot / House No', 'Plot / House No'],
+  nSize:        ['Size (Sqyds)', 'Size (Sqyds)'],
+  nArea:        ['Area / Scheme', 'Area / Scheme'],
+  nPrice:       ['Price (PKR) — optional', 'Price (PKR) — khaali chor sakte hain'],
+  adAgent:      ['AD AGENT (reach the owner through him)', 'AD AGENT (is se owner tak pohanchna hai)'],
+  nAgentName:   ['Agent / Agency Name', 'Agent / Agency Naam'],
+  nAgentPhones: ['Agent Numbers (comma separated)', 'Agent Numbers (comma se alag)'],
+  nSeller:      ['Seller (Farokht Kunindah)', 'Seller (Farokht Kunindah)'],
+  nPurchaser:   ['Purchaser (Khareedar)', 'Purchaser (Khareedar)'],
+  nNewspaper:   ['Newspaper', 'Newspaper'],
+  nNewspaperOther: ['Newspaper Name', 'Newspaper Ka Naam'],
+  nRefNo:       ['Ref No', 'Ref No'],
+  nDate:        ['Newspaper Date', 'Akhbar Ki Date'],
+  nNotes:       ['Notes (record only — not shared on WhatsApp)', 'Notes (sirf record ke liye — WhatsApp par nahi jayega)'],
+  phNotesScan:  ['Anything worth remembering about this property...', 'Is property ke baare mein yaad rakhne wali baat...'],
+  checking:     ['Checking the sheet...', 'Sheet mein check ho raha hai...'],
+  alreadyIn:    ['Already in the sheet', 'Sheet mein pehle se maujood'],
+  times:        ['time(s)', 'dafa'],
+  firstTime:    ['First time in the sheet', 'Sheet mein pehli dafa'],
+  photosFailed: ['photo(s) could not be scanned', 'photo scan nahi hui'],
+  retryBtn:     ['Try Again', 'Dobara Try Karein'],
+  // voice modal
+  voiceTitle:   ['Speak or Type Entry', 'Bol Kar Entry'],
+  voiceNote:    ['Press the mic and speak, or paste a message from WhatsApp below.',
+                 'Mic dabayein aur bol dein, ya WhatsApp se aaya hua text neeche paste karein.'],
+  voiceEg:      ['Example: "Plot A-57 sector T sub sector four, 240 gaz, Gulshan-e-Maymar, agent Asad Enterprises 0334-2053146, demand one crore twenty lakh"',
+                 'Misal: "Plot A-57 sector T sub sector char, 240 gaz, Gulshan-e-Maymar, agent Asad Enterprises 0334-2053146, demand ek crore bees lakh"'],
+  micStart:     ['Start Speaking', 'Bolna Shuru'],
+  micStop:      ['Stop (listening...)', 'Rokein (sun raha hoon...)'],
+  phVoice:      ['Your words appear here — you can edit them too...', 'Bola hua text yahan aayega — theek bhi kar sakte hain...'],
+  romanBtn:     ['Convert to Roman Urdu', 'Roman Urdu Karein'],
+  clearBtnSm:   ['Clear', 'Saaf'],
+  extractBtn:   ['Extract Details', 'Detail Nikalein'],
+  // toasts / misc
+  tSaved:       ['Entry saved', 'Entry save ho gayi'],
+  tDeleted:     ['Entry deleted', 'Entry delete ho gayi'],
+  tNeedDateArea:['Date and Area are required', 'Date aur Area zaroori hain'],
+  tNeedPrice:   ['Fill the price, or choose Newspaper as source', 'Price fill karein ya Newspaper source select karein'],
+  tNeedArea:    ['Fill the Area first', 'Pehle Area fill karein'],
+  tNoSheet:     ['Sheet not connected (GS_URL)', 'Sheet connected nahi (GS_URL)'],
+  tNeedNet:     ['Internet is needed for this', 'Is ke liye internet chahiye'],
+  tNoneSelected:['No notice selected', 'Koi notice select nahi'],
+  tNeedPlotSec: ['Every notice needs a Plot No and Sector', 'Har notice mein Plot No aur Sector zaroori hai'],
+  tNoticesSaved:['notice(s) saved', 'notice save ho gaye'],
+  tFound:       ['notice(s) found', 'notice mil gaye'],
+  tNoNotice:    ['No notice found in this photo — take a clearer one', 'Is photo mein notice nahi mila — saaf photo lein'],
+  tNoDetails:   ['No property details found', 'Koi property detail nahi mili'],
+  tSpeakFirst:  ['Speak or type something first', 'Pehle bol dein ya likh dein'],
+  tMicNo:       ['Mic does not work in this browser — type instead', 'Is browser mein mic nahi chalta — likh dein'],
+  tMicAllow:    ['Allow microphone access', 'Mic ki ijazat dein'],
+  tMicErr:      ['Mic error — type instead', 'Mic error — likh dein'],
+  tLocalCleared:['Local data cleared', 'Local data clear ho gaya'],
+  tCopied:      ['Copied', 'Copy ho gaya'],
+  confirmDelete:['Delete this entry?', 'Yeh entry delete karein?'],
+  confirmClear: ['Sure? All local entries will be deleted.', 'Pakka? Sab local entries delete ho jayengi.'],
+  confirmClose: ['notice(s) are not saved yet. Close anyway?', 'notice abhi save nahi hue. Band kar dein?'],
+  clearWarn:    ['All local data on this phone will be erased. The Google Sheet stays safe.',
+                 'Is phone ka saara local data mit jayega. Google Sheet mehfooz rahegi.'],
+  // duplicate popup
+  dupTitle:     ['Already in Records', 'Record Mein Pehle Se Hai'],
+  dupIntro:     ['These properties are already in the sheet:', 'Ye properties sheet mein pehle se maujood hain:'],
+  dupOutro:     ['You can still save them, or untick the ones you do not want.',
+                 'Phir bhi save kar sakte hain, ya jo nahi chahiye un ka tick hata dein.'],
+  dupOk:        ['Got it', 'Theek Hai'],
+  dupOneTitle:  ['Duplicate Entry', 'Duplicate Entry'],
+  dupOneMsg:    ['This tracing code already exists in your records:', 'Ye tracing code pehle se records mein hai:'],
+  dupSaveAnyway:['Save Anyway', 'Phir Bhi Save Karein'],
+  cancel:       ['Cancel', 'Cancel'],
+  scanning:     ['Reading the photo...', 'Photo parh raha hoon...'],
+  photosDone:   ['photos done', 'photos ho gayi'],
+  romanizing:   ['Converting to Roman...', 'Roman mein badal raha hoon...'],
+  extracting:   ['Pulling out the details...', 'Detail nikal raha hoon...'],
+  syncing:      ['Syncing...', 'Syncing...']
+};
+
+// "A-093" → "A-93" (sirf shuru ke zero hatate hain)
+function normalizePlotNo(v) {
+  return String(v || '').toUpperCase().trim().replace(/(^|[^0-9])0+(\d)/g, '$1$2');
+}
+
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+// Kisi bhi date ko "29 August 2026" bana deta hai (time stamp ke baghair)
+function fmtDate(v) {
+  if (!v) return '';
+  let d;
+  const str = String(v).trim();
+  const m = str.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (m) d = new Date(+m[1], +m[2] - 1, +m[3]);
+  else { d = new Date(str); if (isNaN(d)) return str; }
+  return d.getDate() + ' ' + MONTHS[d.getMonth()] + ' ' + d.getFullYear();
+}
+
+function t(k) {
+  const v = T[k];
+  if (!v) return k;
+  return LANG === 'ur' ? v[1] : v[0];
+}
+
+function setLang(l) {
+  LANG = l;
+  try { localStorage.setItem('ra_lang', l); } catch (e) {}
+  applyLang();
+}
+
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.getAttribute('data-i18n')); });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el => { el.placeholder = t(el.getAttribute('data-i18n-ph')); });
+  document.querySelectorAll('.lang-btn').forEach(b => b.classList.toggle('active', b.dataset.lang === LANG));
+  if (typeof renderFormFields === 'function' && document.getElementById('formFields')) renderFormFields();
+  if (typeof renderRecords === 'function' && document.getElementById('recordsList')) renderRecords();
+  if (typeof loadGsUrl === 'function') loadGsUrl();
+  const sm = document.getElementById('scanModal');
+  if (sm && !sm.classList.contains('hidden')) renderScanModal();
+}
+
 // ============ STATE ============
 let state = {
   purpose: 'sell',
@@ -915,7 +1195,7 @@ const TYPES = {
 // ============ INIT ============
 // ============ APP LOCK ============
 // 👇 Password yahan badal sakte hain
-const APP_PASSWORD = 'osama1598';
+const APP_PASSWORD = 'rehmani786';
 
 function rememberUnlock() {
   try { localStorage.setItem('ra_unlocked', APP_PASSWORD); } catch (e) {}
@@ -946,7 +1226,7 @@ function tryUnlock() {
     document.getElementById('lockMsg').textContent = '';
     el.value = '';
   } else {
-    document.getElementById('lockMsg').textContent = '❌ Password ghalat hai';
+    document.getElementById('lockMsg').textContent = '❌ ' + t('wrongPass');
     el.value = '';
     el.focus();
   }
@@ -958,14 +1238,15 @@ function lockThisDevice() {
 }
 
 function askPassword(reason) {
-  const p = prompt(reason + '\n\nPassword daalein:');
+  const p = prompt(reason + '\n\n' + t('enterPass'));
   if (p === null) return false;
-  if (p !== APP_PASSWORD) { showToast('❌ Password ghalat hai', 'error'); return false; }
+  if (p !== APP_PASSWORD) { showToast('❌ ' + t('wrongPass'), 'error'); return false; }
   return true;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
   if (!isUnlocked()) showLock();
+  applyLang();
   renderTypeChips();
   renderFormFields();
   updateSyncBanner();
@@ -1030,7 +1311,7 @@ function renderFormFields() {
 
   // Date
   html += `<div class="field-group">
-    <div class="field-label">📅 Date <span class="req">*</span></div>
+    <div class="field-label">📅 ${t('fDate')} <span class="req">*</span></div>
     <input type="date" class="field-input" id="f_date" value="${getTodayDate()}">
   </div>`;
 
@@ -1038,8 +1319,8 @@ function renderFormFields() {
   if (cat === 'home') {
     html += `<div class="field-row">
       <div class="field-group">
-        <div class="field-label">🏷️ House / Flat No.</div>
-        <input type="text" class="field-input" id="f_houseNo" placeholder="e.g. 104, A-5">
+        <div class="field-label">🏷️ ${t('fHouseNo')}</div>
+        <input type="text" class="field-input" id="f_houseNo" placeholder="${t('phHouseNo')}" onblur="this.value=normalizePlotNo(this.value);updateTracing()" oninput="updateTracing()">
       </div>
       <div class="field-group">
         <div class="field-label">🏢 Floor</div>
@@ -1048,14 +1329,14 @@ function renderFormFields() {
     </div>`;
   } else if (cat === 'plots') {
     html += `<div class="field-group">
-      <div class="field-label">📌 Plot Number</div>
-      <input type="text" class="field-input" id="f_plotNo" placeholder="e.g. L-64">
+      <div class="field-label">📌 ${t('fPlotNo')}</div>
+      <input type="text" class="field-input" id="f_plotNo" placeholder="${t('phPlot')}" onblur="this.value=normalizePlotNo(this.value);updateTracing()" oninput="updateTracing()">
     </div>`;
   } else if (cat === 'commercial') {
     html += `<div class="field-row">
       <div class="field-group">
-        <div class="field-label">🏪 ${type === 'Office' ? 'Office' : 'Shop'} No.</div>
-        <input type="text" class="field-input" id="f_houseNo" placeholder="e.g. Shop-5">
+        <div class="field-label">🏪 ${type === 'Office' ? t('fOfficeNo') : t('fShopNo')}</div>
+        <input type="text" class="field-input" id="f_houseNo" placeholder="e.g. Shop-5" onblur="this.value=normalizePlotNo(this.value);updateTracing()" oninput="updateTracing()">
       </div>
       <div class="field-group">
         <div class="field-label">🏢 Floor</div>
@@ -1067,20 +1348,20 @@ function renderFormFields() {
   // Sector + SubSector
   html += `<div class="field-row">
     <div class="field-group">
-      <div class="field-label">📍 Sector / Block</div>
-      <input type="text" class="field-input" id="f_sector" placeholder="e.g. A, Q, X-4" oninput="updateTracing()">
+      <div class="field-label">📍 ${t('fSector')}</div>
+      <input type="text" class="field-input" id="f_sector" placeholder="${t('phSector')}" oninput="updateTracing()">
     </div>
     <div class="field-group">
-      <div class="field-label">🔢 Sub Sector</div>
-      <input type="text" class="field-input" id="f_subSector" placeholder="e.g. 2, 1st Floor" oninput="updateTracing()">
+      <div class="field-label">🔢 ${t('fSubSector')}</div>
+      <input type="text" class="field-input" id="f_subSector" placeholder="${t('phSub')}" oninput="updateTracing()">
     </div>
   </div>`;
 
   // Sqyds + Unit Toggle
   html += `<div class="field-group">
-    <div class="field-label">📐 Size</div>
+    <div class="field-label">📐 ${t('fSize')}</div>
     <div style="display:flex;gap:8px;align-items:center">
-      <input type="number" class="field-input" id="f_sqyds" placeholder="e.g. 80, 2200" oninput="updateTracing()" style="flex:1">
+      <input type="number" class="field-input" id="f_sqyds" placeholder="${t('phSize')}" oninput="updateTracing()" style="flex:1">
       <div style="display:flex;gap:0;border:1.5px solid var(--gray-200);border-radius:var(--radius-sm);overflow:hidden;flex-shrink:0">
         <button type="button" id="unit_sqyds" onclick="setUnit('Sqyds')" style="padding:10px 12px;border:none;background:#5c3d1e;color:#fdf0d8;font-size:12px;font-weight:700;cursor:pointer">Sqyds</button>
         <button type="button" id="unit_sqft" onclick="setUnit('Sqft')" style="padding:10px 12px;border:none;background:white;color:var(--gray-500);font-size:12px;font-weight:600;cursor:pointer">Sqft</button>
@@ -1090,9 +1371,9 @@ function renderFormFields() {
 
   // Source — MOVED UP (before property details)
   html += `<div class="field-group">
-    <div class="field-label">📌 Source <span class="req">*</span></div>
+    <div class="field-label">📌 ${t('fSource')} <span class="req">*</span></div>
     <select class="field-select" id="f_source" onchange="onSourceChange()">
-      <option value="">-- Select --</option>
+      <option value="">${t('selectOpt')}</option>
       <option>Newspaper</option>
       <option>Person</option>
       <option>Online</option>
@@ -1104,45 +1385,45 @@ function renderFormFields() {
 
   // Area / Building
   html += `<div class="field-group">
-    <div class="field-label">🏙️ Area / Building Name <span class="req">*</span></div>
-    <input type="text" class="field-input" id="f_area" placeholder="e.g. Maymar, Halima Tower">
+    <div class="field-label">🏙️ ${t('fArea')} <span class="req">*</span></div>
+    <input type="text" class="field-input" id="f_area" placeholder="${t('phArea')}">
   </div>`;
 
   // Price — hidden when Newspaper selected
   html += `<div class="field-group" id="priceFieldGroup">
-    <div class="field-label">💰 Price (PKR)</div>
+    <div class="field-label">💰 ${t('fPrice')}</div>
     <div class="price-row">
       <div class="field-group">
-        <input type="number" class="field-input" id="f_price" placeholder="e.g. 8500000">
+        <input type="number" class="field-input" id="f_price" placeholder="${t('phPrice')}">
       </div>
       <div class="price-badge-group">
-        <div class="price-badge active fixed" id="badge_fixed" onclick="setPriceType('fixed')">Fixed</div>
-        <div class="price-badge negotiable" id="badge_neg" onclick="setPriceType('negotiable')">Nego.</div>
+        <div class="price-badge active fixed" id="badge_fixed" onclick="setPriceType('fixed')">${t('fixed')}</div>
+        <div class="price-badge negotiable" id="badge_neg" onclick="setPriceType('negotiable')">${t('nego')}</div>
       </div>
     </div>
   </div>
   <div id="newspaperPriceNote" class="hidden" style="background:#fef9c3;border:1.5px solid #fde047;border-radius:8px;padding:9px 12px;font-size:12px;color:#854d0e;margin-bottom:13px">
-    📰 Newspaper source — price field hidden (ads mein price nahi hoti)
+    📰 ${t('newsPriceNote')}
   </div>`;
 
   // Rent-specific fields
   if (isRent) {
     html += `<div class="rent-fields">
-      <div class="rent-label">🔑 Rent Details</div>
+      <div class="rent-label">🔑 ${t('fRentDetails')}</div>
       <div class="field-group" style="margin-bottom:10px">
-        <div class="field-label">Rent Period</div>
+        <div class="field-label">${t('fRentPeriod')}</div>
         <select class="field-select" id="f_rentPeriod">
-          <option value="Monthly">Monthly</option>
-          <option value="Yearly">Yearly</option>
+          <option value="Monthly">${t('monthly')}</option>
+          <option value="Yearly">${t('yearly')}</option>
         </select>
       </div>
       <div class="field-row">
         <div class="field-group">
-          <div class="field-label">Advance Rent (PKR)</div>
+          <div class="field-label">${t('fAdvance')}</div>
           <input type="number" class="field-input" id="f_advance" placeholder="e.g. 100000">
         </div>
         <div class="field-group">
-          <div class="field-label">Security Deposit (PKR)</div>
+          <div class="field-label">${t('fSecurity')}</div>
           <input type="number" class="field-input" id="f_security" placeholder="e.g. 50000">
         </div>
       </div>
@@ -1151,27 +1432,27 @@ function renderFormFields() {
 
   // Marketed By + POC
   html += `<div class="field-group">
-    <div class="field-label">👤 Marketed By</div>
-    <input type="text" class="field-input" id="f_marketedBy" placeholder="Banda ya Agency ka naam">
+    <div class="field-label">👤 ${t('fMarketedBy')}</div>
+    <input type="text" class="field-input" id="f_marketedBy" placeholder="${t('phMarketed')}">
   </div>
   <div class="field-group">
-    <div class="field-label">📞 POC (Phone Numbers)</div>
+    <div class="field-label">📞 ${t('fPoc')}</div>
     <div class="poc-list" id="pocList"></div>
-    <button class="add-poc-btn" onclick="addPoc()">➕ Number Add Karein</button>
+    <button class="add-poc-btn" onclick="addPoc()">➕ ${t('addNumber')}</button>
   </div>`;
 
   // Notes
   html += `<div class="field-group">
-    <div class="field-label">📝 Notes</div>
-    <textarea class="field-textarea" id="f_notes" placeholder="Extra info ya remarks..."></textarea>
+    <div class="field-label">📝 ${t('fNotes')}</div>
+    <textarea class="field-textarea" id="f_notes" placeholder="${t('phNotes')}"></textarea>
   </div>`;
 
   // Tracing Code
   html += `<div class="field-group">
-    <div class="field-label">🔗 Tracing Code (Auto)</div>
+    <div class="field-label">🔗 ${t('fTracing')}</div>
     <div class="tracing-box">
       <div class="tracing-code" id="tracingCode">-</div>
-      <div class="tracing-badge" id="tracingBadge">Unique</div>
+      <div class="tracing-badge" id="tracingBadge">${t('unique')}</div>
     </div>
   </div>`;
 
@@ -1179,6 +1460,43 @@ function renderFormFields() {
   state.pocNumbers = [''];
   renderPocList();
   updateTracing();
+}
+
+// ============ DUPLICATE POPUP ============
+let dupOkFn = null;
+
+function showDupModal({ title, intro, items, outro, okLabel, cancelLabel, onOk }) {
+  dupOkFn = onOk || null;
+  const old = document.getElementById('dupModal');
+  if (old) old.remove();
+  const div = document.createElement('div');
+  div.className = 'dup-wrap';
+  div.id = 'dupModal';
+  div.innerHTML = `<div class="dup-box">
+      <div class="dup-head">⚠️ ${title}</div>
+      <div class="dup-body">
+        ${intro}
+        ${items.map(x => `<div class="dup-item">${x}</div>`).join('')}
+        ${outro ? `<div style="margin-top:8px">${outro}</div>` : ''}
+      </div>
+      <div class="dup-foot">
+        ${onOk ? `<button class="ghost" onclick="closeDupModal()">${cancelLabel || t('cancel')}</button>` : ''}
+        <button onclick="dupConfirm()">${okLabel || t('dupOk')}</button>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+}
+
+function closeDupModal() {
+  const d = document.getElementById('dupModal');
+  if (d) d.remove();
+  dupOkFn = null;
+}
+
+function dupConfirm() {
+  const fn = dupOkFn;
+  closeDupModal();
+  if (fn) fn();
 }
 
 // ============ POC ============
@@ -1255,8 +1573,8 @@ function updateTracing() {
   const sq = val('f_sqyds');
   const floor = val('f_floor');
 
-  let parts = [num, sector, sub || floor, sq].filter(x => x);
-  const code = parts.length ? '-' + parts.join('/') : '-';
+  let parts = [normalizePlotNo(num), sector, sub || floor, sq].filter(x => x);
+  const code = parts.length ? parts.join('-') : '-';
 
   const codeEl = document.getElementById('tracingCode');
   const badgeEl = document.getElementById('tracingBadge');
@@ -1268,10 +1586,10 @@ function updateTracing() {
   const entries = getEntries();
   const dupes = entries.filter(e => e.tracing === code && code !== '-');
   if (dupes.length > 0) {
-    badgeEl.textContent = `⚠️ ${dupes.length} Duplicate`;
+    badgeEl.textContent = `⚠️ ${dupes.length} ${t('duplicate')}`;
     badgeEl.className = 'tracing-badge duplicate';
   } else {
-    badgeEl.textContent = 'Unique';
+    badgeEl.textContent = t('unique');
     badgeEl.className = 'tracing-badge';
   }
   return code;
@@ -1290,24 +1608,42 @@ function saveEntry() {
   const price = val('f_price');
   const isNewspaper = source === 'Newspaper';
   if (!date || !area) {
-    showToast('⚠️ Date aur Area zaroori hain', 'error');
+    showToast('⚠️ ' + t('tNeedDateArea'), 'error');
     return;
   }
   if (!isNewspaper && !price) {
-    showToast('⚠️ Price fill karein ya Newspaper source select karein', 'error');
+    showToast('⚠️ ' + t('tNeedPrice'), 'error');
     return;
   }
 
   const tracing = updateTracing();
+  const dupes = getEntries().filter(e => e.tracing === tracing && tracing !== '-');
+  if (dupes.length) {
+    showDupModal({
+      title: t('dupOneTitle'),
+      intro: t('dupOneMsg'),
+      items: [tracing + '  (' + dupes.length + ' ' + t('times') + ')'],
+      outro: '',
+      okLabel: t('dupSaveAnyway'),
+      cancelLabel: t('cancel'),
+      onOk: doSaveEntry
+    });
+    return;
+  }
+  doSaveEntry();
+}
+
+function doSaveEntry() {
+  const tracing = updateTracing();
   const entry = {
     id: Date.now().toString(),
-    date, purpose: state.purpose, category: state.category,
+    date: val('f_date'), purpose: state.purpose, category: state.category,
     propertyType: state.propertyType,
-    houseNo: val('f_houseNo'), plotNo: val('f_plotNo'),
+    houseNo: normalizePlotNo(val('f_houseNo')), plotNo: normalizePlotNo(val('f_plotNo')),
     floor: val('f_floor'), sector: val('f_sector'),
     subSector: val('f_subSector'), sqyds: val('f_sqyds'),
     sqUnit: state.sqUnit,
-    area, price, priceType,
+    area: val('f_area'), price: val('f_price'), priceType,
     marketedBy: val('f_marketedBy'),
     poc: state.pocNumbers.filter(n => n.trim()),
     source: val('f_source'), notes: val('f_notes'),
@@ -1321,7 +1657,7 @@ function saveEntry() {
   entries.unshift(entry);
   saveEntries(entries);
 
-  showToast('✅ Entry Save Ho Gayi!', 'success');
+  showToast('✅ ' + t('tSaved'), 'success');
 
   // Auto sync if online
   if (navigator.onLine) syncEntry(entry);
@@ -1352,7 +1688,7 @@ function renderRecords() {
     document.getElementById('recordsList').innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">📋</div>
-        <p>${q ? 'Koi nateeja nahi mila' : 'Abhi tak koi entry nahi hai'}</p>
+        <p>${q ? t('noResults') : t('noEntries')}</p>
       </div>`;
     return;
   }
@@ -1365,6 +1701,12 @@ function renderRecords() {
     const isDupe = tracingMap[e.tracing] > 1;
     const pocStr = Array.isArray(e.poc) ? e.poc.join(', ') : e.poc;
     const priceFormatted = e.price ? 'PKR ' + Number(e.price).toLocaleString('en-PK') : '';
+    const isHouse = !!e.houseNo;
+    const num = e.houseNo || e.plotNo || '';
+    const numLabel = isHouse
+      ? (e.category === 'commercial' ? (e.propertyType === 'Office' ? t('fOfficeNo') : t('fShopNo'))
+         : (e.propertyType === 'Flat' ? 'Flat No' : 'House No'))
+      : 'Plot No';
 
     return `<div class="record-card ${isDupe ? 'duplicate-flag' : ''}">
       <div class="record-top">
@@ -1375,15 +1717,19 @@ function renderRecords() {
         <div class="record-type-badge ${e.purpose}">${e.propertyType} • ${e.purpose === 'rent' ? 'Rent' : 'Sale'}</div>
       </div>
       <div class="record-details">
-        ${e.sector ? `<div class="record-detail">📍 <strong>${e.sector}${e.subSector ? '/' + e.subSector : ''}</strong></div>` : ''}
+        ${num ? `<div class="record-detail">${isHouse ? '🏠' : '📌'} ${numLabel}: <strong>${num}</strong></div>` : ''}
+        ${e.sector ? `<div class="record-detail">📍 ${t('fSector')}: <strong>${e.sector}</strong></div>` : ''}
+        ${e.subSector ? `<div class="record-detail">🔢 ${t('fSubSector')}: <strong>${e.subSector}</strong></div>` : ''}
         ${e.sqyds ? `<div class="record-detail">📐 <strong>${e.sqyds} ${e.sqUnit || 'Sqyds'}</strong></div>` : ''}
+        ${e.date ? `<div class="record-detail">📅 ${fmtDate(e.date)}</div>` : ''}
         ${e.marketedBy ? `<div class="record-detail">👤 ${e.marketedBy}</div>` : ''}
         ${pocStr ? `<div class="record-detail">📞 ${pocStr}</div>` : ''}
         ${e.source ? `<div class="record-detail">📌 ${e.source}</div>` : ''}
       </div>
-      ${e.newOwner ? `<div class="owner-line">🆕 Naya Owner: <strong>${e.newOwner}</strong></div>` : ''}
-      ${e.prevOwner ? `<div class="owner-line">↩️ Purana Owner: ${e.prevOwner}</div>` : ''}
-      ${e.imageUrl ? `<div class="owner-line"><a href="${e.imageUrl}" target="_blank" style="color:#5c3d1e">📰 Newspaper photo dekhein</a></div>` : ''}
+      ${e.prevOwner ? `<div class="owner-line">↩️ ${t('seller')}: <strong>${e.prevOwner}</strong></div>` : ''}
+      ${e.newOwner ? `<div class="owner-line">🆕 ${t('purchaser')}: <strong>${e.newOwner}</strong></div>` : ''}
+      ${e.notes ? `<div class="owner-line">📝 ${e.notes}</div>` : ''}
+      ${e.imageUrl ? `<div class="owner-line"><a href="${e.imageUrl}" target="_blank" style="color:#5c3d1e">📰 ${t('viewPhoto')}</a></div>` : ''}
       ${priceFormatted ? `<div class="record-price">${priceFormatted} <span style="font-size:11px;font-weight:500;color:var(--gray-400)">(${e.priceType || 'fixed'})</span></div>` : ''}
       <div class="record-actions">
         <button class="rec-btn wa" onclick="shareWhatsApp('${e.id}')">💬 WhatsApp</button>
@@ -1391,23 +1737,75 @@ function renderRecords() {
         <button class="rec-btn del" onclick="deleteEntry('${e.id}')">🗑️</button>
       </div>
       <div class="record-sync-status ${e.synced ? 'synced' : 'not-synced'}">
-        ${e.synced ? '✓ Synced' : '⏳ Pending'}
+        ${e.synced ? '✓ ' + t('synced') : '⏳ ' + t('pending')}
       </div>
     </div>`;
   }).join('');
 }
 
 function deleteEntry(id) {
-  if (!confirm('Yeh entry delete karein?')) return;
+  if (!confirm(t('confirmDelete'))) return;
   let entries = getEntries();
   entries = entries.filter(e => e.id !== id);
   saveEntries(entries);
   renderRecords();
   updateStats();
-  showToast('🗑️ Entry Delete Ho Gayi');
+  showToast('🗑️ ' + t('tDeleted'));
 }
 
 // ============ WHATSAPP SHARE ============
+
+const RA_FOOTER = `
+
+📍 *Address:*
+Shop# 1 & 2, SB-39, Sector X, Sub Sector IV
+Near Nawaz Shareef Park
+Gulshan-e-Maymar, Karachi
+
+🗺️ *Office Location:*
+https://maps.app.goo.gl/NafeZkDnmuqt9Zfd6`;
+
+const RA_HEADER = `🏢 *REHMANI ASSOCIATES*
+📞 0321-8254254
+📞 0335-8254254`;
+
+// House/Flat/Shop/Office/Plot — sirf jo cheez hai wahi likhte hain
+function numLabelFor(category, propertyType, isHouseField) {
+  if (!isHouseField) return 'Plot No';
+  if ((category || '').toLowerCase() === 'commercial') return propertyType === 'Office' ? 'Office No' : 'Shop No';
+  if (propertyType === 'Flat') return 'Flat No';
+  if (propertyType === 'Upper Portion' || propertyType === 'Lower Portion') return 'Portion No';
+  return 'House No';
+}
+
+function buildShareMsg(d) {
+  const isRent = d.purpose === 'rent';
+  let msg = RA_HEADER + `
+
+🏷️ *${d.propertyType || 'Property'} for ${isRent ? 'Rent' : 'Sale'}*
+`;
+  if (d.num) msg += `\n📌 ${d.numLabel}: *${d.num}*`;
+  if (d.floor) msg += `\n🏢 Floor: *${d.floor}*`;
+  if (d.sector) msg += `\n📍 Sector: *${d.sector}*`;
+  if (d.subSector) msg += `\n🔢 Sub Sector: *${d.subSector}*`;
+  if (d.size) msg += `\n📐 Size: *${d.size}*`;
+  if (d.area) msg += `\n🏙️ Area: ${d.area}`;
+  if (d.corner) msg += `\n⭐ Corner`;
+
+  if (d.price) msg += `\n\n💰 *Price: ${d.price}*${d.priceType ? ' (' + d.priceType + ')' : ''}`;
+  if (isRent) {
+    if (d.rentPeriod) msg += `\n🔑 Rent Period: ${d.rentPeriod}`;
+    if (d.advance) msg += `\n💳 Advance: PKR ${Number(d.advance).toLocaleString('en-PK')}`;
+    if (d.security) msg += `\n🔒 Security: PKR ${Number(d.security).toLocaleString('en-PK')}`;
+  }
+  // Agent, POC, Seller/Purchaser, Source aur Notes client ko NAHI jaate
+  return msg + RA_FOOTER;
+}
+
+function openWhatsApp(msg) {
+  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+}
+
 function shareWhatsApp(id) {
   let entry;
   if (id) {
@@ -1416,7 +1814,7 @@ function shareWhatsApp(id) {
     // Current form
     const date = val('f_date');
     const area = val('f_area');
-    if (!area) { showToast('⚠️ Pehle Area fill karein', 'error'); return; }
+    if (!area) { showToast('⚠️ ' + t('tNeedArea'), 'error'); return; }
     const tracing = updateTracing();
     entry = {
       date, purpose: state.purpose, category: state.category,
@@ -1435,54 +1833,22 @@ function shareWhatsApp(id) {
 
   if (!entry) return;
 
-  const pocStr = Array.isArray(entry.poc) ? entry.poc.join('\n📞 ') : entry.poc;
-  const priceFormatted = entry.price ? 'PKR ' + Number(entry.price).toLocaleString('en-PK') : 'N/A';
-  const isRent = entry.purpose === 'rent';
-
-  let msg = `🏢 *REHMANI ASSOCIATES*
-📍 Gulshan e Maymar, Karachi
-
-━━━━━━━━━━━━━━━━━━━━
-🏷️ *${entry.propertyType} for ${isRent ? 'Rent' : 'Sale'}*
-━━━━━━━━━━━━━━━━━━━━
-
-📅 Date: ${entry.date || '-'}
-🏙️ Area: ${entry.area || '-'}`;
-
-  if (entry.houseNo) msg += `\n🏠 House/Flat No: ${entry.houseNo}`;
-  if (entry.plotNo) msg += `\n📌 Plot No: ${entry.plotNo}`;
-  if (entry.floor) msg += `\n🏢 Floor: ${entry.floor}`;
-  if (entry.sector) msg += `\n📍 Sector/Block: ${entry.sector}`;
-  if (entry.subSector) msg += `\n🔢 Sub Sector: ${entry.subSector}`;
-  if (entry.sqyds) msg += `\n📐 Size: ${entry.sqyds} ${entry.sqUnit || 'Sqyds'}`;
-
-  if (entry.source !== 'Newspaper' && entry.price) {
-    msg += `\n\n💰 *Price: ${priceFormatted}* (${entry.priceType === 'negotiable' ? 'Negotiable' : 'Fixed'})`;
-  }
-
-  if (isRent) {
-    if (entry.rentPeriod) msg += `\n🔑 Rent Period: ${entry.rentPeriod}`;
-    if (entry.advance) msg += `\n💳 Advance: PKR ${Number(entry.advance).toLocaleString('en-PK')}`;
-    if (entry.security) msg += `\n🔒 Security: PKR ${Number(entry.security).toLocaleString('en-PK')}`;
-  }
-
-  // Agent, POC, owners, source aur notes client ko NAHI jaate — sirf Rehmani Associates ka contact
-  if (/corner/i.test(entry.notes || '')) msg += '\n⭐ Corner';
-
-  msg += `
-
-━━━━━━━━━━━━━━━━━━━━
-👤 *Junaid Rehmani*
-🏢 *Rehmani Associates*
-📞 0321-8254254
-📞 0335-8254254
-📍 Shop 1 & 2, SB-39, Sector X-4
-   Near Nawaz Shareef Park
-   Gulshan e Maymar, Karachi
-🗺️ https://maps.app.goo.gl/knpWAgpBbdVpp6uo8`;
-
-  const encoded = encodeURIComponent(msg);
-  window.open(`https://wa.me/?text=${encoded}`, '_blank');
+  const isHouseField = !!entry.houseNo;
+  openWhatsApp(buildShareMsg({
+    purpose: entry.purpose,
+    propertyType: entry.propertyType,
+    num: entry.houseNo || entry.plotNo || '',
+    numLabel: numLabelFor(entry.category, entry.propertyType, isHouseField),
+    floor: entry.floor,
+    sector: entry.sector,
+    subSector: entry.subSector,
+    size: entry.sqyds ? entry.sqyds + ' ' + (entry.sqUnit || 'Sqyds') : '',
+    area: entry.area,
+    corner: /corner/i.test(entry.notes || ''),
+    price: (entry.source !== 'Newspaper' && entry.price) ? 'PKR ' + Number(entry.price).toLocaleString('en-PK') : '',
+    priceType: entry.priceType === 'negotiable' ? 'Negotiable' : (entry.price ? 'Fixed' : ''),
+    rentPeriod: entry.rentPeriod, advance: entry.advance, security: entry.security
+  }));
 }
 
 // ============ GOOGLE SHEETS SYNC ============
@@ -1497,12 +1863,12 @@ const DAILY_LIMIT = 200;   // free tier ka andaza — apni marzi se badal sakte 
 async function loadUsage() {
   const box = document.getElementById('usageBox');
   if (!box || !getGsUrl()) return;
-  box.innerHTML = '<div style="font-size:12px;color:#6b7280">⏳ AI usage load ho raha hai...</div>';
+  box.innerHTML = '<div style="font-size:12px;color:#6b7280">⏳ ' + t('usageLoad') + '</div>';
   try {
     const resp = await fetch(getGsUrl() + '?usage=1');
     const d = JSON.parse(await resp.text());
-    const t = d.today || {};
-    const used = t.calls || 0;
+    const u = d.today || {};
+    const used = u.calls || 0;
     const pct = Math.min(100, Math.round(used / DAILY_LIMIT * 100));
     const color = pct > 85 ? '#991b1b' : pct > 60 ? '#b45309' : '#166534';
     const week = (d.days || []).map(x =>
@@ -1512,7 +1878,7 @@ async function loadUsage() {
     box.innerHTML = `
       <div style="border:1px solid var(--gray-200);border-radius:10px;padding:12px">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
-          <div style="font-size:12.5px;font-weight:800;color:#5c3d1e">🤖 AI Usage — Aaj</div>
+          <div style="font-size:12.5px;font-weight:800;color:#5c3d1e">🤖 ${t('aiUsage')}</div>
           <button onclick="loadUsage()" style="background:none;border:none;color:#5c3d1e;font-size:12px;cursor:pointer">🔄</button>
         </div>
         <div style="height:9px;background:#eee;border-radius:99px;overflow:hidden">
@@ -1520,14 +1886,14 @@ async function loadUsage() {
         </div>
         <div style="display:flex;justify-content:space-between;font-size:11.5px;color:#6b7280;margin-top:6px">
           <span>${used} / ~${DAILY_LIMIT} AI calls</span>
-          <span>${t.scans || 0} photo • ${t.voice || 0} voice</span>
+          <span>${u.scans || 0} photo • ${u.voice || 0} voice</span>
         </div>
-        ${t.limitHits ? `<div style="font-size:11.5px;color:#991b1b;margin-top:6px">⚠️ ${t.limitHits} dafa Google ki limit lagi</div>` : ''}
-        ${(d.blocked || []).length ? `<div style="font-size:11px;color:#b45309;margin-top:4px">Aaj band: ${d.blocked.join(', ')}</div>` : ''}
-        <details style="margin-top:8px"><summary style="font-size:11.5px;color:#5c3d1e;cursor:pointer">Pichlay 7 din</summary>${week || '<div style="font-size:11.5px;color:#6b7280">Koi record nahi</div>'}</details>
+        ${u.limitHits ? `<div style="font-size:11.5px;color:#991b1b;margin-top:6px">⚠️ ${u.limitHits} ${t('limitHit')}</div>` : ''}
+        ${(d.blocked || []).length ? `<div style="font-size:11px;color:#b45309;margin-top:4px">${t('blockedToday')}: ${d.blocked.join(', ')}</div>` : ''}
+        <details style="margin-top:8px"><summary style="font-size:11.5px;color:#5c3d1e;cursor:pointer">${t('last7')}</summary>${week || `<div style="font-size:11.5px;color:#6b7280">${t('noRecord')}</div>`}</details>
       </div>`;
   } catch (e) {
-    box.innerHTML = '<div style="font-size:12px;color:#991b1b">Usage load nahi hua</div>';
+    box.innerHTML = '<div style="font-size:12px;color:#991b1b">' + t('usageFail') + '</div>';
   }
 }
 
@@ -1536,10 +1902,10 @@ function loadGsUrl() {
   if (!box) return;
   if (getGsUrl()) {
     box.style.cssText += ';background:#ecfdf5;border:1px solid #86efac;color:#14532d';
-    box.innerHTML = '✅ <strong>Sheet connected hai</strong><br>Har entry khud sheet mein chali jayegi.';
+    box.innerHTML = '✅ <strong>' + t('sheetOk') + '</strong><br>' + t('sheetOkSub');
   } else {
     box.style.cssText += ';background:#fee2e2;border:1px solid #fca5a5;color:#991b1b';
-    box.innerHTML = '⚠️ <strong>Sheet connected nahi</strong><br>App file mein GS_URL set karna baqi hai.';
+    box.innerHTML = '⚠️ <strong>' + t('sheetNo') + '</strong><br>' + t('sheetNoSub');
   }
 }
 
@@ -1580,7 +1946,7 @@ async function syncEntry(entry) {
 async function syncNow() {
   if (!navigator.onLine) { showToast('❌ Internet nahi hai', 'error'); return; }
   const url = getGsUrl();
-  if (!url) { showToast('⚠️ Sheet connected nahi (GS_URL)', 'error'); switchTab('settings'); return; }
+  if (!url) { showToast('⚠️ ' + t('tNoSheet'), 'error'); switchTab('settings'); return; }
 
   const entries = getEntries().filter(e => !e.synced);
   if (entries.length === 0) { showToast('✅ Sab Sync Ho Chuka Hai'); return; }
@@ -1683,7 +2049,7 @@ function setSearchMode(mode) {
   if (mode === 'sheet') {
     const url = getGsUrl();
     if (!url) {
-      showToast('⚠️ Sheet connected nahi (GS_URL)', 'error');
+      showToast('⚠️ ' + t('tNoSheet'), 'error');
       setSearchMode('local');
     }
   }
@@ -1696,7 +2062,7 @@ async function searchInSheet() {
   if (!navigator.onLine) { showToast('❌ Internet chahiye sheet search ke liye', 'error'); return; }
 
   const gsUrl = getGsUrl();
-  if (!gsUrl) { showToast('⚠️ Sheet connected nahi (GS_URL)', 'error'); return; }
+  if (!gsUrl) { showToast('⚠️ ' + t('tNoSheet'), 'error'); return; }
 
   const resultsDiv = document.getElementById('sheetSearchResults');
   resultsDiv.innerHTML = `<div style="text-align:center;padding:30px;color:var(--gray-400)">
@@ -1809,14 +2175,20 @@ function copyNewScript() {
 function renderSheetResults(results, q) {
   const resultsDiv = document.getElementById('sheetSearchResults');
   if (!results || results.length === 0) {
-    resultsDiv.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><p>"${q}" ke liye koi nateeja nahi</p></div>`;
+    resultsDiv.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><p>${t('noResults')} — "${q}"</p></div>`;
     return;
   }
 
-  resultsDiv.innerHTML = `<div style="font-size:12px;font-weight:600;color:var(--gray-500);margin-bottom:10px">${results.length} nateeja mila</div>` +
+  resultsDiv.innerHTML = `<div style="font-size:12px;font-weight:600;color:var(--gray-500);margin-bottom:10px">${results.length} ${t('resultsFound')}</div>` +
     results.map(r => {
       const price = r['Price (PKR)'] ? 'PKR ' + Number(r['Price (PKR)']).toLocaleString('en-PK') : '';
       const purpose = (r['Purpose'] || '').toLowerCase();
+      const seller = r['Seller'] || r['Previous Owner'] || '';
+      const purchaser = r['Purchaser'] || r['New Owner'] || '';
+      const sNum = r['House/Flat No'] || r['Plot No'] || '';
+      const sNumLabel = r['House/Flat No']
+        ? ((r['Category'] || '').toLowerCase() === 'commercial' ? t('fShopNo') : 'House No')
+        : 'Plot No';
       return `<div class="sheet-result-card">
         <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
           <div>
@@ -1826,16 +2198,19 @@ function renderSheetResults(results, q) {
           <div class="rec-badge">${r['Property Type'] || ''} • ${purpose === 'rent' ? 'Rent' : 'Sale'}</div>
         </div>
         <div class="rec-info">
-          ${r['Sector'] ? '📍 ' + r['Sector'] + (r['Sub Sector'] ? '/' + r['Sub Sector'] : '') + '<br>' : ''}
-          ${r['Sqyds'] ? '📐 ' + r['Sqyds'] + ' sqyds<br>' : ''}
+          ${sNum ? '📌 ' + sNumLabel + ': <strong>' + sNum + '</strong><br>' : ''}
+          ${r['Sector'] ? '📍 ' + t('fSector') + ': <strong>' + r['Sector'] + '</strong><br>' : ''}
+          ${r['Sub Sector'] ? '🔢 ' + t('fSubSector') + ': <strong>' + r['Sub Sector'] + '</strong><br>' : ''}
+          ${r['Sqyds'] ? '📐 <strong>' + r['Sqyds'] + ' Sqyds</strong><br>' : ''}
+          ${r['Date'] ? '📅 ' + fmtDate(r['Date']) + '<br>' : ''}
           ${r['Marketed By'] ? '👤 ' + r['Marketed By'] + '<br>' : ''}
           ${r['POC'] ? '📞 ' + r['POC'] + '<br>' : ''}
           ${r['Source'] ? '📌 ' + r['Source'] : ''}
-          ${r['Date'] ? ' • 📅 ' + r['Date'] : ''}
         </div>
-        ${r['New Owner'] ? `<div class="owner-line">🆕 Naya Owner: <strong>${r['New Owner']}</strong></div>` : ''}
-        ${r['Previous Owner'] ? `<div class="owner-line">↩️ Purana Owner: ${r['Previous Owner']}</div>` : ''}
-        ${r['Image Link'] ? `<div class="owner-line"><a href="${r['Image Link']}" target="_blank" style="color:#5c3d1e">📰 Newspaper photo dekhein</a></div>` : ''}
+        ${seller ? `<div class="owner-line">↩️ ${t('seller')}: <strong>${seller}</strong></div>` : ''}
+        ${purchaser ? `<div class="owner-line">🆕 ${t('purchaser')}: <strong>${purchaser}</strong></div>` : ''}
+        ${r['Notes'] ? `<div class="owner-line">📝 ${r['Notes']}</div>` : ''}
+        ${r['Image Link'] ? `<div class="owner-line"><a href="${r['Image Link']}" target="_blank" style="color:#5c3d1e">📰 ${t('viewPhoto')}</a></div>` : ''}
         ${price ? `<div class="rec-price">${price} <span style="font-size:11px;font-weight:500;color:var(--gray-400)">(${r['Price Type'] || ''})</span></div>` : ''}
         <div style="margin-top:10px">
           <button class="rec-btn wa" onclick="shareWhatsAppFromSheet(${JSON.stringify(r).replace(/"/g, '&quot;')})">💬 WhatsApp</button>
@@ -1845,62 +2220,23 @@ function renderSheetResults(results, q) {
 }
 
 function shareWhatsAppFromSheet(r) {
-  const isRent = (r['Purpose'] || '').toLowerCase() === 'rent';
-  const price = r['Price (PKR)'] ? 'PKR ' + Number(r['Price (PKR)']).toLocaleString('en-PK') : '';
+  const isHouseField = !!r['House/Flat No'];
   const isNewspaper = r['Source'] === 'Newspaper';
-
-  let msg = `🏢 *REHMANI ASSOCIATES*
-📍 Gulshan e Maymar, Karachi
-
-━━━━━━━━━━━━━━━━━━━━
-🏷️ *${r['Property Type'] || ''} for ${isRent ? 'Rent' : 'Sale'}*
-━━━━━━━━━━━━━━━━━━━━
-
-📅 Date: ${r['Date'] || '-'}
-🏙️ Area: ${r['Area'] || '-'}`;
-
-  if (r['House/Flat No']) msg += `
-🏠 House/Flat No: ${r['House/Flat No']}`;
-  if (r['Plot No']) msg += `
-📌 Plot No: ${r['Plot No']}`;
-  if (r['Floor']) msg += `
-🏢 Floor: ${r['Floor']}`;
-  if (r['Sector']) msg += `
-📍 Sector/Block: ${r['Sector']}`;
-  if (r['Sub Sector']) msg += `
-🔢 Sub Sector: ${r['Sub Sector']}`;
-  if (r['Sqyds']) msg += `
-📐 Size: ${r['Sqyds']} sqyds/sqft`;
-
-  if (!isNewspaper && price) {
-    msg += `
-
-💰 *Price: ${price}* (${r['Price Type'] === 'negotiable' ? 'Negotiable' : 'Fixed'})`;
-  }
-  if (isRent) {
-    if (r['Rent Period']) msg += `
-🔑 Rent Period: ${r['Rent Period']}`;
-    if (r['Advance']) msg += `
-💳 Advance: PKR ${Number(r['Advance']).toLocaleString('en-PK')}`;
-    if (r['Security']) msg += `
-🔒 Security: PKR ${Number(r['Security']).toLocaleString('en-PK')}`;
-  }
-  // Agent, POC, owners aur notes client ko NAHI jaate — sirf Rehmani Associates ka contact
-  if (/corner/i.test(r['Notes'] || '')) msg += '\n⭐ Corner';
-
-  msg += `
-
-━━━━━━━━━━━━━━━━━━━━
-👤 *Junaid Rehmani*
-🏢 *Rehmani Associates*
-📞 0321-8254254
-📞 0335-8254254
-📍 Shop 1 & 2, SB-39, Sector X-4
-   Near Nawaz Shareef Park
-   Gulshan e Maymar, Karachi
-🗺️ https://maps.app.goo.gl/knpWAgpBbdVpp6uo8`;
-
-  window.open('https://wa.me/?text=' + encodeURIComponent(msg), '_blank');
+  openWhatsApp(buildShareMsg({
+    purpose: (r['Purpose'] || '').toLowerCase(),
+    propertyType: r['Property Type'],
+    num: r['House/Flat No'] || r['Plot No'] || '',
+    numLabel: numLabelFor(r['Category'], r['Property Type'], isHouseField),
+    floor: r['Floor'],
+    sector: r['Sector'],
+    subSector: r['Sub Sector'],
+    size: r['Sqyds'] ? r['Sqyds'] + ' Sqyds' : '',
+    area: r['Area'],
+    corner: /corner/i.test(r['Notes'] || ''),
+    price: (!isNewspaper && r['Price (PKR)']) ? 'PKR ' + Number(r['Price (PKR)']).toLocaleString('en-PK') : '',
+    priceType: r['Price Type'] === 'negotiable' ? 'Negotiable' : (r['Price (PKR)'] ? 'Fixed' : ''),
+    rentPeriod: r['Rent Period'], advance: r['Advance'], security: r['Security']
+  }));
 }
 
 // ============ VOICE / TEXT ENTRY ============
@@ -1924,7 +2260,7 @@ function closeVoiceModal() {
 function toggleMic() {
   if (recogOn) { stopMic(); return; }
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { showToast('⚠️ Is browser mein mic nahi chalta — text likh dein', 'error'); return; }
+  if (!SR) { showToast('⚠️ ' + t('tMicNo'), 'error'); return; }
   recog = new SR();
   recog.lang = document.getElementById('micLang').value;
   recog.continuous = true;
@@ -1942,7 +2278,7 @@ function toggleMic() {
   };
   recog.onerror = ev => {
     stopMic();
-    showToast(ev.error === 'not-allowed' ? '⚠️ Mic ki ijazat dein' : '⚠️ Mic error — text likh dein', 'error');
+    showToast('⚠️ ' + (ev.error === 'not-allowed' ? t('tMicAllow') : t('tMicErr')), 'error');
   };
   recog.onend = () => {
     // jo abhi tak pakka ho chuka hai use mehfooz kar lo, warna dobara shuru hone par repeat hota hai
@@ -1953,7 +2289,7 @@ function toggleMic() {
   try { recog.start(); } catch (e) {}
   recogOn = true;
   const b = document.getElementById('micBtn');
-  b.textContent = '⏹️ Rokein (sun raha hoon...)';
+  b.innerHTML = '⏹️ <span id="micBtnLabel">' + t('micStop') + '</span>';
   b.style.background = '#991b1b';
 }
 
@@ -1962,17 +2298,17 @@ function stopMic() {
   if (recog) { try { recog.stop(); } catch (e) {} }
   recogBase = ''; recogFinal = '';
   const b = document.getElementById('micBtn');
-  if (b) { b.textContent = '🎤 Bolna Shuru'; b.style.background = '#5c3d1e'; }
+  if (b) { b.innerHTML = '🎤 <span id="micBtnLabel" data-i18n="micStart">' + t('micStart') + '</span>'; b.style.background = '#5c3d1e'; }
 }
 
 async function romanize() {
   stopMic();
   const ta = document.getElementById('voiceText');
   const text = ta.value.trim();
-  if (!text) { showToast('⚠️ Pehle bol dein ya likh dein', 'error'); return; }
+  if (!text) { showToast('⚠️ ' + t('tSpeakFirst'), 'error'); return; }
   const overlay = document.getElementById('loadingOverlay');
   overlay.classList.remove('hidden');
-  document.getElementById('loadingText').textContent = 'Roman mein badal raha hoon...';
+  document.getElementById('loadingText').textContent = t('romanizing');
   try {
     const res = await postJson({ action: 'romanize', text });
     if (res.status !== 'ok') throw new Error(res.message || 'Fail');
@@ -1986,18 +2322,18 @@ async function romanize() {
 async function parseVoiceText() {
   stopMic();
   const text = document.getElementById('voiceText').value.trim();
-  if (!text) { showToast('⚠️ Pehle bol dein ya likh dein', 'error'); return; }
-  if (!navigator.onLine) { showToast('❌ Internet chahiye', 'error'); return; }
+  if (!text) { showToast('⚠️ ' + t('tSpeakFirst'), 'error'); return; }
+  if (!navigator.onLine) { showToast('❌ ' + t('tNeedNet'), 'error'); return; }
   const overlay = document.getElementById('loadingOverlay');
   const lt = document.getElementById('loadingText');
   overlay.classList.remove('hidden');
-  lt.textContent = 'Detail nikal raha hoon...';
+  lt.textContent = t('extracting');
   try {
     const res = await postJson({ action: 'text', text });
     if (res.status !== 'ok') throw new Error(res.message || 'Fail');
-    if (!res.notices.length) throw new Error('Koi property detail nahi mili');
+    if (!res.notices.length) throw new Error(t('tNoDetails'));
     const firstNew = scanState.notices.length;
-    res.notices.forEach(n => scanState.notices.push({ ...n, include: true, matches: null, preview: '', imageUrl: '' }));
+    res.notices.forEach(n => scanState.notices.push({ ...n, plotNo: normalizePlotNo(n.plotNo), include: true, matches: null, preview: '', imageUrl: '' }));
     overlay.classList.add('hidden');
     document.getElementById('voiceModal').classList.add('hidden');
     renderScanModal();
@@ -2047,8 +2383,9 @@ async function postJson(payload) {
 }
 
 function makeTracing(n) {
-  const parts = [n.plotNo, n.sector, n.subSector, n.size].map(x => (x || '').toString().trim()).filter(Boolean);
-  return parts.length ? '-' + parts.join('/') : '-';
+  const parts = [normalizePlotNo(n.plotNo), n.sector, n.subSector, n.size]
+    .map(x => (x || '').toString().trim()).filter(Boolean);
+  return parts.length ? parts.join('-') : '-';
 }
 
 const sleep = ms => new Promise(r => setTimeout(r, ms));
@@ -2073,8 +2410,8 @@ async function onScanFile(input) {
   const files = Array.from(input.files || []);
   input.value = '';
   if (!files.length) return;
-  if (!navigator.onLine) { showToast('❌ Scan ke liye internet chahiye', 'error'); return; }
-  if (!getGsUrl()) { showToast('⚠️ Sheet connected nahi (GS_URL)', 'error'); return; }
+  if (!navigator.onLine) { showToast('❌ ' + t('tNeedNet'), 'error'); return; }
+  if (!getGsUrl()) { showToast('⚠️ ' + t('tNoSheet'), 'error'); return; }
   await processFiles(files);
 }
 
@@ -2090,8 +2427,8 @@ async function processFiles(files) {
   const tick = () => {
     const sec = Math.round((Date.now() - t0) / 1000);
     lt.textContent = files.length > 1
-      ? `${done}/${files.length} photos ho gayi... (${sec}s)`
-      : `Photo parh raha hoon... (${sec}s)`;
+      ? `${done}/${files.length} ${t('photosDone')} (${sec}s)`
+      : `${t('scanning')} (${sec}s)`;
   };
   tick();
   const timer = setInterval(tick, 1000);
@@ -2113,11 +2450,11 @@ async function processFiles(files) {
   // Photos ki asal tarteeb mein notices add karo
   results.forEach((res, k) => {
     if (!res.ok) { scanState.failed.push({ file: files[k], reason: res.reason }); return; }
-    if (!res.r.notices.length) { scanState.failed.push({ file: files[k], reason: 'Is photo mein notice nahi mila' }); return; }
+    if (!res.r.notices.length) { scanState.failed.push({ file: files[k], reason: t('tNoNotice') }); return; }
     const marked = res.r.notices.some(n => n.highlighted);
     res.r.notices.forEach(n => {
       if (marked && !n.highlighted) return;   // photo mein round kiya hua hai to sirf wahi
-      scanState.notices.push({ ...n, include: true, matches: null, preview: res.r.dataUrl, imageUrl: res.r.imageUrl });
+      scanState.notices.push({ ...n, plotNo: normalizePlotNo(n.plotNo), include: true, matches: null, preview: res.r.dataUrl, imageUrl: res.r.imageUrl });
       found++;
     });
   });
@@ -2126,7 +2463,7 @@ async function processFiles(files) {
   if (!scanState.notices.length && !scanState.failed.length) return;
   renderScanModal();
   document.getElementById('scanModal').classList.remove('hidden');
-  if (found) showToast(`✅ ${found} notice mil gaye`, 'success');
+  if (found) showToast(`✅ ${found} ${t('tFound')}`, 'success');
   checkSheetMatches(firstNew);
 }
 
@@ -2137,9 +2474,9 @@ async function retryFailed() {
 }
 
 function matchHtml(m) {
-  if (m === null) return `<div class="notice-match none" style="background:#f5ece0;color:var(--gray-500);border-color:var(--gray-200)">⏳ Sheet mein check ho raha hai...</div>`;
-  if (m > 0) return `<div class="notice-match hit">🔔 Ye property sheet mein pehle se <strong>${m}</strong> dafa hai</div>`;
-  if (m === 0) return `<div class="notice-match none">✓ Sheet mein pehli dafa aa rahi hai</div>`;
+  if (m === null) return `<div class="notice-match none" style="background:#f5ece0;color:var(--gray-500);border-color:var(--gray-200)">⏳ ${t('checking')}</div>`;
+  if (m > 0) return `<div class="notice-match hit">🔔 ${t('alreadyIn')} — <strong>${m}</strong> ${t('times')}</div>`;
+  if (m === 0) return `<div class="notice-match none">✓ ${t('firstTime')}</div>`;
   return '';
 }
 
@@ -2153,41 +2490,53 @@ function renderScanModal() {
 
   let html = '';
   if (scanState.failed.length) {
-    html += `<div class="fail-box">❌ <strong>${scanState.failed.length} photo scan nahi hui</strong><br>
+    html += `<div class="fail-box">❌ <strong>${scanState.failed.length} ${t('photosFailed')}</strong><br>
       ${scanState.failed.map(x => '• ' + esc(x.file.name || 'Photo') + ' — ' + esc(x.reason).slice(0, 90)).join('<br>')}
-      <br><button onclick="retryFailed()">🔄 Dobara Try Karein</button></div>`;
+      <br><button onclick="retryFailed()">🔄 ${t('retryBtn')}</button></div>`;
   }
   if (scanState.notices.length) {
-    html += `<div style="font-size:11.5px;color:var(--gray-500);margin-bottom:10px">
-      ⚠️ Plot number aur sector photo se zaroor mila lein — AI se galti ho sakti hai. Photo par tap karein to bari ho jayegi.
-    </div>`;
+    html += `<div style="font-size:11.5px;color:var(--gray-500);margin-bottom:10px">⚠️ ${t('checkWarn')}</div>`;
   }
 
   html += scanState.notices.map((n, i) => `<div class="notice-card ${n.include ? '' : 'off'}" id="notice-${i}">
       <div class="notice-head">
-        <label><input type="checkbox" ${n.include ? 'checked' : ''} onchange="toggleNotice(${i}, this.checked)"> Notice ${i + 1}${n.highlighted ? ' ✏️' : ''}${n.corner ? ' • Corner' : ''}</label>
+        <label><input type="checkbox" ${n.include ? 'checked' : ''} onchange="toggleNotice(${i}, this.checked)"> ${t('notice')} ${i + 1}${n.highlighted ? ' ✏️' : ''}${n.corner ? ' • ' + t('corner') : ''}</label>
         <span style="font-size:11px;color:var(--gray-500)">${esc(n.propertyKind || 'Plot')}</span>
       </div>
       ${n.preview ? `<img src="${n.preview}" class="notice-photo" onclick="this.classList.toggle('big')" alt="Notice photo">` : ''}
-      <div class="field-row">${f(i, 'plotNo', '📌 Plot / House No')}${f(i, 'size', '📐 Size (Sqyds)')}</div>
-      <div class="field-row">${f(i, 'sector', '📍 Sector')}${f(i, 'subSector', '🔢 Sub Sector')}</div>
-      ${f(i, 'area', '🏙️ Area / Scheme')}
-      ${f(i, 'price', '💰 Price (PKR) — khaali chor sakte hain')}
+      <div class="field-row">${f(i, 'plotNo', '📌 ' + t('nPlotNo'))}${f(i, 'size', '📐 ' + t('nSize'))}</div>
+      <div class="field-row">${f(i, 'sector', '📍 ' + t('fSector'))}${f(i, 'subSector', '🔢 ' + t('fSubSector'))}</div>
+      ${f(i, 'area', '🏙️ ' + t('nArea'))}
+      ${f(i, 'price', '💰 ' + t('nPrice'))}
       <div style="background:#fdf0d8;border:1.5px solid var(--gold);border-radius:10px;padding:10px 10px 1px;margin-bottom:9px">
-        <div style="font-size:11px;font-weight:800;color:#5c3d1e;margin-bottom:6px">📣 AD AGENT (is se owner tak pohanchna hai)</div>
-        ${f(i, 'agentName', '👤 Agent / Agency Naam')}
+        <div style="font-size:11px;font-weight:800;color:#5c3d1e;margin-bottom:6px">📣 ${t('adAgent')}</div>
+        ${f(i, 'agentName', '👤 ' + t('nAgentName'))}
         <div class="field-group">
-          <div class="field-label">📞 Agent Numbers (comma se alag)</div>
+          <div class="field-label">📞 ${t('nAgentPhones')}</div>
           <input class="field-input" type="text" inputmode="tel" value="${esc((n.agentPhones || []).join(', '))}" placeholder="0334-2053146, 0322-2238479"
             oninput="onNoticeEdit(${i}, 'agentPhones', this.value.split(',').map(x => x.trim()).filter(Boolean))">
         </div>
       </div>
-      ${f(i, 'newOwner', '🆕 Naya Owner (Khareedar)')}
-      ${f(i, 'prevOwner', '↩️ Purana Owner (Farokht Kunindah)')}
-      <div class="field-row">${f(i, 'newspaper', '📰 Akhbar', 'e.g. Jang')}${f(i, 'refNo', '🔖 Ref No')}</div>
+      ${f(i, 'prevOwner', '↩️ ' + t('nSeller'))}
+      ${f(i, 'newOwner', '🆕 ' + t('nPurchaser'))}
+      <div class="field-row">
+        <div class="field-group">
+          <div class="field-label">📰 ${t('nNewspaper')}</div>
+          <select class="field-select" onchange="onNoticeEdit(${i}, 'newspaper', this.value)">
+            ${['', 'Jasarat', 'Aman', 'Nawa-e-Waqt', 'Others'].map(o =>
+              `<option value="${o}" ${(n.newspaper || '') === o ? 'selected' : ''}>${o || t('selectOpt')}</option>`).join('')}
+          </select>
+        </div>
+        ${f(i, 'refNo', '🔖 ' + t('nRefNo'))}
+      </div>
+      ${n.newspaper === 'Others' ? f(i, 'newspaperOther', '📰 ' + t('nNewspaperOther')) : ''}
       <div class="field-group">
-        <div class="field-label">📅 Akhbar ki Date</div>
+        <div class="field-label">📅 ${t('nDate')}</div>
         <input type="date" class="field-input" value="${esc(n.date || getTodayDate())}" oninput="onNoticeEdit(${i}, 'date', this.value)">
+      </div>
+      <div class="field-group">
+        <div class="field-label">📝 ${t('nNotes')}</div>
+        <textarea class="field-textarea" placeholder="${t('phNotesScan')}" oninput="onNoticeEdit(${i}, 'notes', this.value)">${esc(n.notes || '')}</textarea>
       </div>
       <div class="notice-trace" id="trace-${i}">${esc(makeTracing(n))}</div>
       <div id="match-${i}">${matchHtml(n.matches)}</div>
@@ -2197,9 +2546,11 @@ function renderScanModal() {
 }
 
 function onNoticeEdit(i, key, value) {
+  if (key === 'plotNo') value = normalizePlotNo(value);
   scanState.notices[i][key] = value;
-  const t = document.getElementById('trace-' + i);
-  if (t) t.textContent = makeTracing(scanState.notices[i]);
+  if (key === 'newspaper') { renderScanModal(); return; }
+  const el = document.getElementById('trace-' + i);
+  if (el) el.textContent = makeTracing(scanState.notices[i]);
 }
 
 function toggleNotice(i, on) {
@@ -2209,7 +2560,7 @@ function toggleNotice(i, on) {
 
 function closeScanModal() {
   const pending = scanState.notices.filter(n => n.include).length;
-  if (pending && !confirm(`${pending} notice abhi save nahi hue. Band kar dein?`)) return;
+  if (pending && !confirm(`${pending} ${t('confirmClose')}`)) return;
   document.getElementById('scanModal').classList.add('hidden');
   scanState = { notices: [], failed: [] };
 }
@@ -2230,28 +2581,41 @@ async function checkSheetMatches(from = 0) {
     const el = document.getElementById('match-' + i);
     if (el) el.innerHTML = matchHtml(count);
   }
+
+  // Jo pehle se maujood hain, un ka popup dikhao
+  const dupes = scanState.notices.filter(n => n.matches > 0);
+  if (dupes.length) {
+    showDupModal({
+      title: t('dupTitle'),
+      intro: t('dupIntro'),
+      items: dupes.map(n => makeTracing(n) + '  (' + n.matches + ' ' + t('times') + ')'),
+      outro: t('dupOutro')
+    });
+  }
 }
 
 function saveScannedNotices() {
   const chosen = scanState.notices.filter(n => n.include);
-  if (!chosen.length) { showToast('⚠️ Koi notice select nahi', 'error'); return; }
+  if (!chosen.length) { showToast('⚠️ ' + t('tNoneSelected'), 'error'); return; }
   for (const n of chosen) {
-    if (!n.plotNo || !n.sector) { showToast('⚠️ Har notice mein Plot No aur Sector zaroori hai', 'error'); return; }
+    if (!n.plotNo || !n.sector) { showToast('⚠️ ' + t('tNeedPlotSec'), 'error'); return; }
   }
   const entries = getEntries();
   const now = Date.now();
   const newOnes = chosen.map((n, k) => {
     const isHouse = /house|ghar|makan|bungalow/i.test(n.propertyKind || '');
+    const paper = n.newspaper === 'Others' ? (n.newspaperOther || 'Others') : (n.newspaper || '');
     const notesParts = [];
     if (n.corner) notesParts.push('Corner');
-    if (n.newspaper) notesParts.push('Akhbar: ' + n.newspaper);
+    if (paper) notesParts.push('Newspaper: ' + paper);
+    if (n.notes) notesParts.push(n.notes);
     return {
       id: (now + k).toString(),
       date: n.date || getTodayDate(),
       purpose: n.purpose === 'rent' ? 'rent' : 'sell',
       category: isHouse ? 'home' : 'plots',
       propertyType: isHouse ? 'House' : 'Residential Plot',
-      houseNo: isHouse ? n.plotNo : '', plotNo: isHouse ? '' : n.plotNo,
+      houseNo: isHouse ? normalizePlotNo(n.plotNo) : '', plotNo: isHouse ? '' : normalizePlotNo(n.plotNo),
       floor: '', sector: n.sector || '', subSector: n.subSector || '',
       sqyds: n.size || '', sqUnit: 'Sqyds',
       area: n.area || '', price: (n.price || '').toString().replace(/[^\d]/g, ''), priceType: '',
@@ -2267,7 +2631,7 @@ function saveScannedNotices() {
   saveEntries([...newOnes, ...entries]);
   document.getElementById('scanModal').classList.add('hidden');
   scanState = { notices: [], failed: [] };
-  showToast(`✅ ${newOnes.length} notice save ho gaye`, 'success');
+  showToast(`✅ ${newOnes.length} ${t('tNoticesSaved')}`, 'success');
   (async () => {
     if (navigator.onLine) for (const e of newOnes) await syncEntry(e);
     updateStats(); updateSyncBanner();
@@ -2276,10 +2640,10 @@ function saveScannedNotices() {
 }
 
 function clearAllData() {
-  if (!askPassword('⚠️ Is phone ka saara local data mit jayega. Google Sheet mehfooz rahegi.')) return;
-  if (!confirm('Pakka? Sab local entries delete ho jayengi.')) return;
+  if (!askPassword('⚠️ ' + t('clearWarn'))) return;
+  if (!confirm(t('confirmClear'))) return;
   localStorage.removeItem('ra_entries');
-  showToast('🗑️ Local data clear ho gaya', 'success');
+  showToast('🗑️ ' + t('tLocalCleared'), 'success');
   renderRecords(); updateStats(); updateSyncBanner();
 }
 </script>
