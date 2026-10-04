@@ -1772,12 +1772,15 @@ function deleteEntry(id) {
 // ============ EDIT ENTRY ============
 
 let _editId = null;
+let _editSource = 'local';
+let _editTracingOrig = '';
 
 function openEditModal(id) {
   const entries = getEntries();
   const e = entries.find(x => x.id === id);
   if (!e) return;
   _editId = id;
+  _editSource = 'local';
 
   const field = (label, key, type='text') => `
     <div style="margin-bottom:12px">
@@ -1830,9 +1833,12 @@ function openEditModal(id) {
 function closeEditModal() {
   document.getElementById('editModal').classList.add('hidden');
   _editId = null;
+  _editSource = 'local';
+  _editTracingOrig = '';
 }
 
 function saveEditModal() {
+  if (_editSource === 'sheet') { saveEditModalSheet(); return; }
   if (!_editId) return;
   const entries = getEntries();
   const idx = entries.findIndex(x => x.id === _editId);
@@ -1874,6 +1880,140 @@ function saveEditModal() {
   renderRecords();
   updateStats();
   showToast('✏️ Entry updated');
+}
+
+// ============ SHEET RECORD EDIT ============
+
+function openEditModalSheet(r) {
+  _editSource = 'sheet';
+  _editTracingOrig = String(r['Tracing'] || '').replace(/^'/, '').trim();
+  _editId = null; // not a local entry
+
+  const v = (key) => (r[key] || '').toString().replace(/"/g, '&quot;');
+
+  const field = (label, key, val, type='text') => `
+    <div style="margin-bottom:12px">
+      <div class="field-label" style="margin-bottom:4px">${label}</div>
+      <input type="${type}" class="field-input" id="edit_${key}" value="${val}" style="width:100%">
+    </div>`;
+
+  const textarea = (label, key, val) => `
+    <div style="margin-bottom:12px">
+      <div class="field-label" style="margin-bottom:4px">${label}</div>
+      <textarea class="field-input" id="edit_${key}" rows="2" style="width:100%;resize:vertical">${val}</textarea>
+    </div>`;
+
+  const selField = (label, key, opts, cur) => `
+    <div style="margin-bottom:12px">
+      <div class="field-label" style="margin-bottom:4px">${label}</div>
+      <select class="field-input" id="edit_${key}" style="width:100%">
+        ${opts.map(o => `<option value="${o}" ${cur===o?'selected':''}>${o||'-- Select --'}</option>`).join('')}
+      </select>
+    </div>`;
+
+  // Map Sheet column names → edit field values
+  const purpose = (r['Purpose'] || '').toLowerCase();
+  const category = (r['Category'] || '').toLowerCase();
+  const priceType = (r['Price Type'] || '').toLowerCase();
+
+  document.getElementById('editModalBody').innerHTML = `
+    <div style="padding:4px 0 8px;font-size:11px;color:var(--gray-500)">Sheet Record &nbsp;|&nbsp; Tracing: <strong>${_editTracingOrig || '-'}</strong></div>
+    ${field('Date', 'date', v('Date'), 'date')}
+    ${field('Area / Scheme', 'area', v('Area'))}
+    ${selField('Purpose', 'purpose', ['sell','rent'], purpose)}
+    ${selField('Category', 'category', ['home','plots','commercial'], category)}
+    ${field('Property Type', 'propertyType', v('Property Type'))}
+    ${field('Plot No', 'plotNo', v('Plot No'))}
+    ${field('House / Shop No', 'houseNo', v('House/Flat No'))}
+    ${field('Floor', 'floor', v('Floor'))}
+    ${field('Sector', 'sector', v('Sector'))}
+    ${field('Sub-Sector', 'subSector', v('Sub Sector'))}
+    ${field('Size (Sqyds)', 'sqyds', v('Sqyds'))}
+    ${field('Seller (Farokht Kunindah)', 'prevOwner', v('Seller'))}
+    ${field('Purchaser (Khareedar)', 'newOwner', v('Purchaser'))}
+    ${field('Agent / Agency', 'marketedBy', v('Marketed By'))}
+    ${field('Agent Numbers', 'poc', v('POC'))}
+    ${field('Newspaper', 'source', v('Source'))}
+    ${field('Newspaper Ref', 'newsRef', v('Newspaper Ref'))}
+    ${field('Price (PKR)', 'price', v('Price (PKR)'), 'number')}
+    ${selField('Price Type', 'priceType', ['','fixed','negotiable','per sqyd'], priceType)}
+    ${field('Rent Period', 'rentPeriod', v('Rent Period'))}
+    ${field('Advance (PKR)', 'advance', v('Advance'), 'number')}
+    ${field('Security (PKR)', 'security', v('Security'), 'number')}
+    ${textarea('Notes', 'notes', r['Notes'] || '')}
+  `;
+
+  document.getElementById('editModal').classList.remove('hidden');
+}
+
+async function saveEditModalSheet() {
+  const g = key => {
+    const el = document.getElementById('edit_' + key);
+    return el ? el.value.trim() : '';
+  };
+
+  if (!_editTracingOrig) {
+    showToast('❌ Tracing code nahi mila, update nahi ho sakta', 'error');
+    return;
+  }
+
+  const gsUrl = getGsUrl();
+  if (!gsUrl) {
+    showToast('⚠️ Sheet URL set nahi hai', 'error');
+    return;
+  }
+
+  // Disable save button while saving
+  const saveBtn = document.querySelector('#editModal .btn-save');
+  if (saveBtn) { saveBtn.disabled = true; saveBtn.innerHTML = '⏳ Saving...'; }
+
+  try {
+    const payload = {
+      action: 'updateRow',
+      tracing: _editTracingOrig,
+      date: g('date'),
+      area: g('area'),
+      purpose: g('purpose'),
+      category: g('category'),
+      propertyType: g('propertyType'),
+      plotNo: g('plotNo'),
+      houseNo: g('houseNo'),
+      floor: g('floor'),
+      sector: g('sector'),
+      subSector: g('subSector'),
+      sqyds: g('sqyds'),
+      prevOwner: g('prevOwner'),
+      newOwner: g('newOwner'),
+      marketedBy: g('marketedBy'),
+      poc: g('poc'),
+      source: g('source'),
+      newsRef: g('newsRef'),
+      price: g('price'),
+      priceType: g('priceType'),
+      rentPeriod: g('rentPeriod'),
+      advance: g('advance'),
+      security: g('security'),
+      notes: g('notes')
+    };
+
+    const result = await postJson(payload);
+
+    if (result.status === 'ok') {
+      closeEditModal();
+      showToast('✅ Sheet record updated!', 'success');
+      // Re-run the search to show updated data
+      const searchInput = document.getElementById('sheetSearchInput');
+      if (searchInput && searchInput.value.trim()) {
+        searchInSheet();
+      }
+    } else {
+      showToast('❌ ' + (result.message || 'Update fail ho gaya'), 'error');
+    }
+  } catch (err) {
+    showToast('❌ Network error: ' + err.message, 'error');
+  } finally {
+    if (saveBtn) { saveBtn.disabled = false; saveBtn.innerHTML = '<span>💾</span> Save Changes'; }
+  }
 }
 
 // ============ WHATSAPP SHARE ============
@@ -2335,8 +2475,9 @@ function renderSheetResults(results, q) {
         ${r['Notes'] ? `<div class="owner-line">📝 ${r['Notes']}</div>` : ''}
         ${r['Image Link'] ? `<div class="owner-line"><a href="${r['Image Link']}" target="_blank" style="color:#5c3d1e">📰 ${t('viewPhoto')}</a></div>` : ''}
         ${price ? `<div class="rec-price">${price} <span style="font-size:11px;font-weight:500;color:var(--gray-400)">(${r['Price Type'] || ''})</span></div>` : ''}
-        <div style="margin-top:10px">
+        <div style="margin-top:10px;display:flex;gap:6px;flex-wrap:wrap">
           <button class="rec-btn wa" onclick="shareWhatsAppFromSheet(${JSON.stringify(r).replace(/"/g, '&quot;')})">💬 WhatsApp</button>
+          <button class="rec-btn" style="background:#e8f4e8;color:#2d6a2d;border:1px solid #a8d5a8" onclick="openEditModalSheet(${JSON.stringify(r).replace(/"/g, '&quot;')})">✏️ Edit</button>
         </div>
       </div>`;
     }).join('');
