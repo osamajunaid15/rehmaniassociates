@@ -918,6 +918,21 @@
 <!-- Toast -->
 <div class="toast" id="toast"></div>
 
+<!-- Edit Entry Modal -->
+<div class="modal-wrap hidden" id="editModal">
+  <div class="modal-sheet" style="max-height:92vh;overflow-y:auto">
+    <div class="modal-head">
+      <div class="modal-head-title">✏️ Edit Entry</div>
+      <button class="modal-close" onclick="closeEditModal()">✕</button>
+    </div>
+    <div class="modal-body" id="editModalBody" style="padding-bottom:8px"></div>
+    <div class="modal-foot">
+      <button onclick="closeEditModal()" style="padding:0 18px;background:white;color:#5c3d1e;border:1.5px solid var(--gold);border-radius:var(--radius);font-weight:700;font-size:14px;cursor:pointer;font-family:inherit">Cancel</button>
+      <button class="btn-save" style="flex:1" onclick="saveEditModal()"><span>💾</span> Save Changes</button>
+    </div>
+  </div>
+</div>
+
 <!-- Loading -->
 <div class="loading-overlay hidden" id="loadingOverlay">
   <div class="spinner"></div>
@@ -1067,8 +1082,8 @@ const T = {
   adAgent:      ['AD AGENT (reach the owner through him)', 'AD AGENT (is se owner tak pohanchna hai)'],
   nAgentName:   ['Agent / Agency Name', 'Agent / Agency Naam'],
   nAgentPhones: ['Agent Numbers (comma separated)', 'Agent Numbers (comma se alag)'],
-  nSeller:      ['Seller', 'Seller'],
-  nPurchaser:   ['Purchaser', 'Purchaser'],
+  nSeller:      ['Seller (Farokht Kunindah)', 'Seller (Farokht Kunindah)'],
+  nPurchaser:   ['Purchaser (Khareedar)', 'Purchaser (Khareedar)'],
   nNewspaper:   ['Newspaper', 'Newspaper'],
   nNewspaperOther: ['Newspaper Name', 'Newspaper Ka Naam'],
   nRefNo:       ['Ref No', 'Ref No'],
@@ -1733,6 +1748,7 @@ function renderRecords() {
       ${priceFormatted ? `<div class="record-price">${priceFormatted} <span style="font-size:11px;font-weight:500;color:var(--gray-400)">(${e.priceType || 'fixed'})</span></div>` : ''}
       <div class="record-actions">
         <button class="rec-btn wa" onclick="shareWhatsApp('${e.id}')">💬 WhatsApp</button>
+        <button class="rec-btn" style="background:#e8f4e8;color:#2d6a2d;border:1px solid #a8d5a8" onclick="openEditModal('${e.id}')">✏️</button>
         ${!e.synced ? `<button class="rec-btn sync" onclick="syncSingle('${e.id}')">☁️ Sync</button>` : ''}
         <button class="rec-btn del" onclick="deleteEntry('${e.id}')">🗑️</button>
       </div>
@@ -1751,6 +1767,113 @@ function deleteEntry(id) {
   renderRecords();
   updateStats();
   showToast('🗑️ ' + t('tDeleted'));
+}
+
+// ============ EDIT ENTRY ============
+
+let _editId = null;
+
+function openEditModal(id) {
+  const entries = getEntries();
+  const e = entries.find(x => x.id === id);
+  if (!e) return;
+  _editId = id;
+
+  const field = (label, key, type='text') => `
+    <div style="margin-bottom:12px">
+      <div class="field-label" style="margin-bottom:4px">${label}</div>
+      <input type="${type}" class="field-input" id="edit_${key}" value="${(e[key]||'').toString().replace(/"/g,'&quot;')}" style="width:100%">
+    </div>`;
+
+  const textarea = (label, key) => `
+    <div style="margin-bottom:12px">
+      <div class="field-label" style="margin-bottom:4px">${label}</div>
+      <textarea class="field-input" id="edit_${key}" rows="2" style="width:100%;resize:vertical">${e[key]||''}</textarea>
+    </div>`;
+
+  const selField = (label, key, opts) => `
+    <div style="margin-bottom:12px">
+      <div class="field-label" style="margin-bottom:4px">${label}</div>
+      <select class="field-input" id="edit_${key}" style="width:100%">
+        ${opts.map(o => `<option value="${o}" ${e[key]===o?'selected':''}>${o||'-- Select --'}</option>`).join('')}
+      </select>
+    </div>`;
+
+  document.getElementById('editModalBody').innerHTML = `
+    <div style="padding:4px 0 8px;font-size:11px;color:var(--gray-500)">ID: ${e.id} &nbsp;|&nbsp; Tracing: <strong>${e.tracing||'-'}</strong></div>
+    ${field('Date', 'date', 'date')}
+    ${field('Area / Scheme', 'area')}
+    ${selField('Purpose', 'purpose', ['sell','rent'])}
+    ${selField('Category', 'category', ['home','plots','commercial'])}
+    ${field('Property Type', 'propertyType')}
+    ${field('Plot No', 'plotNo')}
+    ${field('House / Shop No', 'houseNo')}
+    ${field('Floor', 'floor')}
+    ${field('Sector', 'sector')}
+    ${field('Sub-Sector', 'subSector')}
+    ${field('Size (Sqyds)', 'sqyds')}
+    ${selField('Size Unit', 'sqUnit', ['Sqyds','Marla','Kanal','Sq Ft'])}
+    ${field('Seller (Farokht Kunindah)', 'prevOwner')}
+    ${field('Purchaser (Khareedar)', 'newOwner')}
+    ${field('Agent / Agency', 'marketedBy')}
+    ${field('Agent Numbers', 'poc')}
+    ${field('Newspaper', 'source')}
+    ${field('Ref No', 'refNo')}
+    ${field('Price (PKR)', 'price', 'number')}
+    ${selField('Price Type', 'priceType', ['','fixed','negotiable','per sqyd'])}
+    ${textarea('Notes', 'notes')}
+  `;
+
+  document.getElementById('editModal').classList.remove('hidden');
+}
+
+function closeEditModal() {
+  document.getElementById('editModal').classList.add('hidden');
+  _editId = null;
+}
+
+function saveEditModal() {
+  if (!_editId) return;
+  const entries = getEntries();
+  const idx = entries.findIndex(x => x.id === _editId);
+  if (idx === -1) return;
+
+  const g = key => {
+    const el = document.getElementById('edit_' + key);
+    return el ? el.value.trim() : '';
+  };
+
+  const e = entries[idx];
+  e.date        = g('date');
+  e.area        = g('area');
+  e.purpose     = g('purpose');
+  e.category    = g('category');
+  e.propertyType= g('propertyType');
+  e.plotNo      = normalizePlotNo(g('plotNo'));
+  e.houseNo     = g('houseNo');
+  e.floor       = g('floor');
+  e.sector      = g('sector');
+  e.subSector   = g('subSector');
+  e.sqyds       = g('sqyds');
+  e.sqUnit      = g('sqUnit');
+  e.prevOwner   = g('prevOwner');
+  e.newOwner    = g('newOwner');
+  e.marketedBy  = g('marketedBy');
+  e.poc         = g('poc') ? g('poc').split(',').map(x=>x.trim()).filter(Boolean) : [];
+  e.source      = g('source');
+  e.refNo       = g('refNo');
+  e.price       = g('price');
+  e.priceType   = g('priceType');
+  e.notes       = g('notes');
+  e.tracing     = makeTracing(e);
+  e.synced      = false; // edited — needs re-sync
+
+  entries[idx] = e;
+  saveEntries(entries);
+  closeEditModal();
+  renderRecords();
+  updateStats();
+  showToast('✏️ Entry updated');
 }
 
 // ============ WHATSAPP SHARE ============
