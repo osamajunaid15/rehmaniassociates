@@ -499,6 +499,46 @@
   .sheet-result-card .rec-info { font-size:13px;color:var(--gray-500);margin-top:6px;line-height:1.7; }
   .sheet-result-card .rec-price { font-size:15px;font-weight:800;color:#5c3d1e;margin-top:4px; }
 
+  /* ===== TRACING TAB ===== */
+  .trace-header {
+    background:var(--gold-gradient);color:#fff;border-radius:var(--radius);
+    padding:16px;margin-bottom:14px;
+  }
+  .trace-header .trace-title { font-size:17px;font-weight:800;margin-bottom:2px; }
+  .trace-header .trace-sub { font-size:13px;opacity:.85; }
+  .trace-timeline { position:relative;padding-left:28px; }
+  .trace-timeline::before {
+    content:'';position:absolute;left:10px;top:0;bottom:0;width:3px;
+    background:linear-gradient(to bottom,#c9a84c,#e8d5a8);border-radius:2px;
+  }
+  .trace-event {
+    position:relative;background:#fff;border:1px solid var(--gray-200);
+    border-radius:var(--radius);padding:14px;margin-bottom:14px;
+    box-shadow:0 1px 4px rgba(0,0,0,.06);
+  }
+  .trace-event::before {
+    content:'';position:absolute;left:-22px;top:18px;width:11px;height:11px;
+    border-radius:50%;border:2.5px solid #c9a84c;background:#fff;z-index:1;
+  }
+  .trace-event.latest::before { background:#c9a84c; }
+  .trace-event .ev-date {
+    font-size:13px;font-weight:700;color:#5c3d1e;margin-bottom:6px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .trace-event .ev-badge {
+    font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;
+    background:#e8f4e8;color:#2d6a2d;
+  }
+  .trace-event .ev-row {
+    font-size:13px;color:var(--gray-600);line-height:1.8;
+  }
+  .trace-event .ev-row strong { color:var(--gray-800); }
+  .trace-event .ev-price { font-size:15px;font-weight:800;color:#5c3d1e;margin-top:4px; }
+  .trace-count {
+    text-align:center;font-size:13px;font-weight:600;color:var(--gray-400);
+    padding:8px 0 4px;
+  }
+
   .hidden { display: none !important; }
 
   /* Loading overlay */
@@ -657,6 +697,9 @@
   <div class="tab" onclick="switchTab('records')" id="tab-records">
     <span class="tab-icon">📋</span>Records
   </div>
+  <div class="tab" onclick="switchTab('tracing')" id="tab-tracing">
+    <span class="tab-icon">🔍</span>Tracing
+  </div>
   <div class="tab" onclick="switchTab('settings')" id="tab-settings">
     <span class="tab-icon">⚙️</span>Settings
   </div>
@@ -761,7 +804,7 @@
       <div class="section-body">
         <div class="field-label" style="margin-bottom:8px">🔍 <span data-i18n="sheetSearchT">Search the Google Sheet</span></div>
         <div style="display:flex;gap:8px">
-          <input type="text" class="field-input" id="sheetSearchInput" data-i18n-ph="phSheetSearch" placeholder="Plot no, area, tracing..." style="flex:1">
+          <input type="text" class="field-input" id="sheetSearchInput" data-i18n-ph="phSheetSearch" placeholder="Plot no, area, tracing..." style="flex:1" onkeydown="if(event.key==='Enter')searchInSheet()">
           <button onclick="searchInSheet()" style="padding:10px 16px;background:#5c3d1e;color:#fdf0d8;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap">
             <span data-i18n="btnSearch">Search</span>
           </button>
@@ -773,6 +816,24 @@
     </div>
     <div id="sheetSearchResults"></div>
   </div>
+
+</div>
+
+<!-- ============ TRACING TAB ============ -->
+<div id="page-tracing" class="main hidden">
+
+  <div class="card">
+    <div class="card-title">🔍 Property Tracing</div>
+    <div style="font-size:13px;color:var(--gray-500);margin-bottom:12px">Plot number ya tracing code enter karein — us property ka poora history mil jaye ga</div>
+    <div style="display:flex;gap:8px">
+      <input type="text" class="field-input" id="tracingSearchInput" placeholder="e.g. A-58 or A-58-T-IV-240" style="flex:1" onkeydown="if(event.key==='Enter')searchTracing()">
+      <button onclick="searchTracing()" style="padding:10px 16px;background:#5c3d1e;color:#fdf0d8;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;white-space:nowrap">
+        🔍 Trace
+      </button>
+    </div>
+  </div>
+
+  <div id="tracingResults"></div>
 
 </div>
 
@@ -1275,7 +1336,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ============ TABS ============
 function switchTab(tab) {
-  ['entry','records','settings'].forEach(t => {
+  ['entry','records','tracing','settings'].forEach(t => {
     document.getElementById('page-'+t).classList.toggle('hidden', t !== tab);
     document.getElementById('tab-'+t).classList.toggle('active', t === tab);
   });
@@ -2481,6 +2542,125 @@ function renderSheetResults(results, q) {
         </div>
       </div>`;
     }).join('');
+}
+
+// ============ TRACING ============
+async function searchTracing() {
+  const q = document.getElementById('tracingSearchInput').value.trim();
+  if (!q) { showToast('Plot no ya tracing code likhen', 'error'); return; }
+
+  const url = getGsUrl();
+  if (!url) { showToast('⚠️ ' + t('tNoSheet'), 'error'); switchTab('settings'); return; }
+
+  const resultsDiv = document.getElementById('tracingResults');
+  resultsDiv.innerHTML = '<div style="text-align:center;padding:30px"><div class="spinner" style="margin:0 auto 10px"></div><div style="font-size:14px;color:var(--gray-500)">Sheet mein dhundh rahe hain...</div></div>';
+
+  try {
+    const resp = await fetch(url + '?search=' + encodeURIComponent(q));
+    const json = await resp.json();
+    if (json.status !== 'ok') throw new Error(json.message || 'Search failed');
+    renderTracingResults(json.results || [], q);
+  } catch (err) {
+    resultsDiv.innerHTML = `<div class="empty-state"><div class="empty-icon">❌</div><p>${err.message}</p></div>`;
+  }
+}
+
+function renderTracingResults(allResults, query) {
+  const resultsDiv = document.getElementById('tracingResults');
+  if (!allResults.length) {
+    resultsDiv.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><p>Koi record nahi mila — "${query}"</p></div>`;
+    return;
+  }
+
+  // Normalize query for matching
+  const qNorm = normalizePlotNo(query).toLowerCase();
+
+  // Filter: match on Plot No, House/Flat No, or Tracing code (partial match)
+  const matched = allResults.filter(r => {
+    const plot = normalizePlotNo(r['Plot No'] || '').toLowerCase();
+    const house = normalizePlotNo(r['House/Flat No'] || '').toLowerCase();
+    const tracing = (r['Tracing'] || '').toLowerCase();
+    return plot.includes(qNorm) || house.includes(qNorm) || tracing.includes(qNorm) || qNorm.includes(plot) || qNorm.includes(house);
+  });
+
+  if (!matched.length) {
+    resultsDiv.innerHTML = `<div class="empty-state"><div class="empty-icon">🔍</div><p>Koi matching property nahi mili — "${query}"</p></div>`;
+    return;
+  }
+
+  // Group by a property key: Plot/House No + Sector + Sub Sector + Area
+  const groups = {};
+  matched.forEach(r => {
+    const num = normalizePlotNo(r['House/Flat No'] || r['Plot No'] || '-');
+    const key = [num, r['Sector'] || '', r['Sub Sector'] || '', r['Area'] || ''].join('|').toLowerCase();
+    if (!groups[key]) groups[key] = { num, sector: r['Sector'] || '', sub: r['Sub Sector'] || '', area: r['Area'] || '', sqyds: r['Sqyds'] || '', propType: r['Property Type'] || '', category: r['Category'] || '', records: [] };
+    groups[key].records.push(r);
+    // keep largest sqyds
+    if (r['Sqyds'] && (!groups[key].sqyds || Number(r['Sqyds']) > Number(groups[key].sqyds))) groups[key].sqyds = r['Sqyds'];
+  });
+
+  // Sort records within each group: latest date first
+  function parseDate(v) {
+    if (!v) return 0;
+    const s = String(v).trim();
+    const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    if (m) return new Date(+m[1], +m[2]-1, +m[3]).getTime();
+    const d = new Date(s);
+    return isNaN(d) ? 0 : d.getTime();
+  }
+
+  let html = '';
+  const groupKeys = Object.keys(groups);
+
+  groupKeys.forEach(key => {
+    const g = groups[key];
+    g.records.sort((a, b) => parseDate(b['Date']) - parseDate(a['Date']));
+
+    const isHouse = !!g.records[0]['House/Flat No'];
+    const numLabel = isHouse ? ((g.category.toLowerCase() === 'commercial') ? 'Shop No' : 'House No') : 'Plot No';
+
+    // Property header
+    html += `<div class="trace-header">
+      <div class="trace-title">📍 ${numLabel}: ${g.num}${g.sector ? ', Sector ' + g.sector : ''}${g.sub ? ', Sub ' + g.sub : ''}</div>
+      <div class="trace-sub">${g.area}${g.sqyds ? ' • ' + g.sqyds + ' Sqyds' : ''}${g.propType ? ' • ' + g.propType : ''}</div>
+    </div>`;
+
+    // Timeline
+    html += '<div class="trace-timeline">';
+    g.records.forEach((r, idx) => {
+      const isLatest = idx === 0;
+      const seller = r['Seller'] || r['Previous Owner'] || '';
+      const purchaser = r['Purchaser'] || r['New Owner'] || '';
+      const price = r['Price (PKR)'] ? 'PKR ' + Number(r['Price (PKR)']).toLocaleString('en-PK') : '';
+      const purpose = (r['Purpose'] || '').toLowerCase();
+
+      html += `<div class="trace-event${isLatest ? ' latest' : ''}">
+        <div class="ev-date">
+          📅 ${r['Date'] ? fmtDate(r['Date']) : 'No date'}
+          ${isLatest ? '<span class="ev-badge">Latest</span>' : ''}
+          <span style="font-size:11px;font-weight:600;color:var(--gray-400)">${purpose === 'rent' ? '🏠 Rent' : '🔄 Sale'}</span>
+        </div>
+        <div class="ev-row">
+          ${seller ? '↩️ Seller: <strong>' + seller + '</strong><br>' : ''}
+          ${purchaser ? '🆕 Purchaser: <strong>' + purchaser + '</strong><br>' : ''}
+          ${r['Marketed By'] ? '👤 Agent: <strong>' + r['Marketed By'] + '</strong><br>' : ''}
+          ${r['POC'] ? '📞 ' + r['POC'] + '<br>' : ''}
+          ${r['Source'] ? '📌 Source: ' + r['Source'] : ''}
+        </div>
+        ${r['Notes'] ? '<div style="font-size:12px;color:var(--gray-500);margin-top:4px">📝 ' + r['Notes'] + '</div>' : ''}
+        ${r['Image Link'] ? '<div style="margin-top:4px"><a href="' + r['Image Link'] + '" target="_blank" style="color:#5c3d1e;font-size:13px;font-weight:600">📰 View Photo</a></div>' : ''}
+        ${price ? '<div class="ev-price">' + price + ' <span style="font-size:12px;font-weight:500;color:var(--gray-400)">(' + (r['Price Type'] || '') + ')</span></div>' : ''}
+      </div>`;
+    });
+    html += '</div>';
+    html += `<div class="trace-count">── ${g.records.length} record${g.records.length > 1 ? 's' : ''} found ──</div>`;
+  });
+
+  if (groupKeys.length > 1) {
+    html = `<div style="font-size:13px;font-weight:600;color:var(--gray-500);margin-bottom:10px">${groupKeys.length} properties found matching "${query}"</div>` + html;
+  }
+
+  resultsDiv.innerHTML = html;
 }
 
 function shareWhatsAppFromSheet(r) {
