@@ -1994,7 +1994,8 @@ function openEditModalSheet(r) {
     ${field('Purchaser (Khareedar)', 'newOwner', v('Purchaser'))}
     ${field('Agent / Agency', 'marketedBy', v('Marketed By'))}
     ${field('Agent Numbers', 'poc', v('POC'))}
-    ${field('Newspaper', 'source', v('Source'))}
+    ${selField('Source', 'source', ['Newspaper','Direct','Referral','Online','Other'], v('Source'))}
+    ${selField('Newspaper', 'newspaper', ['','Jasarat','Aman','Nawa-e-Waqt','Others'], v('Newspaper'))}
     ${field('Newspaper Ref', 'newsRef', v('Newspaper Ref'))}
     ${field('Price (PKR)', 'price', v('Price (PKR)'), 'number')}
     ${selField('Price Type', 'priceType', ['','fixed','negotiable','per sqyd'], priceType)}
@@ -2048,6 +2049,7 @@ async function saveEditModalSheet() {
       marketedBy: g('marketedBy'),
       poc: g('poc'),
       source: g('source'),
+      newspaper: g('newspaper'),
       newsRef: g('newsRef'),
       price: g('price'),
       priceType: g('priceType'),
@@ -2184,6 +2186,38 @@ function getGsUrl() {
 }
 const DAILY_LIMIT = 200;   // free tier ka andaza — apni marzi se badal sakte hain
 
+function renderModelUsage(models) {
+  const entries = Object.entries(models);
+  if (!entries.length) return '';
+  entries.sort((a, b) => b[1] - a[1]);
+  const max = entries[0][1];
+  const colors = { 'pro': '#166534', 'flash': '#b45309' };
+  const getColor = (name) => {
+    if (/pro/i.test(name)) return colors.pro;
+    return colors.flash;
+  };
+  const shortName = (name) => {
+    return name.replace('gemini-', '').replace('-preview', '').replace('-latest', '');
+  };
+  const bars = entries.map(([name, count]) => {
+    const pct = Math.max(8, Math.round(count / max * 100));
+    const c = getColor(name);
+    return `<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+      <div style="flex:1;min-width:0">
+        <div style="font-size:11px;font-weight:600;color:#5c3d1e;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${shortName(name)}</div>
+        <div style="height:7px;background:#eee;border-radius:99px;overflow:hidden;margin-top:2px">
+          <div style="height:100%;width:${pct}%;background:${c};border-radius:99px"></div>
+        </div>
+      </div>
+      <div style="font-size:12px;font-weight:800;color:${c};min-width:32px;text-align:right">${count}</div>
+    </div>`;
+  }).join('');
+  return `<div style="margin-top:10px;padding-top:8px;border-top:1px solid var(--gray-200)">
+    <div style="font-size:12px;font-weight:800;color:#5c3d1e;margin-bottom:6px">🤖 Models Used Today</div>
+    ${bars}
+  </div>`;
+}
+
 async function loadUsage() {
   const box = document.getElementById('usageBox');
   if (!box || !getGsUrl()) return;
@@ -2214,6 +2248,7 @@ async function loadUsage() {
         </div>
         ${u.limitHits ? `<div style="font-size:12.5px;color:#991b1b;margin-top:6px">⚠️ ${u.limitHits} ${t('limitHit')}</div>` : ''}
         ${(d.blocked || []).length ? `<div style="font-size:12px;color:#b45309;margin-top:4px">${t('blockedToday')}: ${d.blocked.join(', ')}</div>` : ''}
+        ${renderModelUsage(u.models || {})}
         <details style="margin-top:8px"><summary style="font-size:12.5px;color:#5c3d1e;cursor:pointer">${t('last7')}</summary>${week || `<div style="font-size:12.5px;color:#6b7280">${t('noRecord')}</div>`}</details>
       </div>`;
   } catch (e) {
@@ -2248,6 +2283,7 @@ async function syncEntry(entry) {
       marketedBy: entry.marketedBy || '',
       poc: Array.isArray(entry.poc) ? entry.poc.join(', ') : entry.poc || '',
       source: entry.source || '', notes: entry.notes || '',
+      newspaper: entry.newspaper || '',
       tracing: entry.tracing || '',
       rentPeriod: entry.rentPeriod || '',
       advance: entry.advance || '', security: entry.security || '',
@@ -2529,7 +2565,7 @@ function renderSheetResults(results, q) {
           ${r['Date'] ? '📅 ' + fmtDate(r['Date']) + '<br>' : ''}
           ${r['Marketed By'] ? '👤 ' + r['Marketed By'] + '<br>' : ''}
           ${r['POC'] ? '📞 ' + r['POC'] + '<br>' : ''}
-          ${r['Source'] ? '📌 ' + r['Source'] : ''}
+          ${r['Source'] ? '📌 ' + r['Source'] + (r['Newspaper'] ? ' — <strong>' + r['Newspaper'] + '</strong>' : '') : ''}
         </div>
         ${seller ? `<div class="owner-line">↩️ ${t('seller')}: <strong>${seller}</strong></div>` : ''}
         ${purchaser ? `<div class="owner-line">🆕 ${t('purchaser')}: <strong>${purchaser}</strong></div>` : ''}
@@ -2645,7 +2681,7 @@ function renderTracingResults(allResults, query) {
           ${purchaser ? '🆕 Purchaser: <strong>' + purchaser + '</strong><br>' : ''}
           ${r['Marketed By'] ? '👤 Agent: <strong>' + r['Marketed By'] + '</strong><br>' : ''}
           ${r['POC'] ? '📞 ' + r['POC'] + '<br>' : ''}
-          ${r['Source'] ? '📌 Source: ' + r['Source'] : ''}
+          ${r['Source'] ? '📌 Source: ' + r['Source'] + (r['Newspaper'] ? ' — <strong>' + r['Newspaper'] + '</strong>' : '') : ''}
         </div>
         ${r['Notes'] ? '<div style="font-size:12px;color:var(--gray-500);margin-top:4px">📝 ' + r['Notes'] + '</div>' : ''}
         ${r['Image Link'] ? '<div style="margin-top:4px"><a href="' + r['Image Link'] + '" target="_blank" style="color:#5c3d1e;font-size:13px;font-weight:600">📰 View Photo</a></div>' : ''}
@@ -3051,7 +3087,6 @@ function saveScannedNotices() {
     const paper = n.newspaper === 'Others' ? (n.newspaperOther || 'Others') : (n.newspaper || '');
     const notesParts = [];
     if (n.corner) notesParts.push('Corner');
-    if (paper) notesParts.push('Newspaper: ' + paper);
     if (n.notes) notesParts.push(n.notes);
     return {
       id: (now + k).toString(),
@@ -3065,6 +3100,7 @@ function saveScannedNotices() {
       area: n.area || '', price: (n.price || '').toString().replace(/[^\d]/g, ''), priceType: '',
       marketedBy: n.agentName || '', poc: Array.isArray(n.agentPhones) ? n.agentPhones : [],
       source: n.preview ? 'Newspaper' : 'Voice Entry', notes: notesParts.join(' | '),
+      newspaper: paper,
       rentPeriod: '', advance: '', security: '',
       prevOwner: n.prevOwner || '', newOwner: n.newOwner || '',
       newsRef: n.refNo || '', imageUrl: n.imageUrl || '',
